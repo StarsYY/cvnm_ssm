@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context.xsd
+                        http://www.springframework.org/schema/mvc
+                        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+	<!-- 1.开启注解扫描 及启用SpringMVC的注解驱动 -->
+	<context:component-scan base-package="cn.icylee.controller"/>
+	<mvc:annotation-driven conversion-service="convertorService"/>
+
+	<!-- 2.默认的servlet处理器 -->
+	<mvc:default-servlet-handler />
+
+	<!-- 3.定义转换器服务，通过服务运行转换器 -->
+	<bean id="convertorService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+		<!-- 指定运行的转换器 -->
+		<property name="converters">
+			<set>
+				<bean class="cn.icylee.utils.DateConvertor"/>
+			</set>
+		</property>
+	</bean>
+
+	<!-- 4.实例化非默认的处理器映射器，和处理器适配器，视图解析器 -->
+	<bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>
+	<bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>
+	<!-- 视图解析器中前后缀的配置 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<!-- prefix:/代表是webapp -->
+		<property name="prefix" value="/WEB-INF/"/>
+		<property name="suffix" value=".jsp"/>
+	</bean>
+
+	<!-- 5.文件解析器  注意：默认spring查找文件解析器是根据multipartResolver来查找的额，所以id必须是multipartResolver -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="6666666666"/>
+	</bean>
+</beans>

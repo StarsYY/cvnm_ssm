@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context.xsd
+                        http://www.springframework.org/schema/aop
+                        http://www.springframework.org/schema/aop/spring-aop.xsd
+                        http://www.springframework.org/schema/tx
+                        http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!--开启注解扫描 -->
+	<context:component-scan base-package="cn.icylee">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+
+	<!-- 引入外部properties文件 -->
+	<context:property-placeholder location="classpath:db.properties"/>
+
+	<!-- 1.数据源注入 -->
+	<bean id="ds" class="org.apache.commons.dbcp2.BasicDataSource">
+		<property name="driverClassName" value="${db_driver}"/>
+		<property name="url" value="${db_url}"/>
+		<property name="username" value="${db_user}"/>
+		<property name="password" value="${db_pwd}"/>
+	</bean>
+
+	<!-- 2.获取SqlSessionFactory实例，使用分页插件 -->
+	<bean id="sf" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="configLocation" value="classpath:mybatis-config.xml"/>
+		<property name="dataSource" ref="ds"/>
+		<property name="plugins">
+			<array>
+				<!-- 传入插件的对象 -->
+				<bean class="com.github.pagehelper.PageInterceptor">
+					<property name="properties">
+						<props>
+							<prop key="helperDialect">mysql</prop>
+							<prop key="reasonable">true</prop>
+						</props>
+					</property>
+				</bean>
+			</array>
+		</property>
+	</bean>
+
+	<!-- 3.批量获取dao层接口实现类类对象 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="sf"/>
+		<property name="basePackage" value="cn.icylee.dao"/>
+	</bean>
+
+	<!--4.事务控制 -->
+	<!--1.实例化事务控制类 -->
+	<bean id="tx" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="ds"/>
+	</bean>
+
+	<!-- 2.定义事务的通知:定义事务的规则 -->
+	<tx:advice transaction-manager="tx" id="myadvice">
+		<tx:attributes>
+			<!--
+				name：事务控制的方法名。可以采用模糊匹配方式写，例如trans*
+				isolation:隔离级别：和数据库保持一致
+				propagation：传播行为，当前方法使用的事务环境。
+				REQUIRED：如果当前方法已经处在一个事务环境中就采用该事务，否则就重新开启一个事务
+			-->
+			<tx:method name="*" isolation="DEFAULT" propagation="REQUIRED" read-only="true" />
+			<tx:method name="update*" isolation="DEFAULT" propagation="REQUIRED" read-only="false" />
+			<tx:method name="save*" isolation="DEFAULT" propagation="REQUIRED" read-only="false" />
+			<tx:method name="delete*" isolation="DEFAULT" propagation="REQUIRED" read-only="false" />
+		</tx:attributes>
+	</tx:advice>
+
+	<!-- 3.将事务作用在业务层方法上（织入） -->
+	<aop:config>
+		<aop:pointcut expression="execution(* cn.icylee.service..*.*(..))" id="pt" />
+		<aop:advisor advice-ref="myadvice" pointcut-ref="pt" />
+	</aop:config>
+</beans>

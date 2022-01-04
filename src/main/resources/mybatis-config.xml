@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<!--1.延迟加载，打印日志 -->
+	<settings>
+		<setting name="lazyLoadingEnabled" value="true" />
+		<setting name="logImpl" value="LOG4J"/>
+	</settings>
+
+	<!--2.别名 -->
+	<typeAliases>
+		<!-- 为映射文件中输入输出参数批量起别名,name指定的是存放实体类的包名，默认的别名是类名（类名首字母大小写不区分），如User ，user -->
+		<package name="cn.icylee.bean" />
+	</typeAliases>
+
+	<!--4.管理映射文件 -->
+	<mappers>
+		<!-- 批量管理映射文件，接口和映射文件是同包同名,name指定dao层包名 -->
+		<package name="cn.icylee.dao" />
+	</mappers>
+</configuration>

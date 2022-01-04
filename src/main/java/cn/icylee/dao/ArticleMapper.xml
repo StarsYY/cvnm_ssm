@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.icylee.dao.ArticleMapper" >
+  <resultMap id="BaseResultMap" type="cn.icylee.bean.Article" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="userid" property="userid" jdbcType="INTEGER" />
+    <result column="summary" property="summary" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="cover" property="cover" jdbcType="VARCHAR" />
+    <result column="plateid" property="plateid" jdbcType="INTEGER" />
+    <result column="labelid" property="labelid" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="publish" property="publish" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="tag" property="tag" jdbcType="VARCHAR" />
+    <result column="watch" property="watch" jdbcType="INTEGER" />
+    <result column="hot" property="hot" jdbcType="VARCHAR" />
+    <result column="source" property="source" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="VARCHAR" />
+    <result column="updatetime" property="updatetime" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <select id="getArticleTotal" parameterType="cn.icylee.bean.TableParameter" resultType="java.lang.Integer">
+    SELECT count(*) FROM article
+    <where>
+      <if test="ids != null and ids != ''">AND labelid REGEXP '${ids}'</if>
+      <if test="plateid != null and plateid != ''">AND FIND_IN_SET(plateid,'${plateid}')</if>
+      <if test="title != null and title != ''">AND title LIKE '%${title}%'</if>
+      <if test="type != null and type != ''">AND `type` = '${type}'</if>
+      <if test="publish != null and publish != ''">AND publish = '${publish}'</if>
+      <if test="status != null and status != ''">AND status = '${status}'</if>
+      <if test="tag != null and tag != ''">AND tag = '${tag}'</if>
+    </where>
+  </select>
+
+  <select id="getArticleList" parameterType="cn.icylee.bean.TableParameter" resultType="cn.icylee.bean.Article">
+    SELECT * FROM
+    ( SELECT * FROM article WHERE 1 = 1
+    <if test="ids != null and ids != ''">AND labelid REGEXP '${ids}'</if>
+    <if test="plateid != null and plateid != ''">AND FIND_IN_SET(plateid,'${plateid}')</if>
+    <if test="title != null and title != ''">AND title LIKE '%${title}%'</if>
+    <if test="type != null and type != ''">AND `type` = '${type}'</if>
+    <if test="publish != null and publish != ''">AND publish = '${publish}'</if>
+    <if test="status != null and status != ''">AND status = '${status}'</if>
+    <if test="tag != null and tag != ''">AND tag = '${tag}'</if>
+    LIMIT #{page}, #{limit} ) u
+    ORDER BY id ${sort}
+  </select>
+
+  <select id="getNewArticle" parameterType="cn.icylee.bean.Index" resultType="cn.icylee.bean.Article">
+    SELECT a.id, a.title, a.summary, a.`type`, a.watch, a.hot, a.createtime, a.updatetime, u.nickname, u.portrait, u.grow
+    FROM article a LEFT JOIN `user` u on a.userid = u.uid ORDER BY a.hot='Top' DESC, a.createtime DESC LIMIT #{page}, #{limit}
+  </select>
+
+  <select id="getNewCommentArticle" parameterType="cn.icylee.bean.Index" resultType="cn.icylee.bean.Article">
+    SELECT a.id, a.title, a.summary, a.`type`, a.watch, a.hot, a.createtime, a.updatetime, u.nickname, u.portrait, u.grow
+    FROM article a LEFT JOIN `user` u on a.userid = u.uid LIMIT #{page}, #{limit}
+  </select>
+
+  <select id="getMostCommentArticle" parameterType="cn.icylee.bean.Index" resultType="cn.icylee.bean.Article">
+    SELECT a.id, a.title, a.summary, a.`type`, a.watch, a.hot, a.createtime, a.updatetime, u.nickname, u.portrait, u.grow
+    FROM article a LEFT JOIN `user` u on a.userid = u.uid ORDER BY a.createtime DESC LIMIT #{page}, #{limit}
+  </select>
+
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, title, userid, summary, content, cover, plateid, labelid, type, publish, status,
+    tag, watch, hot, source, createtime, updatetime
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.icylee.bean.ArticleExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from article
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from article
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from article
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="cn.icylee.bean.ArticleExample" >
+    delete from article
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="cn.icylee.bean.Article" >
+    insert into article (id, title, userid,
+                         summary, content, cover,
+                         plateid, labelid, type,
+                         publish, status, tag,
+                         watch, hot, source,
+                         createtime, updatetime)
+    values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{userid,jdbcType=INTEGER},
+            #{summary,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{cover,jdbcType=VARCHAR},
+            #{plateid,jdbcType=INTEGER}, #{labelid,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR},
+            #{publish,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{tag,jdbcType=VARCHAR},
+            #{watch,jdbcType=INTEGER}, #{hot,jdbcType=VARCHAR}, #{source,jdbcType=VARCHAR},
+            #{createtime,jdbcType=VARCHAR}, #{updatetime,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.icylee.bean.Article" >
+    insert into article
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="summary != null" >
+        summary,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="cover != null" >
+        cover,
+      </if>
+      <if test="plateid != null" >
+        plateid,
+      </if>
+      <if test="labelid != null" >
+        labelid,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="publish != null" >
+        publish,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="tag != null" >
+        tag,
+      </if>
+      <if test="watch != null" >
+        watch,
+      </if>
+      <if test="hot != null" >
+        hot,
+      </if>
+      <if test="source != null" >
+        source,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="summary != null" >
+        #{summary,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="cover != null" >
+        #{cover,jdbcType=VARCHAR},
+      </if>
+      <if test="plateid != null" >
+        #{plateid,jdbcType=INTEGER},
+      </if>
+      <if test="labelid != null" >
+        #{labelid,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="publish != null" >
+        #{publish,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="tag != null" >
+        #{tag,jdbcType=VARCHAR},
+      </if>
+      <if test="watch != null" >
+        #{watch,jdbcType=INTEGER},
+      </if>
+      <if test="hot != null" >
+        #{hot,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null" >
+        #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="cn.icylee.bean.ArticleExample" resultType="java.lang.Integer" >
+    select count(*) from article
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update article
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.title != null" >
+        title = #{record.title,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userid != null" >
+        userid = #{record.userid,jdbcType=INTEGER},
+      </if>
+      <if test="record.summary != null" >
+        summary = #{record.summary,jdbcType=VARCHAR},
+      </if>
+      <if test="record.content != null" >
+        content = #{record.content,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cover != null" >
+        cover = #{record.cover,jdbcType=VARCHAR},
+      </if>
+      <if test="record.plateid != null" >
+        plateid = #{record.plateid,jdbcType=INTEGER},
+      </if>
+      <if test="record.labelid != null" >
+        labelid = #{record.labelid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.type != null" >
+        type = #{record.type,jdbcType=VARCHAR},
+      </if>
+      <if test="record.publish != null" >
+        publish = #{record.publish,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null" >
+        status = #{record.status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tag != null" >
+        tag = #{record.tag,jdbcType=VARCHAR},
+      </if>
+      <if test="record.watch != null" >
+        watch = #{record.watch,jdbcType=INTEGER},
+      </if>
+      <if test="record.hot != null" >
+        hot = #{record.hot,jdbcType=VARCHAR},
+      </if>
+      <if test="record.source != null" >
+        source = #{record.source,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createtime != null" >
+        createtime = #{record.createtime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updatetime != null" >
+        updatetime = #{record.updatetime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update article
+    set id = #{record.id,jdbcType=INTEGER},
+    title = #{record.title,jdbcType=VARCHAR},
+    userid = #{record.userid,jdbcType=INTEGER},
+    summary = #{record.summary,jdbcType=VARCHAR},
+    content = #{record.content,jdbcType=VARCHAR},
+    cover = #{record.cover,jdbcType=VARCHAR},
+    plateid = #{record.plateid,jdbcType=INTEGER},
+    labelid = #{record.labelid,jdbcType=VARCHAR},
+    type = #{record.type,jdbcType=VARCHAR},
+    publish = #{record.publish,jdbcType=VARCHAR},
+    status = #{record.status,jdbcType=VARCHAR},
+    tag = #{record.tag,jdbcType=VARCHAR},
+    watch = #{record.watch,jdbcType=INTEGER},
+    hot = #{record.hot,jdbcType=VARCHAR},
+    source = #{record.source,jdbcType=VARCHAR},
+    createtime = #{record.createtime,jdbcType=VARCHAR},
+    updatetime = #{record.updatetime,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.icylee.bean.Article" >
+    update article
+    <set >
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null" >
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="summary != null" >
+        summary = #{summary,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="cover != null" >
+        cover = #{cover,jdbcType=VARCHAR},
+      </if>
+      <if test="plateid != null" >
+        plateid = #{plateid,jdbcType=INTEGER},
+      </if>
+      <if test="labelid != null" >
+        labelid = #{labelid,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="publish != null" >
+        publish = #{publish,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="tag != null" >
+        tag = #{tag,jdbcType=VARCHAR},
+      </if>
+      <if test="watch != null" >
+        watch = #{watch,jdbcType=INTEGER},
+      </if>
+      <if test="hot != null" >
+        hot = #{hot,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null" >
+        source = #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.icylee.bean.Article" >
+    update article
+    set title = #{title,jdbcType=VARCHAR},
+        userid = #{userid,jdbcType=INTEGER},
+        summary = #{summary,jdbcType=VARCHAR},
+        content = #{content,jdbcType=VARCHAR},
+        cover = #{cover,jdbcType=VARCHAR},
+        plateid = #{plateid,jdbcType=INTEGER},
+        labelid = #{labelid,jdbcType=VARCHAR},
+        type = #{type,jdbcType=VARCHAR},
+        publish = #{publish,jdbcType=VARCHAR},
+        status = #{status,jdbcType=VARCHAR},
+        tag = #{tag,jdbcType=VARCHAR},
+        watch = #{watch,jdbcType=INTEGER},
+        hot = #{hot,jdbcType=VARCHAR},
+        source = #{source,jdbcType=VARCHAR},
+        createtime = #{createtime,jdbcType=VARCHAR},
+        updatetime = #{updatetime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
