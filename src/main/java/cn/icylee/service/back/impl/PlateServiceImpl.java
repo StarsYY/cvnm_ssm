@@ -45,11 +45,14 @@ public class PlateServiceImpl implements PlateService {
         PlateExample.Criteria criteria = plateExample.createCriteria();
         criteria.andAncestorEqualTo(children);
         List<Plate> plateList = plateMapper.selectByExample(plateExample);
+
         List<LabelTree> optionPlate = new ArrayList<>();
+
         for (Plate plate : plateList) {
             LabelTree p = new LabelTree();
             p.setValue(plate.getId());
             p.setLabel(plate.getPlate());
+
             if (getOptionPlate(plate.getId()).size() != 0) {
                 p.setChildren(getOptionPlate(plate.getId()));
             } else {

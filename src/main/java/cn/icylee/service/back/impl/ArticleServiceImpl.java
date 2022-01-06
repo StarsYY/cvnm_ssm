@@ -33,27 +33,34 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public List<LabelTree> getLabelTree() {
         List<LabelTree> rootTrees = new ArrayList<>();
+
         List<Root> rootList = rootMapper.selectByExample(null);
         for (Root root : rootList) {
             LabelTree rootTree = new LabelTree();
             rootTree.setId(root.getId());
             rootTree.setLabel(root.getRoot());
             rootTree.setIs("root");
+
             CategoryExample categoryExample = new CategoryExample();
             CategoryExample.Criteria exampleCriteria = categoryExample.createCriteria();
             exampleCriteria.andRootidEqualTo(root.getId());
             List<Category> categoryList = categoryMapper.selectByExample(categoryExample);
+
             List<LabelTree> treeMiddle = new ArrayList<>();
+
             for (Category category : categoryList) {
                 LabelTree labelTreeMiddle = new LabelTree();
                 labelTreeMiddle.setId(category.getId());
                 labelTreeMiddle.setLabel(category.getCategory());
                 labelTreeMiddle.setIs("category");
+
                 LabelExample labelExample = new LabelExample();
                 LabelExample.Criteria criteria = labelExample.createCriteria();
                 criteria.andCategoryIdLike("%," + category.getId() + ",%");
                 List<Label> labelList = labelMapper.selectByExample(labelExample);
+
                 List<LabelTree> treeFinal = new ArrayList<>();
+
                 for (Label label : labelList) {
                     LabelTree labelTreeFinal = new LabelTree();
                     labelTreeFinal.setId(label.getId());
@@ -145,8 +152,10 @@ public class ArticleServiceImpl implements ArticleService {
             String s = getAllPid(Integer.parseInt(tableParameter.getPlateid())).substring(0, getAllPid(Integer.parseInt(tableParameter.getPlateid())).length() - 1);
             tableParameter.setPlateid(s);
         }
+
         if (tableParameter.getIds() != null && !tableParameter.getIds().equals("")) {
             String[] arr_ids = tableParameter.getIds().substring(0, tableParameter.getIds().length() - 1).split(",");
+
             StringBuilder ids = new StringBuilder();
             for (String id : arr_ids) {
                 ids.append(",").append(id).append(",|");
@@ -155,15 +164,18 @@ public class ArticleServiceImpl implements ArticleService {
         } else {
             if (tableParameter.getCids() != null && !tableParameter.getCids().equals("")) {
                 String[] arr_cids = tableParameter.getCids().substring(0, tableParameter.getCids().length() - 1).split(",");
+
                 StringBuilder cids = new StringBuilder();
                 for (String cid : arr_cids) {
                     cids.append(",").append(cid).append(",|");
                 }
                 tableParameter.setCids(cids.substring(0, cids.length() - 1));
+
                 StringBuilder ids = new StringBuilder();
                 for (Label label : labelMapper.getLabelForArticle(tableParameter)) {
                     ids.append(",").append(label.getId()).append(",|");
                 }
+
                 if (ids.length() > 0 && !"null".equals(ids.toString()) && !"".equals(ids.toString())) {
                     tableParameter.setIds(ids.substring(0, ids.length() - 1));
                 } else {
@@ -171,16 +183,20 @@ public class ArticleServiceImpl implements ArticleService {
                 }
             } else if (tableParameter.getRootid() != null && !tableParameter.getRootid().equals("")) {
                 String[] arr_cids = categoryMapper.getCategoryIds(Integer.parseInt(tableParameter.getRootid()));
+
                 StringBuilder cids = new StringBuilder();
                 for (String id : arr_cids) {
                     cids.append(",").append(id).append(",|");
                 }
+
                 if (cids.length() > 0 && !"null".equals(cids.toString()) && !"".equals(cids.toString())) {
                     tableParameter.setCids(cids.substring(0, cids.length() - 1));
+
                     StringBuilder ids = new StringBuilder();
                     for (Label label : labelMapper.getLabelForArticle(tableParameter)) {
                         ids.append(",").append(label.getId()).append(",|");
                     }
+
                     if (ids.length() > 0 && !"null".equals(ids.toString()) && !"".equals(ids.toString())) {
                         tableParameter.setIds(ids.substring(0, ids.length() - 1));
                     } else {
@@ -202,19 +218,25 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public Map<String, Object> getPageArticle(TableParameter tableParameter) {
         List<Article> articleList = articleMapper.getArticleList(tableParameter);
+
         Map<String, Object> allArticle = new HashMap<>();
+
         for (Article article : articleList) {
             String author = userMapper.selectByPrimaryKey(article.getUserid()).getNickname();
+
             String[] labelId = article.getLabelid().substring(1, article.getLabelid().length() - 1).split(",");
+
             Map<String, String> map = new HashMap<>();
             for (String value : labelId) {
                 String label = labelMapper.selectByPrimaryKey(Integer.parseInt(value)).getLabel();
                 map.put(value, label);
             }
+
             article.setPlate(plateMapper.selectByPrimaryKey(article.getPlateid()).getPlate());
             article.setAuthor(author);
             article.setLabelMap(map);
         }
+
         allArticle.put("articleList", articleList);
         allArticle.put("allCategory", getAllCategory());
         allArticle.put("allLabel", getAllLabel());
@@ -243,12 +265,15 @@ public class ArticleServiceImpl implements ArticleService {
             article.setUserid(userMapper.selectByExample(userExample).get(0).getUid());
             article.setAuthor(null);
         }
+
         ArticleExample articleExample = new ArticleExample();
         ArticleExample.Criteria criteria = articleExample.createCriteria();
         criteria.andTitleEqualTo(article.getTitle());
+
         if (articleMapper.selectByExample(articleExample).size() > 0) {
             return 0;
         }
+
         article.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         article.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         return articleMapper.insert(article);

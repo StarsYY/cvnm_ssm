@@ -28,21 +28,28 @@ public class LabelServiceImpl implements LabelService {
     @Override
     public List<LabelTree> getCategoryTree() {
         List<LabelTree> Tree = new ArrayList<>();
+
         LabelTree labelTree = new LabelTree();
         labelTree.setId(0);
         labelTree.setLabel("所有分类");
+
         List<LabelTree> rootTrees = new ArrayList<>();
+
         List<Root> rootList = rootMapper.selectByExample(null);
+
         for (Root root : rootList) {
             LabelTree rootTree = new LabelTree();
             rootTree.setId(root.getId());
             rootTree.setLabel(root.getRoot());
             rootTree.setIs("root");
+
             CategoryExample categoryExample = new CategoryExample();
             CategoryExample.Criteria criteria = categoryExample.createCriteria();
             criteria.andRootidEqualTo(root.getId());
             List<Category> categoryList = categoryMapper.selectByExample(categoryExample);
+
             List<LabelTree> labelTrees = new ArrayList<>();
+
             for (Category category : categoryList) {
                 LabelTree tree = new LabelTree();
                 tree.setId(category.getId());
@@ -62,6 +69,7 @@ public class LabelServiceImpl implements LabelService {
     public int getLabelTotal(TableParameter tableParameter) {
         if (tableParameter.getIds() != null && !tableParameter.getIds().equals("")) {
             String[] arr_ids = tableParameter.getIds().substring(0, tableParameter.getIds().length() - 1).split(",");
+
             StringBuilder ids = new StringBuilder();
             for (String id : arr_ids) {
                 ids.append(",").append(id).append(",|");
@@ -69,10 +77,12 @@ public class LabelServiceImpl implements LabelService {
             tableParameter.setIds(ids.substring(0, ids.length() - 1));
         } else if (tableParameter.getRootid() != null && !tableParameter.getRootid().equals("")) {
             String[] arr_ids = categoryMapper.getCategoryIds(Integer.parseInt(tableParameter.getRootid()));
+
             StringBuilder ids = new StringBuilder();
             for (String id : arr_ids) {
                 ids.append(",").append(id).append(",|");
             }
+
             if (ids.length() > 0 && !"null".equals(ids.toString()) && !"".equals(ids.toString())) {
                 tableParameter.setIds(ids.substring(0, ids.length() - 1));
             } else {

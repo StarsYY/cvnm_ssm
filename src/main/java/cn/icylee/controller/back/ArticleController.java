@@ -29,20 +29,27 @@ public class ArticleController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Map<String, Object> showAllArticle(TableParameter tableParameter) {
         tableParameter = articleService.setIdsTool(tableParameter);
+
         List<LabelTree> plateTree = new ArrayList<>();
+
         LabelTree LabelTree = new LabelTree();
         LabelTree.setId(0);
         LabelTree.setLabel("所有板块");
         LabelTree.setChildren(plateService.getOptionPlate(0));
         plateTree.add(LabelTree);
+
         Map<String, Object> articleList = articleService.getPageArticle(tableParameter);
+
         int total = articleService.getArticleTotal(tableParameter);
+
         List<LabelTree> list = new ArrayList<>();
+
         LabelTree Tree = new LabelTree();
         Tree.setId(0);
         Tree.setLabel("所有标签");
         Tree.setChildren(articleService.getLabelTree());
         list.add(Tree);
+
         Map<String, Object> map = new HashMap<>();
         map.put("plateTree", plateTree);
         map.put("labelTree", list);
@@ -52,6 +59,7 @@ public class ArticleController {
         map.put("allLabel", articleList.get("allLabel"));
         map.put("allPlate", articleService.getAllPlate());
         map.put("items", articleList.get("articleList"));
+
         return ResponseData.success(map, "文章列表");
     }
 

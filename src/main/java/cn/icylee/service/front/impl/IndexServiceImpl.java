@@ -33,17 +33,24 @@ public class IndexServiceImpl implements IndexService {
         PlateExample plateExample = new PlateExample();
         PlateExample.Criteria criteria = plateExample.createCriteria();
         criteria.andAncestorEqualTo(0);
+
         List<Plate> plateList = plateMapper.selectByExample(plateExample);
+
         List<LabelTree> optionPlate = new ArrayList<>();
+
         for (Plate plate : plateList) {
             LabelTree p = new LabelTree();
             p.setValue(plate.getId());
             p.setLabel(plate.getPlate());
+
             PlateExample example = new PlateExample();
             PlateExample.Criteria exampleCriteria = example.createCriteria();
             exampleCriteria.andAncestorEqualTo(plate.getId());
+
             List<Plate> plates = plateMapper.selectByExample(example);
+
             List<LabelTree> labelTrees = new ArrayList<>();
+
             for (Plate plate1 : plates) {
                 LabelTree pp = new LabelTree();
                 pp.setValue(plate1.getId());

@@ -72,28 +72,31 @@ public class DetailServiceImpl implements DetailService {
         feCollect.createCriteria().andDatasourceEqualTo("article").andDataidEqualTo(comment.getArticleid());
         article.setCollect(followMapper.countByExample(feCollect));
 
-        int userId = getUserId(comment.getUsername());
+        if (!comment.getUsername().equals("") && comment.getUsername() != null) {
+            int userId = getUserId(comment.getUsername());
 
-        PreferExample peLike = new PreferExample();
-        peLike.createCriteria().andUseridEqualTo(userId).andDatasourceEqualTo("article").andDataidEqualTo(comment.getArticleid());
-        List<Prefer> preferList = preferMapper.selectByExample(peLike);
-        if (preferList.size() == 0) {
-            article.setLike(false);
-            article.setUnlike(false);
-        } else {
-            if (preferList.get(0).getPush() == 1) {
-                article.setLike(true);
-                article.setUnlike(false);
-            } else if (preferList.get(0).getPush() == 0) {
+            PreferExample peLike = new PreferExample();
+            peLike.createCriteria().andUseridEqualTo(userId).andDatasourceEqualTo("article").andDataidEqualTo(comment.getArticleid());
+
+            List<Prefer> preferList = preferMapper.selectByExample(peLike);
+            if (preferList.size() == 0) {
                 article.setLike(false);
-                article.setUnlike(true);
+                article.setUnlike(false);
+            } else {
+                if (preferList.get(0).getPush() == 1) {
+                    article.setLike(true);
+                    article.setUnlike(false);
+                } else if (preferList.get(0).getPush() == 0) {
+                    article.setLike(false);
+                    article.setUnlike(true);
+                }
             }
-        }
 
-        FollowExample fe = new FollowExample();
-        FollowExample.Criteria fc = fe.createCriteria();
-        fc.andUseridEqualTo(userId).andDatasourceEqualTo("article").andDataidEqualTo(comment.getArticleid());
-        article.setStar(followMapper.selectByExample(fe).size() != 0);
+            FollowExample fe = new FollowExample();
+            FollowExample.Criteria fc = fe.createCriteria();
+            fc.andUseridEqualTo(userId).andDatasourceEqualTo("article").andDataidEqualTo(comment.getArticleid());
+            article.setStar(followMapper.selectByExample(fe).size() != 0);
+        }
 
         String[] labelId = article.getLabelid().substring(1, article.getLabelid().length() - 1).split(",");
         Map<String, String> map = new HashMap<>();
@@ -107,10 +110,14 @@ public class DetailServiceImpl implements DetailService {
 
         user.setGrow(Tool.setLevel(user.getGrow()));
 
-        FollowExample fee = new FollowExample();
-        FollowExample.Criteria fcc = fee.createCriteria();
-        fcc.andUseridEqualTo(userId).andDatasourceEqualTo("user").andDataidEqualTo(user.getUid());
-        user.setFollow(followMapper.selectByExample(fee).size() != 0);
+        if (!comment.getUsername().equals("") && comment.getUsername() != null) {
+            int userId = getUserId(comment.getUsername());
+
+            FollowExample fee = new FollowExample();
+            FollowExample.Criteria fcc = fee.createCriteria();
+            fcc.andUseridEqualTo(userId).andDatasourceEqualTo("user").andDataidEqualTo(user.getUid());
+            user.setFollow(followMapper.selectByExample(fee).size() != 0);
+        }
 
         List<Object> list = new ArrayList<>();
         list.add(article);
@@ -131,11 +138,11 @@ public class DetailServiceImpl implements DetailService {
             peUp.createCriteria().andDatasourceEqualTo("comment").andDataidEqualTo(cm.getId()).andPushEqualTo(1);
             cm.setUp(preferMapper.countByExample(peUp));
 
-            int userId = getUserId(comment.getUsername());
-
-            PreferExample peLike = new PreferExample();
-            peLike.createCriteria().andUseridEqualTo(userId).andDatasourceEqualTo("comment").andDataidEqualTo(cm.getId()).andPushEqualTo(1);
-            cm.setLike(preferMapper.selectByExample(peLike).size() != 0);
+            if (!comment.getUsername().equals("") && comment.getUsername() != null) {
+                PreferExample peLike = new PreferExample();
+                peLike.createCriteria().andUseridEqualTo(getUserId(comment.getUsername())).andDatasourceEqualTo("comment").andDataidEqualTo(cm.getId()).andPushEqualTo(1);
+                cm.setLike(preferMapper.selectByExample(peLike).size() != 0);
+            }
 
             Map<String, Comment> CommentList = new HashMap<>();
 
@@ -143,13 +150,18 @@ public class DetailServiceImpl implements DetailService {
 
             user.setGrow(Tool.setLevel(user.getGrow()));
 
-            FollowExample fee = new FollowExample();
-            FollowExample.Criteria fcc = fee.createCriteria();
-            fcc.andUseridEqualTo(getUserId(comment.getUsername())).andDatasourceEqualTo("user").andDataidEqualTo(user.getUid());
-            user.setFollow(followMapper.selectByExample(fee).size() != 0);
+            if (!comment.getUsername().equals("") && comment.getUsername() != null) {
+                FollowExample fee = new FollowExample();
+                FollowExample.Criteria fcc = fee.createCriteria();
+                fcc.andUseridEqualTo(getUserId(comment.getUsername())).andDatasourceEqualTo("user").andDataidEqualTo(user.getUid());
+                user.setFollow(followMapper.selectByExample(fee).size() != 0);
+
+                cm.setCommentList(getAllReply(comment.getArticleid(), cm.getId(), CommentList, 0, 1, comment.getUsername()));
+            } else {
+                cm.setCommentList(getAllReply(comment.getArticleid(), cm.getId(), CommentList, 0, 1, ""));
+            }
 
             cm.setUser(user);
-            cm.setCommentList(getAllReply(comment.getArticleid(), cm.getId(), CommentList, 0, 1, comment.getUsername()));
         }
 
         return commentList;
@@ -168,18 +180,20 @@ public class DetailServiceImpl implements DetailService {
                 peUp.createCriteria().andDatasourceEqualTo("comment").andDataidEqualTo(comment.getId()).andPushEqualTo(1);
                 comment.setUp(preferMapper.countByExample(peUp));
 
-                int userId = getUserId(nickname);
-
-                PreferExample peLike = new PreferExample();
-                peLike.createCriteria().andUseridEqualTo(userId).andDatasourceEqualTo("comment").andDataidEqualTo(comment.getId()).andPushEqualTo(1);
-                comment.setLike(preferMapper.selectByExample(peLike).size() != 0);
+                if (!nickname.equals("")) {
+                    PreferExample peLike = new PreferExample();
+                    peLike.createCriteria().andUseridEqualTo(getUserId(nickname)).andDatasourceEqualTo("comment").andDataidEqualTo(comment.getId()).andPushEqualTo(1);
+                    comment.setLike(preferMapper.selectByExample(peLike).size() != 0);
+                }
 
                 if (recursion > 1 && reviewId > 0) {
                     comment.setReviewName(userMapper.selectByPrimaryKey(reviewId).getNickname());
                 }
+
                 comment.setUsername(userMapper.selectByPrimaryKey(comment.getUserid()).getNickname());
                 comment.setAvatar(userMapper.selectByPrimaryKey(comment.getUserid()).getPortrait());
                 CommentList.put(comment.getId().toString(), comment);
+
                 getAllReply(aid, comment.getId(), CommentList, comment.getUserid(), recursion + 1, nickname);
             }
         }

@@ -33,13 +33,17 @@ public class LoginFServiceImpl implements LoginFService {
     @Override
     public int saveUser(String nickname, String password) {
         User user = new User();
+
         user.setNickname(nickname);
+
         UserExample userExample = new UserExample();
         UserExample.Criteria criteria = userExample.createCriteria();
         criteria.andNicknameEqualTo(user.getNickname());
+
         if (userMapper.selectByExample(userExample).size() > 0) {
             return 0;
         }
+
         user.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         user.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         user.setStatus("Enable");
