@@ -27,14 +27,14 @@ public class DetailController {
 
     @ResponseBody
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public Map<String, Object> getArticleById(int id) {
-        return ResponseData.success(detailService.getArticleById(id), "文章详情");
+    public Map<String, Object> getArticleById(Comment comment) {
+        return detailService.updateArticleWatch(comment.getArticleid()) > 0 ? ResponseData.success(detailService.getArticleById(comment), "文章详情") : ResponseData.error("欸哎，我堵在这了つ ◕_◕ ༽つ");
     }
 
     @ResponseBody
     @RequestMapping(value = "comment", method = RequestMethod.GET)
-    public Map<String, Object> getAllComment(int id) {
-        return ResponseData.success(detailService.getAllComment(id), "文章评论");
+    public Map<String, Object> getAllComment(Comment comment) {
+        return ResponseData.success(detailService.getAllComment(comment), "文章评论");
     }
 
     @ResponseBody
@@ -42,8 +42,38 @@ public class DetailController {
     public Map<String, Object> saveComment(@RequestBody Comment comment) {
         Map<String, Object> map = new HashMap<>();
         int success = detailService.saveComment(comment);
-        map.put("commentList", detailService.getAllComment(comment.getArticleid()));
-        return success > 0 ? ResponseData.success(map, "评论成功") : ResponseData.error("欸哎，我都在这了つ ◕_◕ ༽つ");
+        map.put("commentList", detailService.getAllComment(comment));
+        return success > 0 ? ResponseData.success(map, "评论成功") : ResponseData.error("欸哎，我堵在这了つ ◕_◕ ༽つ");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "upOrDown", method = RequestMethod.POST)
+    public Map<String, Object> upOrDown(@RequestBody Comment comment) {
+        return detailService.savePreferUpOrDownArticle(comment) > 0 ? ResponseData.success("success", "点赞或点踩成功") : ResponseData.error("欸哎，我堵在这了つ ◕_◕ ༽つ");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "upComment", method = RequestMethod.POST)
+    public Map<String, Object> upComment(@RequestBody Comment comment) {
+        Map<String, Object> map = new HashMap<>();
+        int success = detailService.savePreferUpArticleComment(comment);
+        map.put("commentList", detailService.getAllComment(comment));
+        return success > 0 ? ResponseData.success(map, "点赞评论成功") : ResponseData.error("欸哎，我堵在这了つ ◕_◕ ༽つ");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "star", method = RequestMethod.POST)
+    public Map<String, Object> star(@RequestBody Comment comment) {
+        return detailService.saveFollowStarArticle(comment) > 0 ? ResponseData.success("success", "收藏或取消收藏成功") : ResponseData.error("欸哎，我堵在这了つ ◕_◕ ༽つ");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "followAuthor", method = RequestMethod.POST)
+    public Map<String, Object> followAuthor(@RequestBody Comment comment) {
+        Map<String, Object> map = new HashMap<>();
+        int success = detailService.saveFollowAuthor(comment);
+        map.put("commentList", detailService.getAllComment(comment));
+        return success > 0 ? ResponseData.success(map, "关注或取消关注成功") : ResponseData.error("欸哎，我堵在这了つ ◕_◕ ༽つ");
     }
 
     @ResponseBody

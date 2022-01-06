@@ -224,73 +224,73 @@ public class FollowExample {
             return (Criteria) this;
         }
 
-        public Criteria andTableIsNull() {
-            addCriterion("table is null");
+        public Criteria andDatasourceIsNull() {
+            addCriterion("datasource is null");
             return (Criteria) this;
         }
 
-        public Criteria andTableIsNotNull() {
-            addCriterion("table is not null");
+        public Criteria andDatasourceIsNotNull() {
+            addCriterion("datasource is not null");
             return (Criteria) this;
         }
 
-        public Criteria andTableEqualTo(String value) {
-            addCriterion("table =", value, "table");
+        public Criteria andDatasourceEqualTo(String value) {
+            addCriterion("datasource =", value, "datasource");
             return (Criteria) this;
         }
 
-        public Criteria andTableNotEqualTo(String value) {
-            addCriterion("table <>", value, "table");
+        public Criteria andDatasourceNotEqualTo(String value) {
+            addCriterion("datasource <>", value, "datasource");
             return (Criteria) this;
         }
 
-        public Criteria andTableGreaterThan(String value) {
-            addCriterion("table >", value, "table");
+        public Criteria andDatasourceGreaterThan(String value) {
+            addCriterion("datasource >", value, "datasource");
             return (Criteria) this;
         }
 
-        public Criteria andTableGreaterThanOrEqualTo(String value) {
-            addCriterion("table >=", value, "table");
+        public Criteria andDatasourceGreaterThanOrEqualTo(String value) {
+            addCriterion("datasource >=", value, "datasource");
             return (Criteria) this;
         }
 
-        public Criteria andTableLessThan(String value) {
-            addCriterion("table <", value, "table");
+        public Criteria andDatasourceLessThan(String value) {
+            addCriterion("datasource <", value, "datasource");
             return (Criteria) this;
         }
 
-        public Criteria andTableLessThanOrEqualTo(String value) {
-            addCriterion("table <=", value, "table");
+        public Criteria andDatasourceLessThanOrEqualTo(String value) {
+            addCriterion("datasource <=", value, "datasource");
             return (Criteria) this;
         }
 
-        public Criteria andTableLike(String value) {
-            addCriterion("table like", value, "table");
+        public Criteria andDatasourceLike(String value) {
+            addCriterion("datasource like", value, "datasource");
             return (Criteria) this;
         }
 
-        public Criteria andTableNotLike(String value) {
-            addCriterion("table not like", value, "table");
+        public Criteria andDatasourceNotLike(String value) {
+            addCriterion("datasource not like", value, "datasource");
             return (Criteria) this;
         }
 
-        public Criteria andTableIn(List<String> values) {
-            addCriterion("table in", values, "table");
+        public Criteria andDatasourceIn(List<String> values) {
+            addCriterion("datasource in", values, "datasource");
             return (Criteria) this;
         }
 
-        public Criteria andTableNotIn(List<String> values) {
-            addCriterion("table not in", values, "table");
+        public Criteria andDatasourceNotIn(List<String> values) {
+            addCriterion("datasource not in", values, "datasource");
             return (Criteria) this;
         }
 
-        public Criteria andTableBetween(String value1, String value2) {
-            addCriterion("table between", value1, value2, "table");
+        public Criteria andDatasourceBetween(String value1, String value2) {
+            addCriterion("datasource between", value1, value2, "datasource");
             return (Criteria) this;
         }
 
-        public Criteria andTableNotBetween(String value1, String value2) {
-            addCriterion("table not between", value1, value2, "table");
+        public Criteria andDatasourceNotBetween(String value1, String value2) {
+            addCriterion("datasource not between", value1, value2, "datasource");
             return (Criteria) this;
         }
 

@@ -31,6 +31,26 @@ public class Comment {
 
     private boolean reply = true;
 
+    private Integer is;
+
+    private boolean like;
+
+    public boolean isLike() {
+        return like;
+    }
+
+    public void setLike(boolean like) {
+        this.like = like;
+    }
+
+    public Integer getIs() {
+        return is;
+    }
+
+    public void setIs(Integer is) {
+        this.is = is;
+    }
+
     public Map<String, Comment> getCommentList() {
         return commentList;
     }

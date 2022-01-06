@@ -5,7 +5,7 @@ public class Follow {
 
     private Integer userid;
 
-    private String table;
+    private String datasource;
 
     private Integer dataid;
 
@@ -25,12 +25,12 @@ public class Follow {
         this.userid = userid;
     }
 
-    public String getTable() {
-        return table;
+    public String getDatasource() {
+        return datasource;
     }
 
-    public void setTable(String table) {
-        this.table = table == null ? null : table.trim();
+    public void setDatasource(String datasource) {
+        this.datasource = datasource == null ? null : datasource.trim();
     }
 
     public Integer getDataid() {

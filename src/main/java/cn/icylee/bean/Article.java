@@ -53,6 +53,56 @@ public class Article {
 
     private Integer up;
 
+    private Integer down;
+
+    private Integer collect;
+
+    private boolean like;
+
+    private boolean unlike;
+
+    private boolean star;
+
+    public Integer getCollect() {
+        return collect;
+    }
+
+    public void setCollect(Integer collect) {
+        this.collect = collect;
+    }
+
+    public Integer getDown() {
+        return down;
+    }
+
+    public void setDown(Integer down) {
+        this.down = down;
+    }
+
+    public boolean isLike() {
+        return like;
+    }
+
+    public void setLike(boolean like) {
+        this.like = like;
+    }
+
+    public boolean isUnlike() {
+        return unlike;
+    }
+
+    public void setUnlike(boolean unlike) {
+        this.unlike = unlike;
+    }
+
+    public boolean isStar() {
+        return star;
+    }
+
+    public void setStar(boolean star) {
+        this.star = star;
+    }
+
     public Map<String, String> getLabelMap() {
         return labelMap;
     }

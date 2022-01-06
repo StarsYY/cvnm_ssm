@@ -39,7 +39,7 @@
 		</javaClientGenerator>
 
 		<!-- 指定数据库表 -->
-		<table tableName="like"/>
+		<table tableName="prefer"/>
 		<table tableName="follow"/>
 	</context>
 </generatorConfiguration>

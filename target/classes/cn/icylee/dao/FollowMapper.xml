@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="cn.icylee.bean.Follow" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="userid" property="userid" jdbcType="INTEGER" />
-    <result column="table" property="table" jdbcType="VARCHAR" />
+    <result column="datasource" property="datasource" jdbcType="VARCHAR" />
     <result column="dataid" property="dataid" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Example_Where_Clause" >
@@ -66,7 +66,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, userid, table, dataid
+    id, userid, datasource, dataid
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.icylee.bean.FollowExample" >
     select
@@ -99,9 +99,9 @@
     </if>
   </delete>
   <insert id="insert" parameterType="cn.icylee.bean.Follow" >
-    insert into follow (id, userid, table, 
+    insert into follow (id, userid, datasource, 
       dataid)
-    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{table,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{datasource,jdbcType=VARCHAR}, 
       #{dataid,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="cn.icylee.bean.Follow" >
@@ -113,8 +113,8 @@
       <if test="userid != null" >
         userid,
       </if>
-      <if test="table != null" >
-        table,
+      <if test="datasource != null" >
+        datasource,
       </if>
       <if test="dataid != null" >
         dataid,
@@ -127,8 +127,8 @@
       <if test="userid != null" >
         #{userid,jdbcType=INTEGER},
       </if>
-      <if test="table != null" >
-        #{table,jdbcType=VARCHAR},
+      <if test="datasource != null" >
+        #{datasource,jdbcType=VARCHAR},
       </if>
       <if test="dataid != null" >
         #{dataid,jdbcType=INTEGER},
@@ -150,8 +150,8 @@
       <if test="record.userid != null" >
         userid = #{record.userid,jdbcType=INTEGER},
       </if>
-      <if test="record.table != null" >
-        table = #{record.table,jdbcType=VARCHAR},
+      <if test="record.datasource != null" >
+        datasource = #{record.datasource,jdbcType=VARCHAR},
       </if>
       <if test="record.dataid != null" >
         dataid = #{record.dataid,jdbcType=INTEGER},
@@ -165,7 +165,7 @@
     update follow
     set id = #{record.id,jdbcType=INTEGER},
       userid = #{record.userid,jdbcType=INTEGER},
-      table = #{record.table,jdbcType=VARCHAR},
+      datasource = #{record.datasource,jdbcType=VARCHAR},
       dataid = #{record.dataid,jdbcType=INTEGER}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -177,8 +177,8 @@
       <if test="userid != null" >
         userid = #{userid,jdbcType=INTEGER},
       </if>
-      <if test="table != null" >
-        table = #{table,jdbcType=VARCHAR},
+      <if test="datasource != null" >
+        datasource = #{datasource,jdbcType=VARCHAR},
       </if>
       <if test="dataid != null" >
         dataid = #{dataid,jdbcType=INTEGER},
@@ -189,7 +189,7 @@
   <update id="updateByPrimaryKey" parameterType="cn.icylee.bean.Follow" >
     update follow
     set userid = #{userid,jdbcType=INTEGER},
-      table = #{table,jdbcType=VARCHAR},
+      datasource = #{datasource,jdbcType=VARCHAR},
       dataid = #{dataid,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>

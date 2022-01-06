@@ -22,7 +22,7 @@
 	<context:property-placeholder location="classpath:db.properties"/>
 
 	<!-- 1.数据源注入 -->
-	<bean id="ds" class="org.apache.commons.dbcp2.BasicDataSource">
+	<bean id="ds" class="com.alibaba.druid.pool.DruidDataSource">
 		<property name="driverClassName" value="${db_driver}"/>
 		<property name="url" value="${db_url}"/>
 		<property name="username" value="${db_user}"/>

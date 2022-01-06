@@ -21,6 +21,16 @@ public class User {
 
     private String updatetime;
 
+    private boolean follow;
+
+    public boolean isFollow() {
+        return follow;
+    }
+
+    public void setFollow(boolean follow) {
+        this.follow = follow;
+    }
+
     public Integer getUid() {
         return uid;
     }
