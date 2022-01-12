@@ -45,7 +45,7 @@ public class Article {
 
     private String portrait;
 
-    private String grow;
+    private Integer grow;
 
     private String plate;
 
@@ -135,11 +135,11 @@ public class Article {
         this.portrait = portrait;
     }
 
-    public String getGrow() {
+    public Integer getGrow() {
         return grow;
     }
 
-    public void setGrow(String grow) {
+    public void setGrow(Integer grow) {
         this.grow = grow;
     }
 

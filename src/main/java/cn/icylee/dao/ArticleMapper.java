@@ -40,4 +40,6 @@ public interface ArticleMapper {
     List<Article> getNewCommentArticle(Index index);
 
     List<Article> getMostCommentArticle(Index index);
+
+    List<Article> getCollectArticle(Integer uid);
 }

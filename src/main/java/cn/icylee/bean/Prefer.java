@@ -11,6 +11,8 @@ public class Prefer {
 
     private Integer push;
 
+    private String createtime;
+
     public Integer getId() {
         return id;
     }
@@ -49,5 +51,13 @@ public class Prefer {
 
     public void setPush(Integer push) {
         this.push = push;
+    }
+
+    public String getCreatetime() {
+        return createtime;
+    }
+
+    public void setCreatetime(String createtime) {
+        this.createtime = createtime == null ? null : createtime.trim();
     }
 }

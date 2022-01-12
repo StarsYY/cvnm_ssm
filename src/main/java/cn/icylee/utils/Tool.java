@@ -7,29 +7,28 @@ import java.util.Map;
 
 public class Tool {
 
-    public static String setLevel(String Grow) {
-        String level = "0";
-        int grow = Integer.parseInt(Grow);
+    public static int setLevel(int grow) {
+        int level = 0;
         if (grow >= 10000) {
-            level = "10";
+            level = 10;
         } else if (grow >= 7000) {
-            level = "9";
+            level = 9;
         } else if (grow >= 5000) {
-            level = "8";
+            level = 8;
         } else if (grow >= 3000) {
-            level = "7";
+            level = 7;
         } else if (grow >= 2000) {
-            level = "6";
+            level = 6;
         } else if (grow >= 1000) {
-            level = "5";
+            level = 5;
         } else if (grow >= 500) {
-            level = "4";
+            level = 4;
         } else if (grow >= 200) {
-            level = "3";
+            level = 3;
         } else if (grow >= 50) {
-            level = "2";
+            level = 2;
         } else if (grow >= 1) {
-            level = "1";
+            level = 1;
         }
         return level;
     }

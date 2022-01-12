@@ -7,8 +7,8 @@
     <result column="password" property="password" jdbcType="VARCHAR" />
     <result column="summary" property="summary" jdbcType="VARCHAR" />
     <result column="portrait" property="portrait" jdbcType="VARCHAR" />
-    <result column="grow" property="grow" jdbcType="VARCHAR" />
-    <result column="integral" property="integral" jdbcType="VARCHAR" />
+    <result column="grow" property="grow" jdbcType="INTEGER" />
+    <result column="integral" property="integral" jdbcType="INTEGER" />
     <result column="status" property="status" jdbcType="VARCHAR" />
     <result column="createtime" property="createtime" jdbcType="VARCHAR" />
     <result column="updatetime" property="updatetime" jdbcType="VARCHAR" />
@@ -19,8 +19,56 @@
       ( SELECT * FROM user
         WHERE nickname LIKE '%${nickname}%' AND
           `status` LIKE '%${status}%'
-        LIMIT #{page}, #{limit} ) u
+          LIMIT #{page}, #{limit} ) u
     ORDER BY uid ${sort}
+  </select>
+  
+  <select id="getArticleUp" parameterType="INTEGER" resultType="INTEGER">
+    SELECT count(*)
+    FROM article
+    RIGHT JOIN prefer ON article.id=prefer.dataid AND prefer.datasource="article"
+    WHERE article.userid=#{uid}
+  </select>
+
+  <select id="getCommentUp" parameterType="INTEGER" resultType="INTEGER">
+    SELECT count(*)
+    from `comment`
+    RIGHT JOIN prefer on `comment`.id=prefer.dataid and prefer.datasource="comment"
+    where `comment`.userid=#{id}
+  </select>
+
+  <select id="getFollowUser" parameterType="INTEGER" resultType="cn.icylee.bean.User">
+    SELECT `user`.uid, `user`.nickname, `user`.summary, `user`.portrait, `user`.grow, `user`.`status`
+    FROM `user`
+    LEFT JOIN follow ON follow.userid=#{uid} AND follow.datasource="user"
+    WHERE `user`.uid=follow.dataid
+    ORDER BY follow.createtime DESC
+    LIMIT 6
+  </select>
+
+  <select id="getFansUser" parameterType="INTEGER" resultType="cn.icylee.bean.User">
+    SELECT `user`.uid, `user`.nickname, `user`.summary, `user`.portrait, `user`.grow, `user`.`status`
+    FROM `user`
+    LEFT JOIN follow ON follow.dataid=#{uid} AND follow.datasource="user"
+    WHERE `user`.uid=follow.userid
+    ORDER BY follow.createtime DESC
+    LIMIT 6
+  </select>
+
+  <select id="getFollowUser2" parameterType="INTEGER" resultType="cn.icylee.bean.User">
+    SELECT `user`.uid, `user`.nickname, `user`.summary, `user`.portrait, `user`.grow, `user`.`status`
+    FROM `user`
+    LEFT JOIN follow ON follow.userid=#{uid} AND follow.datasource="user"
+    WHERE `user`.uid=follow.dataid
+    ORDER BY follow.createtime DESC
+  </select>
+
+  <select id="getFansUser2" parameterType="INTEGER" resultType="cn.icylee.bean.User">
+    SELECT `user`.uid, `user`.nickname, `user`.summary, `user`.portrait, `user`.grow, `user`.`status`
+    FROM `user`
+    LEFT JOIN follow ON follow.dataid=#{uid} AND follow.datasource="user"
+    WHERE `user`.uid=follow.userid
+    ORDER BY follow.createtime DESC
   </select>
 
   <sql id="Example_Where_Clause" >
@@ -120,8 +168,8 @@
                       integral, status, createtime,
                       updatetime)
     values (#{uid,jdbcType=INTEGER}, #{nickname,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
-            #{summary,jdbcType=VARCHAR}, #{portrait,jdbcType=VARCHAR}, #{grow,jdbcType=VARCHAR},
-            #{integral,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{createtime,jdbcType=VARCHAR},
+            #{summary,jdbcType=VARCHAR}, #{portrait,jdbcType=VARCHAR}, #{grow,jdbcType=INTEGER},
+            #{integral,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{createtime,jdbcType=VARCHAR},
             #{updatetime,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="cn.icylee.bean.User" >
@@ -175,10 +223,10 @@
         #{portrait,jdbcType=VARCHAR},
       </if>
       <if test="grow != null" >
-        #{grow,jdbcType=VARCHAR},
+        #{grow,jdbcType=INTEGER},
       </if>
       <if test="integral != null" >
-        #{integral,jdbcType=VARCHAR},
+        #{integral,jdbcType=INTEGER},
       </if>
       <if test="status != null" >
         #{status,jdbcType=VARCHAR},
@@ -216,10 +264,10 @@
         portrait = #{record.portrait,jdbcType=VARCHAR},
       </if>
       <if test="record.grow != null" >
-        grow = #{record.grow,jdbcType=VARCHAR},
+        grow = #{record.grow,jdbcType=INTEGER},
       </if>
       <if test="record.integral != null" >
-        integral = #{record.integral,jdbcType=VARCHAR},
+        integral = #{record.integral,jdbcType=INTEGER},
       </if>
       <if test="record.status != null" >
         status = #{record.status,jdbcType=VARCHAR},
@@ -242,8 +290,8 @@
     password = #{record.password,jdbcType=VARCHAR},
     summary = #{record.summary,jdbcType=VARCHAR},
     portrait = #{record.portrait,jdbcType=VARCHAR},
-    grow = #{record.grow,jdbcType=VARCHAR},
-    integral = #{record.integral,jdbcType=VARCHAR},
+    grow = #{record.grow,jdbcType=INTEGER},
+    integral = #{record.integral,jdbcType=INTEGER},
     status = #{record.status,jdbcType=VARCHAR},
     createtime = #{record.createtime,jdbcType=VARCHAR},
     updatetime = #{record.updatetime,jdbcType=VARCHAR}
@@ -267,10 +315,10 @@
         portrait = #{portrait,jdbcType=VARCHAR},
       </if>
       <if test="grow != null" >
-        grow = #{grow,jdbcType=VARCHAR},
+        grow = #{grow,jdbcType=INTEGER},
       </if>
       <if test="integral != null" >
-        integral = #{integral,jdbcType=VARCHAR},
+        integral = #{integral,jdbcType=INTEGER},
       </if>
       <if test="status != null" >
         status = #{status,jdbcType=VARCHAR},
@@ -290,8 +338,8 @@
         password = #{password,jdbcType=VARCHAR},
         summary = #{summary,jdbcType=VARCHAR},
         portrait = #{portrait,jdbcType=VARCHAR},
-        grow = #{grow,jdbcType=VARCHAR},
-        integral = #{integral,jdbcType=VARCHAR},
+        grow = #{grow,jdbcType=INTEGER},
+        integral = #{integral,jdbcType=INTEGER},
         status = #{status,jdbcType=VARCHAR},
         createtime = #{createtime,jdbcType=VARCHAR},
         updatetime = #{updatetime,jdbcType=VARCHAR}

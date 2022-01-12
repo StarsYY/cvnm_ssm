@@ -49,8 +49,11 @@ public class UserServiceImpl implements UserService {
         user.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         user.setStatus("Enable");
         user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
-        user.setGrow("0");
-        user.setIntegral("0");
+        if (user.getPortrait().equals("") || user.getPortrait() == null) {
+            user.setPortrait("http://127.0.0.1:8080/upload/image/user/默认头像.png");
+        }
+        user.setGrow(0);
+        user.setIntegral(0);
         return userMapper.insert(user);
     }
 

@@ -7,6 +7,7 @@
     <result column="datasource" property="datasource" jdbcType="VARCHAR" />
     <result column="dataid" property="dataid" jdbcType="INTEGER" />
     <result column="push" property="push" jdbcType="INTEGER" />
+    <result column="createtime" property="createtime" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -67,7 +68,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, userid, datasource, dataid, push
+    id, userid, datasource, dataid, push, createtime
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.icylee.bean.PreferExample" >
     select
@@ -84,7 +85,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from prefer
     where id = #{id,jdbcType=INTEGER}
@@ -100,10 +101,12 @@
     </if>
   </delete>
   <insert id="insert" parameterType="cn.icylee.bean.Prefer" >
-    insert into prefer (id, userid, datasource, 
-      dataid, push)
-    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{datasource,jdbcType=VARCHAR}, 
-      #{dataid,jdbcType=INTEGER}, #{push,jdbcType=INTEGER})
+    insert into prefer (id, userid, datasource,
+                        dataid, push, createtime
+    )
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{datasource,jdbcType=VARCHAR},
+            #{dataid,jdbcType=INTEGER}, #{push,jdbcType=INTEGER}, #{createtime,jdbcType=VARCHAR}
+           )
   </insert>
   <insert id="insertSelective" parameterType="cn.icylee.bean.Prefer" >
     insert into prefer
@@ -123,6 +126,9 @@
       <if test="push != null" >
         push,
       </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -139,6 +145,9 @@
       </if>
       <if test="push != null" >
         #{push,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -166,6 +175,9 @@
       <if test="record.push != null" >
         push = #{record.push,jdbcType=INTEGER},
       </if>
+      <if test="record.createtime != null" >
+        createtime = #{record.createtime,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -174,10 +186,11 @@
   <update id="updateByExample" parameterType="map" >
     update prefer
     set id = #{record.id,jdbcType=INTEGER},
-      userid = #{record.userid,jdbcType=INTEGER},
-      datasource = #{record.datasource,jdbcType=VARCHAR},
-      dataid = #{record.dataid,jdbcType=INTEGER},
-      push = #{record.push,jdbcType=INTEGER}
+    userid = #{record.userid,jdbcType=INTEGER},
+    datasource = #{record.datasource,jdbcType=VARCHAR},
+    dataid = #{record.dataid,jdbcType=INTEGER},
+    push = #{record.push,jdbcType=INTEGER},
+    createtime = #{record.createtime,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -197,15 +210,19 @@
       <if test="push != null" >
         push = #{push,jdbcType=INTEGER},
       </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="cn.icylee.bean.Prefer" >
     update prefer
     set userid = #{userid,jdbcType=INTEGER},
-      datasource = #{datasource,jdbcType=VARCHAR},
-      dataid = #{dataid,jdbcType=INTEGER},
-      push = #{push,jdbcType=INTEGER}
+        datasource = #{datasource,jdbcType=VARCHAR},
+        dataid = #{dataid,jdbcType=INTEGER},
+        push = #{push,jdbcType=INTEGER},
+        createtime = #{createtime,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

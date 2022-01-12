@@ -11,9 +11,9 @@ public class User {
 
     private String portrait;
 
-    private String grow;
+    private Integer grow;
 
-    private String integral;
+    private Integer integral;
 
     private String status;
 
@@ -22,6 +22,36 @@ public class User {
     private String updatetime;
 
     private boolean follow;
+
+    private Integer fans;
+
+    private Integer attention;
+
+    private Integer article;
+
+    public Integer getArticle() {
+        return article;
+    }
+
+    public void setArticle(Integer article) {
+        this.article = article;
+    }
+
+    public Integer getFans() {
+        return fans;
+    }
+
+    public void setFans(Integer fans) {
+        this.fans = fans;
+    }
+
+    public Integer getAttention() {
+        return attention;
+    }
+
+    public void setAttention(Integer attention) {
+        this.attention = attention;
+    }
 
     public boolean isFollow() {
         return follow;
@@ -71,20 +101,20 @@ public class User {
         this.portrait = portrait == null ? null : portrait.trim();
     }
 
-    public String getGrow() {
+    public Integer getGrow() {
         return grow;
     }
 
-    public void setGrow(String grow) {
-        this.grow = grow == null ? null : grow.trim();
+    public void setGrow(Integer grow) {
+        this.grow = grow;
     }
 
-    public String getIntegral() {
+    public Integer getIntegral() {
         return integral;
     }
 
-    public void setIntegral(String integral) {
-        this.integral = integral == null ? null : integral.trim();
+    public void setIntegral(Integer integral) {
+        this.integral = integral;
     }
 
     public String getStatus() {

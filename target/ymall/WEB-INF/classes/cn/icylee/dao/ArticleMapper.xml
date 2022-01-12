@@ -63,6 +63,16 @@
     FROM article a LEFT JOIN `user` u on a.userid = u.uid ORDER BY a.createtime DESC LIMIT #{page}, #{limit}
   </select>
 
+  <select id="getCollectArticle" parameterType="INTEGER" resultType="cn.icylee.bean.Article">
+    SELECT article.id, article.title, article.userid, article.summary, article.plateid, article.watch, article.createtime, plate.plate, `user`.portrait, `user`.nickname
+    FROM article
+    LEFT JOIN follow ON follow.dataid=article.id AND follow.datasource="article"
+    LEFT JOIN plate ON plate.id=article.plateid
+    LEFT JOIN `user` ON `user`.uid=article.userid
+    WHERE follow.userid=#{uid}
+    ORDER BY follow.createtime DESC
+  </select>
+
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >

@@ -226,6 +226,8 @@ public class DetailServiceImpl implements DetailService {
             prefer.setDatasource("article");
             prefer.setDataid(comment.getArticleid());
             prefer.setPush(comment.getIs());
+            prefer.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+
             return preferMapper.insert(prefer);
         } else {
             return preferMapper.deleteByPrimaryKey(preferList.get(0).getId());
@@ -247,6 +249,8 @@ public class DetailServiceImpl implements DetailService {
             prefer.setDatasource("comment");
             prefer.setDataid(comment.getComid());
             prefer.setPush(comment.getIs());
+            prefer.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+
             return preferMapper.insert(prefer);
         } else {
             return preferMapper.deleteByPrimaryKey(preferList.get(0).getId());
@@ -267,6 +271,8 @@ public class DetailServiceImpl implements DetailService {
             follow.setUserid(userId);
             follow.setDatasource("article");
             follow.setDataid(comment.getArticleid());
+            follow.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+
             return followMapper.insert(follow);
         } else {
             return followMapper.deleteByPrimaryKey(followList.get(0).getId());
@@ -287,6 +293,8 @@ public class DetailServiceImpl implements DetailService {
             follow.setUserid(userId);
             follow.setDatasource("user");
             follow.setDataid(comment.getUserid());
+            follow.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+
             return followMapper.insert(follow);
         } else {
             return followMapper.deleteByPrimaryKey(followList.get(0).getId());

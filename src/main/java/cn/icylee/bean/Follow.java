@@ -9,6 +9,8 @@ public class Follow {
 
     private Integer dataid;
 
+    private String createtime;
+
     public Integer getId() {
         return id;
     }
@@ -39,5 +41,13 @@ public class Follow {
 
     public void setDataid(Integer dataid) {
         this.dataid = dataid;
+    }
+
+    public String getCreatetime() {
+        return createtime;
+    }
+
+    public void setCreatetime(String createtime) {
+        this.createtime = createtime == null ? null : createtime.trim();
     }
 }

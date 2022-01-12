@@ -454,62 +454,52 @@ public class UserExample {
             return (Criteria) this;
         }
 
-        public Criteria andGrowEqualTo(String value) {
+        public Criteria andGrowEqualTo(Integer value) {
             addCriterion("grow =", value, "grow");
             return (Criteria) this;
         }
 
-        public Criteria andGrowNotEqualTo(String value) {
+        public Criteria andGrowNotEqualTo(Integer value) {
             addCriterion("grow <>", value, "grow");
             return (Criteria) this;
         }
 
-        public Criteria andGrowGreaterThan(String value) {
+        public Criteria andGrowGreaterThan(Integer value) {
             addCriterion("grow >", value, "grow");
             return (Criteria) this;
         }
 
-        public Criteria andGrowGreaterThanOrEqualTo(String value) {
+        public Criteria andGrowGreaterThanOrEqualTo(Integer value) {
             addCriterion("grow >=", value, "grow");
             return (Criteria) this;
         }
 
-        public Criteria andGrowLessThan(String value) {
+        public Criteria andGrowLessThan(Integer value) {
             addCriterion("grow <", value, "grow");
             return (Criteria) this;
         }
 
-        public Criteria andGrowLessThanOrEqualTo(String value) {
+        public Criteria andGrowLessThanOrEqualTo(Integer value) {
             addCriterion("grow <=", value, "grow");
             return (Criteria) this;
         }
 
-        public Criteria andGrowLike(String value) {
-            addCriterion("grow like", value, "grow");
-            return (Criteria) this;
-        }
-
-        public Criteria andGrowNotLike(String value) {
-            addCriterion("grow not like", value, "grow");
-            return (Criteria) this;
-        }
-
-        public Criteria andGrowIn(List<String> values) {
+        public Criteria andGrowIn(List<Integer> values) {
             addCriterion("grow in", values, "grow");
             return (Criteria) this;
         }
 
-        public Criteria andGrowNotIn(List<String> values) {
+        public Criteria andGrowNotIn(List<Integer> values) {
             addCriterion("grow not in", values, "grow");
             return (Criteria) this;
         }
 
-        public Criteria andGrowBetween(String value1, String value2) {
+        public Criteria andGrowBetween(Integer value1, Integer value2) {
             addCriterion("grow between", value1, value2, "grow");
             return (Criteria) this;
         }
 
-        public Criteria andGrowNotBetween(String value1, String value2) {
+        public Criteria andGrowNotBetween(Integer value1, Integer value2) {
             addCriterion("grow not between", value1, value2, "grow");
             return (Criteria) this;
         }
@@ -524,62 +514,52 @@ public class UserExample {
             return (Criteria) this;
         }
 
-        public Criteria andIntegralEqualTo(String value) {
+        public Criteria andIntegralEqualTo(Integer value) {
             addCriterion("integral =", value, "integral");
             return (Criteria) this;
         }
 
-        public Criteria andIntegralNotEqualTo(String value) {
+        public Criteria andIntegralNotEqualTo(Integer value) {
             addCriterion("integral <>", value, "integral");
             return (Criteria) this;
         }
 
-        public Criteria andIntegralGreaterThan(String value) {
+        public Criteria andIntegralGreaterThan(Integer value) {
             addCriterion("integral >", value, "integral");
             return (Criteria) this;
         }
 
-        public Criteria andIntegralGreaterThanOrEqualTo(String value) {
+        public Criteria andIntegralGreaterThanOrEqualTo(Integer value) {
             addCriterion("integral >=", value, "integral");
             return (Criteria) this;
         }
 
-        public Criteria andIntegralLessThan(String value) {
+        public Criteria andIntegralLessThan(Integer value) {
             addCriterion("integral <", value, "integral");
             return (Criteria) this;
         }
 
-        public Criteria andIntegralLessThanOrEqualTo(String value) {
+        public Criteria andIntegralLessThanOrEqualTo(Integer value) {
             addCriterion("integral <=", value, "integral");
             return (Criteria) this;
         }
 
-        public Criteria andIntegralLike(String value) {
-            addCriterion("integral like", value, "integral");
-            return (Criteria) this;
-        }
-
-        public Criteria andIntegralNotLike(String value) {
-            addCriterion("integral not like", value, "integral");
-            return (Criteria) this;
-        }
-
-        public Criteria andIntegralIn(List<String> values) {
+        public Criteria andIntegralIn(List<Integer> values) {
             addCriterion("integral in", values, "integral");
             return (Criteria) this;
         }
 
-        public Criteria andIntegralNotIn(List<String> values) {
+        public Criteria andIntegralNotIn(List<Integer> values) {
             addCriterion("integral not in", values, "integral");
             return (Criteria) this;
         }
 
-        public Criteria andIntegralBetween(String value1, String value2) {
+        public Criteria andIntegralBetween(Integer value1, Integer value2) {
             addCriterion("integral between", value1, value2, "integral");
             return (Criteria) this;
         }
 
-        public Criteria andIntegralNotBetween(String value1, String value2) {
+        public Criteria andIntegralNotBetween(Integer value1, Integer value2) {
             addCriterion("integral not between", value1, value2, "integral");
             return (Criteria) this;
         }

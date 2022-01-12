@@ -30,4 +30,16 @@ public interface UserMapper {
     int updateByPrimaryKey(User record);
 
     List<User> getUserList(TableParameter tableParameter);
+
+    int getArticleUp(Integer uid);
+
+    int getCommentUp(Integer id);
+
+    List<User> getFollowUser(Integer uid);
+
+    List<User> getFansUser(Integer uid);
+
+    List<User> getFollowUser2(Integer uid);
+
+    List<User> getFansUser2(Integer uid);
 }

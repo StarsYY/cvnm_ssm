@@ -49,8 +49,8 @@ public class LoginFServiceImpl implements LoginFService {
         user.setStatus("Enable");
         user.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
         user.setPortrait("http://127.0.0.1:8080/upload/image/user/默认头像.png");
-        user.setGrow("0");
-        user.setIntegral("0");
+        user.setGrow(0);
+        user.setIntegral(0);
         return userMapper.insert(user);
     }
 
