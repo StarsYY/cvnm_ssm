@@ -5,10 +5,7 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="label" property="label" jdbcType="VARCHAR" />
     <result column="categoryid" property="categoryid" jdbcType="VARCHAR" />
-    <result column="icon" property="icon" jdbcType="VARCHAR" />
-    <result column="intro" property="intro" jdbcType="VARCHAR" />
-    <result column="message" property="message" jdbcType="VARCHAR" />
-    <result column="summary" property="summary" jdbcType="VARCHAR" />
+    <result column="describe" property="describe" jdbcType="VARCHAR" />
     <result column="createtime" property="createtime" jdbcType="VARCHAR" />
     <result column="updatetime" property="updatetime" jdbcType="VARCHAR" />
   </resultMap>
@@ -29,11 +26,18 @@
 
   <select id="getLabelList" parameterType="cn.icylee.bean.TableParameter" resultType="cn.icylee.bean.Label">
     SELECT * FROM
-      ( SELECT * FROM label WHERE 1 = 1
-        <if test="ids != null and ids != ''">AND categoryid REGEXP '${ids}'</if>
-        <if test="label != null and label != ''">AND `label` LIKE '%${label}%'</if>
-      LIMIT #{page}, #{limit} ) u
+    ( SELECT * FROM label WHERE 1 = 1
+    <if test="ids != null and ids != ''">AND categoryid REGEXP '${ids}'</if>
+    <if test="label != null and label != ''">AND `label` LIKE '%${label}%'</if>
+    LIMIT #{page}, #{limit} ) u
     ORDER BY id ${sort}
+  </select>
+
+  <select id="getLabelListForTags" parameterType="cn.icylee.bean.TableParameter" resultType="cn.icylee.bean.Label">
+    SELECT * FROM label WHERE 1 = 1
+    <if test="label != null and label != ''">AND `label` LIKE '%${label}%'</if>
+    <if test="title == 'name'">ORDER BY label</if>
+    LIMIT #{page}, #{limit}
   </select>
 
   <sql id="Example_Where_Clause" >
@@ -95,7 +99,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, label, categoryid, icon, intro, message, summary, createtime, updatetime
+    id, label, categoryid, `describe`, createtime, updatetime
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.icylee.bean.LabelExample" >
     select
@@ -129,12 +133,10 @@
   </delete>
   <insert id="insert" parameterType="cn.icylee.bean.Label" >
     insert into label (id, label, categoryid,
-                       icon, intro, message,
-                       summary, createtime, updatetime
+                       `describe`, createtime, updatetime
     )
     values (#{id,jdbcType=INTEGER}, #{label,jdbcType=VARCHAR}, #{categoryid,jdbcType=VARCHAR},
-            #{icon,jdbcType=VARCHAR}, #{intro,jdbcType=VARCHAR}, #{message,jdbcType=VARCHAR},
-            #{summary,jdbcType=VARCHAR}, #{createtime,jdbcType=VARCHAR}, #{updatetime,jdbcType=VARCHAR}
+            #{describe,jdbcType=VARCHAR}, #{createtime,jdbcType=VARCHAR}, #{updatetime,jdbcType=VARCHAR}
            )
   </insert>
   <insert id="insertSelective" parameterType="cn.icylee.bean.Label" >
@@ -149,17 +151,8 @@
       <if test="categoryid != null" >
         categoryid,
       </if>
-      <if test="icon != null" >
-        icon,
-      </if>
-      <if test="intro != null" >
-        intro,
-      </if>
-      <if test="message != null" >
-        message,
-      </if>
-      <if test="summary != null" >
-        summary,
+      <if test="describe != null" >
+        `describe`,
       </if>
       <if test="createtime != null" >
         createtime,
@@ -178,17 +171,8 @@
       <if test="categoryid != null" >
         #{categoryid,jdbcType=VARCHAR},
       </if>
-      <if test="icon != null" >
-        #{icon,jdbcType=VARCHAR},
-      </if>
-      <if test="intro != null" >
-        #{intro,jdbcType=VARCHAR},
-      </if>
-      <if test="message != null" >
-        #{message,jdbcType=VARCHAR},
-      </if>
-      <if test="summary != null" >
-        #{summary,jdbcType=VARCHAR},
+      <if test="describe != null" >
+        #{describe,jdbcType=VARCHAR},
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=VARCHAR},
@@ -216,17 +200,8 @@
       <if test="record.categoryid != null" >
         categoryid = #{record.categoryid,jdbcType=VARCHAR},
       </if>
-      <if test="record.icon != null" >
-        icon = #{record.icon,jdbcType=VARCHAR},
-      </if>
-      <if test="record.intro != null" >
-        intro = #{record.intro,jdbcType=VARCHAR},
-      </if>
-      <if test="record.message != null" >
-        message = #{record.message,jdbcType=VARCHAR},
-      </if>
-      <if test="record.summary != null" >
-        summary = #{record.summary,jdbcType=VARCHAR},
+      <if test="record.describe != null" >
+        `describe` = #{record.describe,jdbcType=VARCHAR},
       </if>
       <if test="record.createtime != null" >
         createtime = #{record.createtime,jdbcType=VARCHAR},
@@ -244,10 +219,7 @@
     set id = #{record.id,jdbcType=INTEGER},
     label = #{record.label,jdbcType=VARCHAR},
     categoryid = #{record.categoryid,jdbcType=VARCHAR},
-    icon = #{record.icon,jdbcType=VARCHAR},
-    intro = #{record.intro,jdbcType=VARCHAR},
-    message = #{record.message,jdbcType=VARCHAR},
-    summary = #{record.summary,jdbcType=VARCHAR},
+    `describe` = #{record.describe,jdbcType=VARCHAR},
     createtime = #{record.createtime,jdbcType=VARCHAR},
     updatetime = #{record.updatetime,jdbcType=VARCHAR}
     <if test="_parameter != null" >
@@ -263,17 +235,8 @@
       <if test="categoryid != null" >
         categoryid = #{categoryid,jdbcType=VARCHAR},
       </if>
-      <if test="icon != null" >
-        icon = #{icon,jdbcType=VARCHAR},
-      </if>
-      <if test="intro != null" >
-        intro = #{intro,jdbcType=VARCHAR},
-      </if>
-      <if test="message != null" >
-        message = #{message,jdbcType=VARCHAR},
-      </if>
-      <if test="summary != null" >
-        summary = #{summary,jdbcType=VARCHAR},
+      <if test="describe != null" >
+        `describe` = #{describe,jdbcType=VARCHAR},
       </if>
       <if test="createtime != null" >
         createtime = #{createtime,jdbcType=VARCHAR},
@@ -288,10 +251,7 @@
     update label
     set label = #{label,jdbcType=VARCHAR},
         categoryid = #{categoryid,jdbcType=VARCHAR},
-        icon = #{icon,jdbcType=VARCHAR},
-        intro = #{intro,jdbcType=VARCHAR},
-        message = #{message,jdbcType=VARCHAR},
-        summary = #{summary,jdbcType=VARCHAR},
+        `describe` = #{describe,jdbcType=VARCHAR},
         createtime = #{createtime,jdbcType=VARCHAR},
         updatetime = #{updatetime,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}

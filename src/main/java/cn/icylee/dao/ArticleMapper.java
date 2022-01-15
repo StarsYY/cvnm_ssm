@@ -42,4 +42,8 @@ public interface ArticleMapper {
     List<Article> getMostCommentArticle(Index index);
 
     List<Article> getCollectArticle(Integer uid);
+
+    List<Article> getTagArticle(TableParameter tableParameter);
+
+    int getCountTagArticle(TableParameter tableParameter);
 }

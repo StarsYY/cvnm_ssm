@@ -1,8 +1,5 @@
 package cn.icylee.bean;
 
-import java.util.List;
-import java.util.Map;
-
 public class Plate {
     private Integer id;
 
@@ -10,11 +7,23 @@ public class Plate {
 
     private Integer ancestor;
 
-    private String superior;
+    private String icon;
+
+    private String describe;
 
     private String createtime;
 
     private String updatetime;
+
+    private String superior;
+
+    public String getSuperior() {
+        return superior;
+    }
+
+    public void setSuperior(String superior) {
+        this.superior = superior;
+    }
 
     public Integer getId() {
         return id;
@@ -40,12 +49,20 @@ public class Plate {
         this.ancestor = ancestor;
     }
 
-    public String getSuperior() {
-        return superior;
+    public String getIcon() {
+        return icon;
     }
 
-    public void setSuperior(String superior) {
-        this.superior = superior;
+    public void setIcon(String icon) {
+        this.icon = icon == null ? null : icon.trim();
+    }
+
+    public String getDescribe() {
+        return describe;
+    }
+
+    public void setDescribe(String describe) {
+        this.describe = describe == null ? null : describe.trim();
     }
 
     public String getCreatetime() {

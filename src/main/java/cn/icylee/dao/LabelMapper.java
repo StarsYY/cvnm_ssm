@@ -37,4 +37,6 @@ public interface LabelMapper {
     List<Label> getLabelList(TableParameter tableParameter);
 
     String[] getLabelIds(Label label);
+
+    List<Label> getLabelListForTags(TableParameter tableParameter);
 }

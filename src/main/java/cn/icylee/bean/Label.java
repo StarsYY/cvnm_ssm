@@ -9,19 +9,23 @@ public class Label {
 
     private String categoryid;
 
-    private String icon;
-
-    private String intro;
-
-    private String message;
-
-    private String summary;
+    private String describe;
 
     private String createtime;
 
     private String updatetime;
 
     private Map<String, String> categoryMap;
+
+    private Integer articleCount;
+
+    public Integer getArticleCount() {
+        return articleCount;
+    }
+
+    public void setArticleCount(Integer articleCount) {
+        this.articleCount = articleCount;
+    }
 
     public Map<String, String> getCategoryMap() {
         return categoryMap;
@@ -55,36 +59,12 @@ public class Label {
         this.categoryid = categoryid == null ? null : categoryid.trim();
     }
 
-    public String getIcon() {
-        return icon;
+    public String getDescribe() {
+        return describe;
     }
 
-    public void setIcon(String icon) {
-        this.icon = icon == null ? null : icon.trim();
-    }
-
-    public String getIntro() {
-        return intro;
-    }
-
-    public void setIntro(String intro) {
-        this.intro = intro == null ? null : intro.trim();
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message == null ? null : message.trim();
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary == null ? null : summary.trim();
+    public void setDescribe(String describe) {
+        this.describe = describe == null ? null : describe.trim();
     }
 
     public String getCreatetime() {

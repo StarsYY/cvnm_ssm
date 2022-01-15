@@ -73,6 +73,23 @@
     ORDER BY follow.createtime DESC
   </select>
 
+  <select id="getCountTagArticle" parameterType="cn.icylee.bean.TableParameter" resultType="java.lang.Integer">
+    SELECT count(*) FROM article WHERE labelid LIKE '%${ids}%'
+    <if test="plateid != 0">AND plateid = #{plateid}</if>
+    <if test="type == 'Essence' or type == 'Recommend'">AND tag = '${type}'</if>
+    <if test="type == 'Hot'">AND hot = '${type}'</if>
+  </select>
+
+  <select id="getTagArticle" parameterType="cn.icylee.bean.TableParameter" resultType="cn.icylee.bean.Article">
+    SELECT id, title, userid, summary, cover, plateid, labelid, `type`, publish, `status`, tag, watch, hot, createtime
+    FROM article WHERE labelid LIKE '%${ids}%'
+    <if test="plateid != 0">AND plateid = #{plateid}</if>
+    <if test="type == 'Essence' or type == 'Recommend'">AND tag = '${type}'</if>
+    <if test="type == 'Hot'">AND hot = '${type}'</if>
+    ORDER BY createtime DESC
+    LIMIT #{page}, #{limit}
+  </select>
+
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >

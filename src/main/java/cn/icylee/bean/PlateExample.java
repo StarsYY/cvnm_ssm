@@ -294,6 +294,146 @@ public class PlateExample {
             return (Criteria) this;
         }
 
+        public Criteria andIconIsNull() {
+            addCriterion("icon is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIconIsNotNull() {
+            addCriterion("icon is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIconEqualTo(String value) {
+            addCriterion("icon =", value, "icon");
+            return (Criteria) this;
+        }
+
+        public Criteria andIconNotEqualTo(String value) {
+            addCriterion("icon <>", value, "icon");
+            return (Criteria) this;
+        }
+
+        public Criteria andIconGreaterThan(String value) {
+            addCriterion("icon >", value, "icon");
+            return (Criteria) this;
+        }
+
+        public Criteria andIconGreaterThanOrEqualTo(String value) {
+            addCriterion("icon >=", value, "icon");
+            return (Criteria) this;
+        }
+
+        public Criteria andIconLessThan(String value) {
+            addCriterion("icon <", value, "icon");
+            return (Criteria) this;
+        }
+
+        public Criteria andIconLessThanOrEqualTo(String value) {
+            addCriterion("icon <=", value, "icon");
+            return (Criteria) this;
+        }
+
+        public Criteria andIconLike(String value) {
+            addCriterion("icon like", value, "icon");
+            return (Criteria) this;
+        }
+
+        public Criteria andIconNotLike(String value) {
+            addCriterion("icon not like", value, "icon");
+            return (Criteria) this;
+        }
+
+        public Criteria andIconIn(List<String> values) {
+            addCriterion("icon in", values, "icon");
+            return (Criteria) this;
+        }
+
+        public Criteria andIconNotIn(List<String> values) {
+            addCriterion("icon not in", values, "icon");
+            return (Criteria) this;
+        }
+
+        public Criteria andIconBetween(String value1, String value2) {
+            addCriterion("icon between", value1, value2, "icon");
+            return (Criteria) this;
+        }
+
+        public Criteria andIconNotBetween(String value1, String value2) {
+            addCriterion("icon not between", value1, value2, "icon");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeIsNull() {
+            addCriterion("describe is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeIsNotNull() {
+            addCriterion("describe is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeEqualTo(String value) {
+            addCriterion("describe =", value, "describe");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeNotEqualTo(String value) {
+            addCriterion("describe <>", value, "describe");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeGreaterThan(String value) {
+            addCriterion("describe >", value, "describe");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeGreaterThanOrEqualTo(String value) {
+            addCriterion("describe >=", value, "describe");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeLessThan(String value) {
+            addCriterion("describe <", value, "describe");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeLessThanOrEqualTo(String value) {
+            addCriterion("describe <=", value, "describe");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeLike(String value) {
+            addCriterion("describe like", value, "describe");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeNotLike(String value) {
+            addCriterion("describe not like", value, "describe");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeIn(List<String> values) {
+            addCriterion("describe in", values, "describe");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeNotIn(List<String> values) {
+            addCriterion("describe not in", values, "describe");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeBetween(String value1, String value2) {
+            addCriterion("describe between", value1, value2, "describe");
+            return (Criteria) this;
+        }
+
+        public Criteria andDescribeNotBetween(String value1, String value2) {
+            addCriterion("describe not between", value1, value2, "describe");
+            return (Criteria) this;
+        }
+
         public Criteria andCreatetimeIsNull() {
             addCriterion("createtime is null");
             return (Criteria) this;
