@@ -31,11 +31,21 @@ public class TableParameter {
 
     private String tag;
 
+    private String hot;
+
     private String plate;
 
     private String root;
 
     private String sort;
+
+    public String getHot() {
+        return hot;
+    }
+
+    public void setHot(String hot) {
+        this.hot = hot;
+    }
 
     public int getPage() {
         if (page != 0) {

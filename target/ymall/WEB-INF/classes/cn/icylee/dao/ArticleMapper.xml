@@ -17,6 +17,7 @@
     <result column="watch" property="watch" jdbcType="INTEGER" />
     <result column="hot" property="hot" jdbcType="VARCHAR" />
     <result column="source" property="source" jdbcType="VARCHAR" />
+    <result column="isdel" property="isdel" jdbcType="INTEGER" />
     <result column="createtime" property="createtime" jdbcType="VARCHAR" />
     <result column="updatetime" property="updatetime" jdbcType="VARCHAR" />
   </resultMap>
@@ -31,11 +32,13 @@
       <if test="publish != null and publish != ''">AND publish = '${publish}'</if>
       <if test="status != null and status != ''">AND status = '${status}'</if>
       <if test="tag != null and tag != ''">AND tag = '${tag}'</if>
+      <if test="hot != null and hot != ''">AND tag = '${hot}'</if>
     </where>
   </select>
 
   <select id="getArticleList" parameterType="cn.icylee.bean.TableParameter" resultType="cn.icylee.bean.Article">
-    SELECT * FROM
+    SELECT id, title, userid, plateid, labelid, type, publish, `status`, tag, hot, isdel, createtime, updatetime
+    FROM
     ( SELECT * FROM article WHERE 1 = 1
     <if test="ids != null and ids != ''">AND labelid REGEXP '${ids}'</if>
     <if test="plateid != null and plateid != ''">AND FIND_IN_SET(plateid,'${plateid}')</if>
@@ -44,6 +47,7 @@
     <if test="publish != null and publish != ''">AND publish = '${publish}'</if>
     <if test="status != null and status != ''">AND status = '${status}'</if>
     <if test="tag != null and tag != ''">AND tag = '${tag}'</if>
+    <if test="hot != null and hot != ''">AND hot = '${hot}'</if>
     LIMIT #{page}, #{limit} ) u
     ORDER BY id ${sort}
   </select>
@@ -66,9 +70,9 @@
   <select id="getCollectArticle" parameterType="INTEGER" resultType="cn.icylee.bean.Article">
     SELECT article.id, article.title, article.userid, article.summary, article.plateid, article.watch, article.createtime, plate.plate, `user`.portrait, `user`.nickname
     FROM article
-    LEFT JOIN follow ON follow.dataid=article.id AND follow.datasource="article"
-    LEFT JOIN plate ON plate.id=article.plateid
-    LEFT JOIN `user` ON `user`.uid=article.userid
+           LEFT JOIN follow ON follow.dataid=article.id AND follow.datasource="article"
+           LEFT JOIN plate ON plate.id=article.plateid
+           LEFT JOIN `user` ON `user`.uid=article.userid
     WHERE follow.userid=#{uid}
     ORDER BY follow.createtime DESC
   </select>
@@ -76,7 +80,7 @@
   <select id="getCountTagArticle" parameterType="cn.icylee.bean.TableParameter" resultType="java.lang.Integer">
     SELECT count(*) FROM article WHERE labelid LIKE '%${ids}%'
     <if test="plateid != 0">AND plateid = #{plateid}</if>
-    <if test="type == 'Essence' or type == 'Recommend'">AND tag = '${type}'</if>
+    <if test="type == '精华' or type == '推荐'">AND tag = '${type}'</if>
     <if test="type == 'Hot'">AND hot = '${type}'</if>
   </select>
 
@@ -84,7 +88,7 @@
     SELECT id, title, userid, summary, cover, plateid, labelid, `type`, publish, `status`, tag, watch, hot, createtime
     FROM article WHERE labelid LIKE '%${ids}%'
     <if test="plateid != 0">AND plateid = #{plateid}</if>
-    <if test="type == 'Essence' or type == 'Recommend'">AND tag = '${type}'</if>
+    <if test="type == '精华' or type == '推荐'">AND tag = '${type}'</if>
     <if test="type == 'Hot'">AND hot = '${type}'</if>
     ORDER BY createtime DESC
     LIMIT #{page}, #{limit}
@@ -150,7 +154,7 @@
   </sql>
   <sql id="Base_Column_List" >
     id, title, userid, summary, content, cover, plateid, labelid, type, publish, status,
-    tag, watch, hot, source, createtime, updatetime
+    tag, watch, hot, source, isdel, createtime, updatetime
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.icylee.bean.ArticleExample" >
     select
@@ -188,13 +192,15 @@
                          plateid, labelid, type,
                          publish, status, tag,
                          watch, hot, source,
-                         createtime, updatetime)
+                         isdel, createtime, updatetime
+    )
     values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{userid,jdbcType=INTEGER},
             #{summary,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{cover,jdbcType=VARCHAR},
             #{plateid,jdbcType=INTEGER}, #{labelid,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR},
             #{publish,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{tag,jdbcType=VARCHAR},
             #{watch,jdbcType=INTEGER}, #{hot,jdbcType=VARCHAR}, #{source,jdbcType=VARCHAR},
-            #{createtime,jdbcType=VARCHAR}, #{updatetime,jdbcType=VARCHAR})
+            #{isdel,jdbcType=INTEGER}, #{createtime,jdbcType=VARCHAR}, #{updatetime,jdbcType=VARCHAR}
+           )
   </insert>
   <insert id="insertSelective" parameterType="cn.icylee.bean.Article" >
     insert into article
@@ -243,6 +249,9 @@
       </if>
       <if test="source != null" >
         source,
+      </if>
+      <if test="isdel != null" >
+        isdel,
       </if>
       <if test="createtime != null" >
         createtime,
@@ -296,6 +305,9 @@
       </if>
       <if test="source != null" >
         #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="isdel != null" >
+        #{isdel,jdbcType=INTEGER},
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=VARCHAR},
@@ -359,6 +371,9 @@
       <if test="record.source != null" >
         source = #{record.source,jdbcType=VARCHAR},
       </if>
+      <if test="record.isdel != null" >
+        isdel = #{record.isdel,jdbcType=INTEGER},
+      </if>
       <if test="record.createtime != null" >
         createtime = #{record.createtime,jdbcType=VARCHAR},
       </if>
@@ -387,6 +402,7 @@
     watch = #{record.watch,jdbcType=INTEGER},
     hot = #{record.hot,jdbcType=VARCHAR},
     source = #{record.source,jdbcType=VARCHAR},
+    isdel = #{record.isdel,jdbcType=INTEGER},
     createtime = #{record.createtime,jdbcType=VARCHAR},
     updatetime = #{record.updatetime,jdbcType=VARCHAR}
     <if test="_parameter != null" >
@@ -438,6 +454,9 @@
       <if test="source != null" >
         source = #{source,jdbcType=VARCHAR},
       </if>
+      <if test="isdel != null" >
+        isdel = #{isdel,jdbcType=INTEGER},
+      </if>
       <if test="createtime != null" >
         createtime = #{createtime,jdbcType=VARCHAR},
       </if>
@@ -463,6 +482,7 @@
         watch = #{watch,jdbcType=INTEGER},
         hot = #{hot,jdbcType=VARCHAR},
         source = #{source,jdbcType=VARCHAR},
+        isdel = #{isdel,jdbcType=INTEGER},
         createtime = #{createtime,jdbcType=VARCHAR},
         updatetime = #{updatetime,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}

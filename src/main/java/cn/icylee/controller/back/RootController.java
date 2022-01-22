@@ -36,19 +36,29 @@ public class RootController {
     @ResponseBody
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public Map<String, Object> saveRoot(@RequestBody Root root) {
-        return rootService.saveRoot(root) > 0 ? ResponseData.success("success", "添加成功") : ResponseData.error("已有此标签");
+        Root root1 = rootService.saveRoot(root);
+        return root1 != null ? ResponseData.success(root1, "添加成功") : ResponseData.error("已有此类");
     }
 
     @ResponseBody
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public Map<String, Object> updateRoot(@RequestBody Root root) {
-        return rootService.updateRoot(root) > 0 ? ResponseData.success("success", "修改成功") : ResponseData.error("已有此标签");
+        Root root1 = rootService.updateRoot(root);
+        return root1 != null ? ResponseData.success(root1, "修改成功") : ResponseData.error("已有此类");
     }
 
     @ResponseBody
     @RequestMapping(value = "delete", method = RequestMethod.POST)
     public Map<String, Object> deleteRoot(@RequestBody Root root) {
-        return rootService.deleteRoot(root.getId()) > 0 ? ResponseData.success("success", "删除成功") : null;
+        int num = rootService.deleteRoot(root.getId());
+
+        if (num == 1) {
+            return ResponseData.success("success", "删除成功");
+        } else if (num == 0) {
+            return ResponseData.error("网络故障");
+        } else {
+            return ResponseData.error("该类下有子类，不能删除");
+        }
     }
 
 }

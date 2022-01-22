@@ -8,6 +8,7 @@
     <result column="introduction" property="introduction" jdbcType="VARCHAR" />
     <result column="avatar" property="avatar" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="online" property="online" jdbcType="INTEGER" />
     <result column="createtime" property="createtime" jdbcType="VARCHAR" />
     <result column="updatetime" property="updatetime" jdbcType="VARCHAR" />
   </resultMap>
@@ -17,7 +18,7 @@
       ( SELECT * FROM `admin`
         WHERE introduction LIKE '%${introduction}%' AND
           `status` LIKE '%${status}%'
-        LIMIT #{page}, #{limit} ) u
+          LIMIT #{page}, #{limit} ) u
     ORDER BY id ${sort}
   </select>
 
@@ -80,7 +81,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, username, password, introduction, avatar, status, createtime, updatetime
+    id, username, password, introduction, avatar, status, online, createtime, updatetime
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.icylee.bean.AdminExample" >
     select
@@ -114,11 +115,13 @@
   </delete>
   <insert id="insert" parameterType="cn.icylee.bean.Admin" >
     insert into admin (id, username, password,
-      introduction, avatar, status,
-      createtime, updatetime)
+                       introduction, avatar, status,
+                       online, createtime, updatetime
+    )
     values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
-      #{introduction,jdbcType=VARCHAR}, #{avatar,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},
-      #{createtime,jdbcType=VARCHAR}, #{updatetime,jdbcType=VARCHAR})
+            #{introduction,jdbcType=VARCHAR}, #{avatar,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},
+            #{online,jdbcType=INTEGER}, #{createtime,jdbcType=VARCHAR}, #{updatetime,jdbcType=VARCHAR}
+           )
   </insert>
   <insert id="insertSelective" parameterType="cn.icylee.bean.Admin" >
     insert into admin
@@ -140,6 +143,9 @@
       </if>
       <if test="status != null" >
         status,
+      </if>
+      <if test="online != null" >
+        online,
       </if>
       <if test="createtime != null" >
         createtime,
@@ -166,6 +172,9 @@
       </if>
       <if test="status != null" >
         #{status,jdbcType=INTEGER},
+      </if>
+      <if test="online != null" >
+        #{online,jdbcType=INTEGER},
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=VARCHAR},
@@ -202,6 +211,9 @@
       <if test="record.status != null" >
         status = #{record.status,jdbcType=INTEGER},
       </if>
+      <if test="record.online != null" >
+        online = #{record.online,jdbcType=INTEGER},
+      </if>
       <if test="record.createtime != null" >
         createtime = #{record.createtime,jdbcType=VARCHAR},
       </if>
@@ -216,13 +228,14 @@
   <update id="updateByExample" parameterType="map" >
     update admin
     set id = #{record.id,jdbcType=INTEGER},
-      username = #{record.username,jdbcType=VARCHAR},
-      password = #{record.password,jdbcType=VARCHAR},
-      introduction = #{record.introduction,jdbcType=VARCHAR},
-      avatar = #{record.avatar,jdbcType=VARCHAR},
-      status = #{record.status,jdbcType=INTEGER},
-      createtime = #{record.createtime,jdbcType=VARCHAR},
-      updatetime = #{record.updatetime,jdbcType=VARCHAR}
+    username = #{record.username,jdbcType=VARCHAR},
+    password = #{record.password,jdbcType=VARCHAR},
+    introduction = #{record.introduction,jdbcType=VARCHAR},
+    avatar = #{record.avatar,jdbcType=VARCHAR},
+    status = #{record.status,jdbcType=INTEGER},
+    online = #{record.online,jdbcType=INTEGER},
+    createtime = #{record.createtime,jdbcType=VARCHAR},
+    updatetime = #{record.updatetime,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -245,6 +258,9 @@
       <if test="status != null" >
         status = #{status,jdbcType=INTEGER},
       </if>
+      <if test="online != null" >
+        online = #{online,jdbcType=INTEGER},
+      </if>
       <if test="createtime != null" >
         createtime = #{createtime,jdbcType=VARCHAR},
       </if>
@@ -257,12 +273,13 @@
   <update id="updateByPrimaryKey" parameterType="cn.icylee.bean.Admin" >
     update admin
     set username = #{username,jdbcType=VARCHAR},
-      password = #{password,jdbcType=VARCHAR},
-      introduction = #{introduction,jdbcType=VARCHAR},
-      avatar = #{avatar,jdbcType=VARCHAR},
-      status = #{status,jdbcType=INTEGER},
-      createtime = #{createtime,jdbcType=VARCHAR},
-      updatetime = #{updatetime,jdbcType=VARCHAR}
+        password = #{password,jdbcType=VARCHAR},
+        introduction = #{introduction,jdbcType=VARCHAR},
+        avatar = #{avatar,jdbcType=VARCHAR},
+        status = #{status,jdbcType=INTEGER},
+        online = #{online,jdbcType=INTEGER},
+        createtime = #{createtime,jdbcType=VARCHAR},
+        updatetime = #{updatetime,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

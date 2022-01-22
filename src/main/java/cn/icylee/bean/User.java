@@ -17,6 +17,22 @@ public class User {
 
     private String status;
 
+    private String sex;
+
+    private String name;
+
+    private String phone;
+
+    private String email;
+
+    private Integer online;
+
+    private Integer isdel;
+
+    private String starttime;
+
+    private String finaltime;
+
     private String createtime;
 
     private String updatetime;
@@ -29,12 +45,12 @@ public class User {
 
     private Integer article;
 
-    public Integer getArticle() {
-        return article;
+    public boolean isFollow() {
+        return follow;
     }
 
-    public void setArticle(Integer article) {
-        this.article = article;
+    public void setFollow(boolean follow) {
+        this.follow = follow;
     }
 
     public Integer getFans() {
@@ -53,12 +69,12 @@ public class User {
         this.attention = attention;
     }
 
-    public boolean isFollow() {
-        return follow;
+    public Integer getArticle() {
+        return article;
     }
 
-    public void setFollow(boolean follow) {
-        this.follow = follow;
+    public void setArticle(Integer article) {
+        this.article = article;
     }
 
     public Integer getUid() {
@@ -123,6 +139,70 @@ public class User {
 
     public void setStatus(String status) {
         this.status = status == null ? null : status.trim();
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex == null ? null : sex.trim();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone == null ? null : phone.trim();
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email == null ? null : email.trim();
+    }
+
+    public Integer getOnline() {
+        return online;
+    }
+
+    public void setOnline(Integer online) {
+        this.online = online;
+    }
+
+    public Integer getIsdel() {
+        return isdel;
+    }
+
+    public void setIsdel(Integer isdel) {
+        this.isdel = isdel;
+    }
+
+    public String getStarttime() {
+        return starttime;
+    }
+
+    public void setStarttime(String starttime) {
+        this.starttime = starttime == null ? null : starttime.trim();
+    }
+
+    public String getFinaltime() {
+        return finaltime;
+    }
+
+    public void setFinaltime(String finaltime) {
+        this.finaltime = finaltime == null ? null : finaltime.trim();
     }
 
     public String getCreatetime() {

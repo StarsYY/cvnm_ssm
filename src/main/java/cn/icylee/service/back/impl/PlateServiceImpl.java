@@ -2,6 +2,7 @@ package cn.icylee.service.back.impl;
 
 import cn.icylee.bean.*;
 import cn.icylee.bean.PlateExample;
+import cn.icylee.dao.ArticleMapper;
 import cn.icylee.dao.PlateMapper;
 import cn.icylee.service.back.PlateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,9 @@ public class PlateServiceImpl implements PlateService {
 
     @Autowired
     PlateMapper plateMapper;
+
+    @Autowired
+    ArticleMapper articleMapper;
 
     @Override
     public int getPlateTotal(TableParameter tableParameter) {
@@ -35,6 +39,10 @@ public class PlateServiceImpl implements PlateService {
             } else {
                 plate.setSuperior(plateMapper.selectByPrimaryKey(plate.getAncestor()).getPlate());
             }
+
+            ArticleExample articleExample = new ArticleExample();
+            articleExample.createCriteria().andPlateidEqualTo(plate.getId());
+            plate.setArticleCount(articleMapper.countByExample(articleExample));
         }
         return plateList;
     }
@@ -64,16 +72,27 @@ public class PlateServiceImpl implements PlateService {
     }
 
     @Override
-    public int savePlate(Plate plate) {
+    public Plate savePlate(Plate plate) {
         PlateExample plateExample = new PlateExample();
         PlateExample.Criteria criteria = plateExample.createCriteria();
         criteria.andPlateEqualTo(plate.getPlate());
         if (plateMapper.selectByExample(plateExample).size() > 0) {
-            return 0;
+            return null;
         }
         plate.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         plate.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        return plateMapper.insert(plate);
+
+        plateMapper.insert(plate);
+
+        if (plate.getAncestor() == 0) {
+            plate.setSuperior("");
+        } else {
+            plate.setSuperior(plateMapper.selectByPrimaryKey(plate.getAncestor()).getPlate());
+        }
+
+        plate.setArticleCount(0);
+
+        return plate;
     }
 
     @Override
@@ -90,6 +109,18 @@ public class PlateServiceImpl implements PlateService {
 
     @Override
     public int deletePlate(int id) {
-        return plateMapper.selectByPrimaryKey(id) != null ? plateMapper.deleteByPrimaryKey(id) : 0;
+        ArticleExample articleExample = new ArticleExample();
+        articleExample.createCriteria().andPlateidEqualTo(id);
+
+        PlateExample plateExample = new PlateExample();
+        plateExample.createCriteria().andAncestorEqualTo(id);
+
+        if (articleMapper.countByExample(articleExample) == 0 && plateMapper.countByExample(plateExample) == 0) {
+            return plateMapper.deleteByPrimaryKey(id);
+        } else if (articleMapper.countByExample(articleExample) != 0) {
+            return -1;
+        } else {
+            return -2;
+        }
     }
 }

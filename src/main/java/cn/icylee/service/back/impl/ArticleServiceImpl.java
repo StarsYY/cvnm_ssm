@@ -274,6 +274,8 @@ public class ArticleServiceImpl implements ArticleService {
             return 0;
         }
 
+        article.setIsdel(0);
+
         article.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         article.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         return articleMapper.insert(article);
@@ -302,10 +304,10 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public int updateStatus(Article article) {
         if (article.getStatus().equals(getArticleById(article.getId()).getStatus())) {
-            if (article.getStatus().equals("Publish")) {
-                article.setStatus("Draft");
-            } else {
-                article.setStatus("Publish");
+            if (article.getStatus().equals("已发布")) {
+                article.setStatus("待审核");
+            } else if (article.getStatus().equals("待审核")) {
+                article.setStatus("已发布");
             }
             return articleMapper.updateByPrimaryKeySelective(article);
         }
@@ -315,10 +317,10 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public int updateTag(Article article) {
         if (article.getTag().equals(getArticleById(article.getId()).getTag())) {
-            if (article.getTag().equals("Essence")) {
-                article.setTag("Recommend");
+            if (article.getTag().equals("精华")) {
+                article.setTag("推荐");
             } else {
-                article.setTag("Essence");
+                article.setTag("精华");
             }
             return articleMapper.updateByPrimaryKeySelective(article);
         }
@@ -328,10 +330,10 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public int updateRTag(Article article) {
         if (article.getTag().equals(getArticleById(article.getId()).getTag())) {
-            if (article.getTag().equals("Default")) {
-                article.setTag("Recommend");
+            if (article.getTag().equals("")) {
+                article.setTag("推荐");
             } else {
-                article.setTag("Default");
+                article.setTag("");
             }
             return articleMapper.updateByPrimaryKeySelective(article);
         }
@@ -340,7 +342,18 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public int deleteArticle(int id) {
-        return getArticleById(id) != null ? articleMapper.deleteByPrimaryKey(id) : 0;
+        Article article = articleMapper.selectByPrimaryKey(id);
+        if (article.getIsdel() == 1) {
+            article.setIsdel(0);
+        } else {
+            article.setIsdel(1);
+        }
+        return articleMapper.updateByPrimaryKeySelective(article);
+    }
+
+    @Override
+    public int deleteArticleR(int id) {
+        return articleMapper.deleteByPrimaryKey(id);
     }
 
 }

@@ -1,10 +1,8 @@
 package cn.icylee.service.back.impl;
 
-import cn.icylee.bean.Category;
-import cn.icylee.bean.CategoryExample;
-import cn.icylee.bean.Root;
-import cn.icylee.bean.TableParameter;
+import cn.icylee.bean.*;
 import cn.icylee.dao.CategoryMapper;
+import cn.icylee.dao.LabelMapper;
 import cn.icylee.dao.RootMapper;
 import cn.icylee.service.back.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +23,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     RootMapper rootMapper;
+
+    @Autowired
+    LabelMapper labelMapper;
 
     @Override
     public Map<String, Object> getAllRoot() {
@@ -59,33 +60,45 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public int saveCategory(Category category) {
+    public Category saveCategory(Category category) {
         CategoryExample categoryExample = new CategoryExample();
         CategoryExample.Criteria criteria = categoryExample.createCriteria();
         criteria.andCategoryEqualTo(category.getCategory());
         if (categoryMapper.selectByExample(categoryExample).size() > 0) {
-            return 0;
+            return null;
         }
         category.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         category.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        return categoryMapper.insert(category);
+
+        categoryMapper.insert(category);
+
+        category.setSuperior(rootMapper.selectByPrimaryKey(category.getRootid()).getRoot());
+
+        return category;
     }
 
     @Override
-    public int updateCategory(Category category) {
+    public Category updateCategory(Category category) {
         CategoryExample categoryExample = new CategoryExample();
         CategoryExample.Criteria criteria = categoryExample.createCriteria();
         criteria.andCategoryNotEqualTo(categoryMapper.selectByPrimaryKey(category.getId()).getCategory()).andCategoryEqualTo(category.getCategory());
         if (categoryMapper.selectByExample(categoryExample).size() > 0) {
-            return 0;
+            return null;
         }
         category.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        return categoryMapper.updateByPrimaryKeySelective(category);
+
+        int num = categoryMapper.updateByPrimaryKeySelective(category);
+
+        category.setSuperior(rootMapper.selectByPrimaryKey(category.getRootid()).getRoot());
+
+        return num > 0 ? category : null;
     }
 
     @Override
     public int deleteCategory(int id) {
-        return categoryMapper.selectByPrimaryKey(id) != null ? categoryMapper.deleteByPrimaryKey(id) : 0;
+        LabelExample labelExample = new LabelExample();
+        labelExample.createCriteria().andCategoryidLike("%," + id + ",%");
+        return labelMapper.countByExample(labelExample) == 0 ? categoryMapper.deleteByPrimaryKey(id) : -1;
     }
 
 }

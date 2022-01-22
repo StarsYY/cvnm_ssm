@@ -14,7 +14,7 @@ public interface PlateService {
 
     List<LabelTree> getOptionPlate(int children);
 
-    int savePlate(Plate Plate);
+    Plate savePlate(Plate Plate);
 
     int updatePlate(Plate Plate);
 

@@ -47,13 +47,16 @@ public class UserServiceImpl implements UserService {
         }
         user.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         user.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        user.setStatus("Enable");
+        user.setStatus("启用");
         user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
         if (user.getPortrait().equals("") || user.getPortrait() == null) {
             user.setPortrait("http://127.0.0.1:8080/upload/image/user/默认头像.png");
         }
         user.setGrow(0);
         user.setIntegral(0);
+        user.setIsdel(0);
+        user.setOnline(0);
+        System.out.println(user);
         return userMapper.insert(user);
     }
 
@@ -75,16 +78,19 @@ public class UserServiceImpl implements UserService {
             // 对原来的密码进行修改
             user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
         }
+        if (!user.getStarttime().equals("")) {
+            user.setStatus("禁用");
+        }
         return userMapper.updateByPrimaryKeySelective(user);
     }
 
     @Override
     public int updateStatus(User user) {
         if (user.getStatus().equals(userMapper.selectByPrimaryKey(user.getUid()).getStatus())) {
-            if (user.getStatus().equals("Enable")) {
-                user.setStatus("Disable");
+            if (user.getStatus().equals("启用")) {
+                user.setStatus("禁用");
             } else {
-                user.setStatus("Enable");
+                user.setStatus("启用");
             }
             return userMapper.updateByPrimaryKeySelective(user);
         }
@@ -93,7 +99,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int deleteUser(int id) {
-        return userMapper.selectByPrimaryKey(id) != null ? userMapper.deleteByPrimaryKey(id) : 0;
+        User user = userMapper.selectByPrimaryKey(id);
+        if (user.getIsdel() == 1) {
+            user.setIsdel(0);
+        } else {
+            user.setIsdel(1);
+        }
+        return userMapper.updateByPrimaryKeySelective(user);
+    }
+
+    @Override
+    public int deleteUserR(int id) {
+        return userMapper.deleteByPrimaryKey(id);
     }
 
 }

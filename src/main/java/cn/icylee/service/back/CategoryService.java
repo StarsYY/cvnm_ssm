@@ -15,9 +15,9 @@ public interface CategoryService {
 
     List<Category> getPageCategory(TableParameter tableParameter);
 
-    int saveCategory(Category category);
+    Category saveCategory(Category category);
 
-    int updateCategory(Category category);
+    Category updateCategory(Category category);
 
     int deleteCategory(int id);
 

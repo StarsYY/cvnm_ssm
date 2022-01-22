@@ -44,4 +44,6 @@ public interface ArticleService {
 
     int deleteArticle(int id);
 
+    int deleteArticleR(int id);
+
 }

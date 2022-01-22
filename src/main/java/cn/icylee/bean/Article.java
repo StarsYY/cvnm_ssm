@@ -33,6 +33,8 @@ public class Article {
 
     private String source;
 
+    private Integer isdel;
+
     private String createtime;
 
     private String updatetime;
@@ -285,6 +287,14 @@ public class Article {
 
     public void setSource(String source) {
         this.source = source == null ? null : source.trim();
+    }
+
+    public Integer getIsdel() {
+        return isdel;
+    }
+
+    public void setIsdel(Integer isdel) {
+        this.isdel = isdel;
     }
 
     public String getCreatetime() {

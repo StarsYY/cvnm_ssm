@@ -11,9 +11,9 @@ public interface RootService {
 
     List<Root> getPageRoot(TableParameter tableParameter);
 
-    int saveRoot(Root root);
+    Root saveRoot(Root root);
 
-    int updateRoot(Root root);
+    Root updateRoot(Root root);
 
     int deleteRoot(int id);
 

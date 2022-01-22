@@ -57,32 +57,29 @@ public class LabelController {
     @ResponseBody
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public Map<String, Object> saveLabel(@RequestBody Label label) {
-        return labelService.saveLabel(label) > 0 ? ResponseData.success("success", "添加成功") : ResponseData.error("已有此标签");
+        Label label1 = labelService.saveLabel(label);
+        return label1 != null ? ResponseData.success(label1, "添加成功") : ResponseData.error("已有此标签");
     }
 
     @ResponseBody
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public Map<String, Object> updateLabel(@RequestBody Label label) {
-        return labelService.updateLabel(label) > 0 ? ResponseData.success("success", "修改成功") : ResponseData.error("已有此标签");
+        Label label1 = labelService.updateLabel(label);
+        return label1 != null ? ResponseData.success(label1, "修改成功") : ResponseData.error("已有此标签");
     }
 
     @ResponseBody
     @RequestMapping(value = "delete", method = RequestMethod.POST)
     public Map<String, Object> deleteLabel(@RequestBody Label label) {
-        return labelService.deleteLabel(label.getId()) > 0 ? ResponseData.success("success", "删除成功") : null;
-    }
+        int num = labelService.deleteLabel(label.getId());
 
-    @ResponseBody
-    @RequestMapping(value = "upload", method = RequestMethod.POST)
-    public Map<String, Object> upload(@RequestBody Upload upload, HttpServletRequest request) {
-        Map<String, Object> map = new HashMap<>();
-        Calendar calendar = Calendar.getInstance();
-        String serverName = "http://" + request.getServerName() + ":" + request.getServerPort();
-        String diskPath = "E:\\IDEA\\ideaWeb";
-        String imagePath = "/upload/image/label/" + calendar.get(Calendar.YEAR) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.DAY_OF_MONTH) + "/";
-        String imageName = UUID.randomUUID().toString() + ".png";
-        map.put("imagePath", serverName + imagePath + imageName);
-        return UploadFile.base64StringToImage(upload.getBase64(), diskPath + imagePath, imageName) ? ResponseData.success(map, "上传成功") : null;
+        if (num == 1) {
+            return ResponseData.success("success", "删除成功");
+        } else if (num == 0) {
+            return ResponseData.error("网络故障");
+        } else {
+            return ResponseData.error("该标签下还有文章，不能删除");
+        }
     }
 
 }

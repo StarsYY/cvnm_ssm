@@ -39,19 +39,29 @@ public class CategoryController {
     @ResponseBody
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public Map<String, Object> saveCategory(@RequestBody Category category) {
-        return categoryService.saveCategory(category) > 0 ? ResponseData.success("success", "添加成功") : ResponseData.error("已有此标签");
+        Category category1 = categoryService.saveCategory(category);
+        return category1 != null ? ResponseData.success(category1, "添加成功") : ResponseData.error("已有此类别");
     }
 
     @ResponseBody
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public Map<String, Object> updateCategory(@RequestBody Category category) {
-        return categoryService.updateCategory(category) > 0 ? ResponseData.success("success", "修改成功") : ResponseData.error("已有此标签");
+        Category category1 = categoryService.updateCategory(category);
+        return category1 != null ? ResponseData.success(category1, "修改成功") : ResponseData.error("已有此类别");
     }
 
     @ResponseBody
     @RequestMapping(value = "delete", method = RequestMethod.POST)
     public Map<String, Object> deleteCategory(@RequestBody Category category) {
-        return categoryService.deleteCategory(category.getId()) > 0 ? ResponseData.success("success", "删除成功") : null;
+        int num = categoryService.deleteCategory(category.getId());
+
+        if (num == 1) {
+            return ResponseData.success("success", "删除成功");
+        } else if (num == 0) {
+            return ResponseData.error("网络故障");
+        } else {
+            return ResponseData.error("该类下有子标签，不能删除");
+        }
     }
 
 }

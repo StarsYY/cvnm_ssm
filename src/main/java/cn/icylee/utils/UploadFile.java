@@ -1,10 +1,16 @@
 package cn.icylee.utils;
 
+import cn.icylee.bean.Upload;
 import sun.misc.BASE64Decoder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class UploadFile {
 
@@ -31,6 +37,17 @@ public class UploadFile {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public static Map<String, Object> uploadImage(Upload upload, HttpServletRequest request, String table) {
+        Map<String, Object> map = new HashMap<>();
+        Calendar calendar = Calendar.getInstance();
+        String serverName = "http://" + request.getServerName() + ":" + request.getServerPort();
+        String diskPath = "E:\\IDEA\\ideaWeb";
+        String imagePath = "/upload/image/" + table + "/" + calendar.get(Calendar.YEAR) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.DAY_OF_MONTH) + "/";
+        String imageName = UUID.randomUUID().toString() + ".png";
+        map.put("imagePath", serverName + imagePath + imageName);
+        return base64StringToImage(upload.getBase64(), diskPath + imagePath, imageName) ? map : null;
     }
 
 }

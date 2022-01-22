@@ -131,7 +131,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="cn.icylee.bean.Label" >
+  <insert id="insert" parameterType="cn.icylee.bean.Label" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
     insert into label (id, label, categoryid,
                        `describe`, createtime, updatetime
     )

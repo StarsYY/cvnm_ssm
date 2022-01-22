@@ -32,7 +32,7 @@ public class LoginController {
             LoginAdmin = loginAdmin;
             Map<String, Object> map = new HashMap<>();
             map.put("token", "admin-token");
-            return ResponseData.success(map, "登陆成功");
+            return loginService.updateOnline(username) > 0 ? ResponseData.success(map, "登陆成功") : ResponseData.error("未知错误");
         }
         return null;
     }
@@ -47,6 +47,12 @@ public class LoginController {
         info.put("name", LoginAdmin.getUsername());
         info.put("roles", arr);
         return ResponseData.success(info, "登录信息");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "logout", method = RequestMethod.POST)
+    public Map<String, Object> LogOut(String name) {
+        return loginService.updateLogOut(name) > 0 ? ResponseData.success("退出登陆成功", "退出") : ResponseData.error("未知错误");
     }
 
 }

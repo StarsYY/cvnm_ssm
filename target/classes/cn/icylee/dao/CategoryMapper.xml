@@ -113,7 +113,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="cn.icylee.bean.Category" >
+  <insert id="insert" parameterType="cn.icylee.bean.Category" useGeneratedKeys="true" keyProperty="id" keyColumn="id" >
     insert into category (id, category, rootid,
                           createtime, updatetime)
     values (#{id,jdbcType=INTEGER}, #{category,jdbcType=VARCHAR}, #{rootid,jdbcType=INTEGER},

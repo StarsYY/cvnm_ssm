@@ -1,8 +1,10 @@
 package cn.icylee.service.back.impl;
 
+import cn.icylee.bean.CategoryExample;
 import cn.icylee.bean.Root;
 import cn.icylee.bean.RootExample;
 import cn.icylee.bean.TableParameter;
+import cn.icylee.dao.CategoryMapper;
 import cn.icylee.dao.RootMapper;
 import cn.icylee.service.back.RootService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ public class RootServiceImpl implements RootService {
 
     @Autowired
     RootMapper rootMapper;
+
+    @Autowired
+    CategoryMapper categoryMapper;
 
     @Override
     public int getRootTotal(TableParameter tableParameter) {
@@ -34,33 +39,41 @@ public class RootServiceImpl implements RootService {
     }
 
     @Override
-    public int saveRoot(Root root) {
+    public Root saveRoot(Root root) {
         RootExample rootExample = new RootExample();
         RootExample.Criteria criteria = rootExample.createCriteria();
         criteria.andRootEqualTo(root.getRoot());
         if (rootMapper.selectByExample(rootExample).size() > 0) {
-            return 0;
+            return null;
         }
         root.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         root.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        return rootMapper.insert(root);
+
+        rootMapper.insert(root);
+
+        return root;
     }
 
     @Override
-    public int updateRoot(Root root) {
+    public Root updateRoot(Root root) {
         RootExample rootExample = new RootExample();
         RootExample.Criteria criteria = rootExample.createCriteria();
         criteria.andRootNotEqualTo(rootMapper.selectByPrimaryKey(root.getId()).getRoot()).andRootEqualTo(root.getRoot());
         if (rootMapper.selectByExample(rootExample).size() > 0) {
-            return 0;
+            return null;
         }
         root.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        return rootMapper.updateByPrimaryKeySelective(root);
+
+        int num = rootMapper.updateByPrimaryKeySelective(root);
+
+        return num > 0 ? root : null;
     }
 
     @Override
     public int deleteRoot(int id) {
-        return rootMapper.selectByPrimaryKey(id) != null ? rootMapper.deleteByPrimaryKey(id) : 0;
+        CategoryExample categoryExample = new CategoryExample();
+        categoryExample.createCriteria().andRootidEqualTo(id);
+        return categoryMapper.countByExample(categoryExample) == 0 ? rootMapper.deleteByPrimaryKey(id) : -1;
     }
 
 }

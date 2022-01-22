@@ -17,6 +17,16 @@ public class Plate {
 
     private String superior;
 
+    private Integer articleCount;
+
+    public Integer getArticleCount() {
+        return articleCount;
+    }
+
+    public void setArticleCount(Integer articleCount) {
+        this.articleCount = articleCount;
+    }
+
     public String getSuperior() {
         return superior;
     }

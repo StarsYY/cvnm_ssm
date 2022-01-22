@@ -27,4 +27,24 @@ public class LoginServiceImpl implements LoginService {
         return null;
     }
 
+    @Override
+    public int updateOnline(String username) {
+        AdminExample adminExample = new AdminExample();
+        AdminExample.Criteria criteria = adminExample.createCriteria();
+        criteria.andUsernameEqualTo(username);
+        Admin admin = adminMapper.selectByExample(adminExample).get(0);
+        admin.setOnline(1);
+        return adminMapper.updateByPrimaryKeySelective(admin);
+    }
+
+    @Override
+    public int updateLogOut(String username) {
+        AdminExample adminExample = new AdminExample();
+        AdminExample.Criteria criteria = adminExample.createCriteria();
+        criteria.andUsernameEqualTo(username);
+        Admin admin = adminMapper.selectByExample(adminExample).get(0);
+        admin.setOnline(0);
+        return adminMapper.updateByPrimaryKeySelective(admin);
+    }
+
 }

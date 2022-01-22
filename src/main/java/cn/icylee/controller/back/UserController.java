@@ -61,20 +61,19 @@ public class UserController {
     @ResponseBody
     @RequestMapping(value = "delete", method = RequestMethod.POST)
     public Map<String, Object> deleteUser(@RequestBody User user) {
-        return userService.deleteUser(user.getUid()) > 0 ? ResponseData.success("success", "删除成功") : null;
+        return userService.deleteUser(user.getUid()) > 0 ? ResponseData.success("success", "删除成功") : ResponseData.error("网络故障");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "deleteR", method = RequestMethod.POST)
+    public Map<String, Object> deleteUserR(@RequestBody User user) {
+        return userService.deleteUserR(user.getUid()) > 0 ? ResponseData.success("success", "彻底删除") : ResponseData.error("网络故障");
     }
 
     @ResponseBody
     @RequestMapping(value = "upload", method = RequestMethod.POST)
     public Map<String, Object> upload(@RequestBody Upload upload, HttpServletRequest request) {
-        Map<String, Object> map = new HashMap<>();
-        Calendar calendar = Calendar.getInstance();
-        String serverName = "http://" + request.getServerName() + ":" + request.getServerPort();
-        String diskPath = "E:\\IDEA\\ideaWeb";
-        String imagePath = "/upload/image/user/" + calendar.get(Calendar.YEAR) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.DAY_OF_MONTH) + "/";
-        String imageName = UUID.randomUUID().toString() + ".png";
-        map.put("imagePath", serverName + imagePath + imageName);
-        return UploadFile.base64StringToImage(upload.getBase64(), diskPath + imagePath, imageName) ? ResponseData.success(map, "上传成功") : null;
+        return ResponseData.success(UploadFile.uploadImage(upload, request, "user"), "上传");
     }
 
 }

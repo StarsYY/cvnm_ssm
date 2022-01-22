@@ -13,6 +13,8 @@ public class Admin {
 
     private Integer status;
 
+    private Integer online;
+
     private String createtime;
 
     private String updatetime;
@@ -63,6 +65,14 @@ public class Admin {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Integer getOnline() {
+        return online;
+    }
+
+    public void setOnline(Integer online) {
+        this.online = online;
     }
 
     public String getCreatetime() {

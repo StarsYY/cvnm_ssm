@@ -6,4 +6,8 @@ public interface LoginService {
 
     Admin getByUsername(String username);
 
+    int updateOnline(String username);
+
+    int updateLogOut(String username);
+
 }

@@ -19,11 +19,11 @@ public interface LabelService {
 
     Map<String, Object> getPageLabel(TableParameter tableParameter);
 
-    int saveLabel(Label label);
+    Label saveLabel(Label label);
 
     Label getLabelById(int id);
 
-    int updateLabel(Label label);
+    Label updateLabel(Label label);
 
     int deleteLabel(int id);
 

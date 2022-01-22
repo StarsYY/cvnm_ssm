@@ -1,6 +1,7 @@
 package cn.icylee.service.back.impl;
 
 import cn.icylee.bean.*;
+import cn.icylee.dao.ArticleMapper;
 import cn.icylee.dao.CategoryMapper;
 import cn.icylee.dao.LabelMapper;
 import cn.icylee.dao.RootMapper;
@@ -24,6 +25,9 @@ public class LabelServiceImpl implements LabelService {
 
     @Autowired
     CategoryMapper categoryMapper;
+
+    @Autowired
+    ArticleMapper articleMapper;
 
     @Override
     public List<LabelTree> getCategoryTree() {
@@ -129,6 +133,10 @@ public class LabelServiceImpl implements LabelService {
                 map.put(value, category);
             }
             label.setCategoryMap(map);
+
+            ArticleExample articleExample = new ArticleExample();
+            articleExample.createCriteria().andLabelidLike("%," + label.getId() + ",%");
+            label.setArticleCount(articleMapper.countByExample(articleExample));
         }
         allLabel.put("labelList", labelList);
         allLabel.put("allCategory", getAllCategory());
@@ -136,16 +144,29 @@ public class LabelServiceImpl implements LabelService {
     }
 
     @Override
-    public int saveLabel(Label label) {
+    public Label saveLabel(Label label) {
         LabelExample labelExample = new LabelExample();
         LabelExample.Criteria criteria = labelExample.createCriteria();
         criteria.andLabelEqualTo(label.getLabel());
         if (labelMapper.selectByExample(labelExample).size() > 0) {
-            return 0;
+            return null;
         }
         label.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         label.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        return labelMapper.insert(label);
+
+        int num = labelMapper.insert(label);
+
+        String[] categoryId = label.getCategoryid().substring(1, label.getCategoryid().length() - 1).split(",");
+        Map<String, String> map = new HashMap<>();
+        for (String value : categoryId) {
+            String category = categoryMapper.selectByPrimaryKey(Integer.parseInt(value)).getCategory();
+            map.put(value, category);
+        }
+        label.setCategoryMap(map);
+
+        label.setArticleCount(0);
+
+        return num > 0 ? label : null;
     }
 
     @Override
@@ -156,20 +177,33 @@ public class LabelServiceImpl implements LabelService {
     }
 
     @Override
-    public int updateLabel(Label label) {
+    public Label updateLabel(Label label) {
         LabelExample labelExample = new LabelExample();
         LabelExample.Criteria criteria = labelExample.createCriteria();
         criteria.andLabelNotEqualTo(getLabelById(label.getId()).getLabel()).andLabelEqualTo(label.getLabel());
         if (labelMapper.selectByExample(labelExample).size() > 0) {
-            return 0;
+            return null;
         }
         label.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        return labelMapper.updateByPrimaryKeySelective(label);
+
+        int num = labelMapper.updateByPrimaryKeySelective(label);
+
+        String[] categoryId = label.getCategoryid().substring(1, label.getCategoryid().length() - 1).split(",");
+        Map<String, String> map = new HashMap<>();
+        for (String value : categoryId) {
+            String category = categoryMapper.selectByPrimaryKey(Integer.parseInt(value)).getCategory();
+            map.put(value, category);
+        }
+        label.setCategoryMap(map);
+
+        return num > 0 ? label : null;
     }
 
     @Override
     public int deleteLabel(int id) {
-        return labelMapper.selectByPrimaryKey(id) != null ? labelMapper.deleteByPrimaryKey(id) : 0;
+        ArticleExample articleExample = new ArticleExample();
+        articleExample.createCriteria().andLabelidLike("%," + id + ",%");
+        return articleMapper.countByExample(articleExample) == 0 ? labelMapper.deleteByPrimaryKey(id) : -1;
     }
 
 }

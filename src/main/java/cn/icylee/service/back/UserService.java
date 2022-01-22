@@ -21,4 +21,6 @@ public interface UserService {
 
     int deleteUser(int id);
 
+    int deleteUserR(int id);
+
 }

@@ -39,7 +39,8 @@ public class PlateController {
     @ResponseBody
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public Map<String, Object> savePlate(@RequestBody Plate plate) {
-        return plateService.savePlate(plate) > 0 ? ResponseData.success("success", "添加成功") : ResponseData.error("该板块已存在");
+        Plate plate1 = plateService.savePlate(plate);
+        return plate1 != null ? ResponseData.success(plate1, "添加成功") : ResponseData.error("该板块已存在");
     }
 
     @ResponseBody
@@ -51,7 +52,17 @@ public class PlateController {
     @ResponseBody
     @RequestMapping(value = "delete", method = RequestMethod.POST)
     public Map<String, Object> deletePlate(@RequestBody Plate plate) {
-        return plateService.deletePlate(plate.getId()) > 0 ? ResponseData.success("success", "删除成功") : null;
+        int num = plateService.deletePlate(plate.getId());
+
+        if (num == 1) {
+            return ResponseData.success("success", "删除成功");
+        } else if (num == 0) {
+            return ResponseData.error("网络故障");
+        } else if (num == -1){
+            return ResponseData.error("该板块下有文章，不能删除");
+        } else {
+            return ResponseData.error("有板块继承该板块，不能删除");
+        }
     }
 
 }

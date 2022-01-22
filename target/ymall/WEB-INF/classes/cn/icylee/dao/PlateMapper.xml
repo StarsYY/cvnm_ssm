@@ -108,7 +108,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="cn.icylee.bean.Plate" >
+  <insert id="insert" parameterType="cn.icylee.bean.Plate" useGeneratedKeys="true" keyProperty="id" keyColumn="id" >
     insert into plate (id, plate, ancestor,
                        icon, `describe`, createtime,
                        updatetime)

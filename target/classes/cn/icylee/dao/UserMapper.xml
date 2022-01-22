@@ -10,6 +10,14 @@
     <result column="grow" property="grow" jdbcType="INTEGER" />
     <result column="integral" property="integral" jdbcType="INTEGER" />
     <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="online" property="online" jdbcType="INTEGER" />
+    <result column="isdel" property="isdel" jdbcType="INTEGER" />
+    <result column="starttime" property="starttime" jdbcType="VARCHAR" />
+    <result column="finaltime" property="finaltime" jdbcType="VARCHAR" />
     <result column="createtime" property="createtime" jdbcType="VARCHAR" />
     <result column="updatetime" property="updatetime" jdbcType="VARCHAR" />
   </resultMap>
@@ -22,43 +30,43 @@
           LIMIT #{page}, #{limit} ) u
     ORDER BY uid ${sort}
   </select>
-  
+
   <select id="getArticleUp" parameterType="INTEGER" resultType="INTEGER">
     SELECT count(*)
     FROM article
-    RIGHT JOIN prefer ON article.id=prefer.dataid AND prefer.datasource="article"
+           RIGHT JOIN prefer ON article.id=prefer.dataid AND prefer.datasource="article"
     WHERE article.userid=#{uid}
   </select>
 
   <select id="getCommentUp" parameterType="INTEGER" resultType="INTEGER">
     SELECT count(*)
     from `comment`
-    RIGHT JOIN prefer on `comment`.id=prefer.dataid and prefer.datasource="comment"
+           RIGHT JOIN prefer on `comment`.id=prefer.dataid and prefer.datasource="comment"
     where `comment`.userid=#{id}
   </select>
 
   <select id="getFollowUser" parameterType="INTEGER" resultType="cn.icylee.bean.User">
     SELECT `user`.uid, `user`.nickname, `user`.summary, `user`.portrait, `user`.grow, `user`.`status`
     FROM `user`
-    LEFT JOIN follow ON follow.userid=#{uid} AND follow.datasource="user"
+           LEFT JOIN follow ON follow.userid=#{uid} AND follow.datasource="user"
     WHERE `user`.uid=follow.dataid
     ORDER BY follow.createtime DESC
-    LIMIT 6
+      LIMIT 6
   </select>
 
   <select id="getFansUser" parameterType="INTEGER" resultType="cn.icylee.bean.User">
     SELECT `user`.uid, `user`.nickname, `user`.summary, `user`.portrait, `user`.grow, `user`.`status`
     FROM `user`
-    LEFT JOIN follow ON follow.dataid=#{uid} AND follow.datasource="user"
+           LEFT JOIN follow ON follow.dataid=#{uid} AND follow.datasource="user"
     WHERE `user`.uid=follow.userid
     ORDER BY follow.createtime DESC
-    LIMIT 6
+      LIMIT 6
   </select>
 
   <select id="getFollowUser2" parameterType="INTEGER" resultType="cn.icylee.bean.User">
     SELECT `user`.uid, `user`.nickname, `user`.summary, `user`.portrait, `user`.grow, `user`.`status`
     FROM `user`
-    LEFT JOIN follow ON follow.userid=#{uid} AND follow.datasource="user"
+           LEFT JOIN follow ON follow.userid=#{uid} AND follow.datasource="user"
     WHERE `user`.uid=follow.dataid
     ORDER BY follow.createtime DESC
   </select>
@@ -66,7 +74,7 @@
   <select id="getFansUser2" parameterType="INTEGER" resultType="cn.icylee.bean.User">
     SELECT `user`.uid, `user`.nickname, `user`.summary, `user`.portrait, `user`.grow, `user`.`status`
     FROM `user`
-    LEFT JOIN follow ON follow.dataid=#{uid} AND follow.datasource="user"
+           LEFT JOIN follow ON follow.dataid=#{uid} AND follow.datasource="user"
     WHERE `user`.uid=follow.userid
     ORDER BY follow.createtime DESC
   </select>
@@ -130,7 +138,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    uid, nickname, password, summary, portrait, grow, integral, status, createtime, updatetime
+    uid, nickname, password, summary, portrait, grow, integral, status, sex, name, phone,
+    email, online, isdel, starttime, finaltime, createtime, updatetime
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.icylee.bean.UserExample" >
     select
@@ -165,12 +174,18 @@
   <insert id="insert" parameterType="cn.icylee.bean.User" >
     insert into user (uid, nickname, password,
                       summary, portrait, grow,
-                      integral, status, createtime,
-                      updatetime)
+                      integral, status, sex,
+                      name, phone, email,
+                      online, isdel, starttime,
+                      finaltime, createtime, updatetime
+    )
     values (#{uid,jdbcType=INTEGER}, #{nickname,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
             #{summary,jdbcType=VARCHAR}, #{portrait,jdbcType=VARCHAR}, #{grow,jdbcType=INTEGER},
-            #{integral,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{createtime,jdbcType=VARCHAR},
-            #{updatetime,jdbcType=VARCHAR})
+            #{integral,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR},
+            #{name,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
+            #{online,jdbcType=INTEGER}, #{isdel,jdbcType=INTEGER}, #{starttime,jdbcType=VARCHAR},
+            #{finaltime,jdbcType=VARCHAR}, #{createtime,jdbcType=VARCHAR}, #{updatetime,jdbcType=VARCHAR}
+           )
   </insert>
   <insert id="insertSelective" parameterType="cn.icylee.bean.User" >
     insert into user
@@ -198,6 +213,30 @@
       </if>
       <if test="status != null" >
         status,
+      </if>
+      <if test="sex != null" >
+        sex,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="online != null" >
+        online,
+      </if>
+      <if test="isdel != null" >
+        isdel,
+      </if>
+      <if test="starttime != null" >
+        starttime,
+      </if>
+      <if test="finaltime != null" >
+        finaltime,
       </if>
       <if test="createtime != null" >
         createtime,
@@ -230,6 +269,30 @@
       </if>
       <if test="status != null" >
         #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="online != null" >
+        #{online,jdbcType=INTEGER},
+      </if>
+      <if test="isdel != null" >
+        #{isdel,jdbcType=INTEGER},
+      </if>
+      <if test="starttime != null" >
+        #{starttime,jdbcType=VARCHAR},
+      </if>
+      <if test="finaltime != null" >
+        #{finaltime,jdbcType=VARCHAR},
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=VARCHAR},
@@ -272,6 +335,30 @@
       <if test="record.status != null" >
         status = #{record.status,jdbcType=VARCHAR},
       </if>
+      <if test="record.sex != null" >
+        sex = #{record.sex,jdbcType=VARCHAR},
+      </if>
+      <if test="record.name != null" >
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.phone != null" >
+        phone = #{record.phone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.email != null" >
+        email = #{record.email,jdbcType=VARCHAR},
+      </if>
+      <if test="record.online != null" >
+        online = #{record.online,jdbcType=INTEGER},
+      </if>
+      <if test="record.isdel != null" >
+        isdel = #{record.isdel,jdbcType=INTEGER},
+      </if>
+      <if test="record.starttime != null" >
+        starttime = #{record.starttime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.finaltime != null" >
+        finaltime = #{record.finaltime,jdbcType=VARCHAR},
+      </if>
       <if test="record.createtime != null" >
         createtime = #{record.createtime,jdbcType=VARCHAR},
       </if>
@@ -293,6 +380,14 @@
     grow = #{record.grow,jdbcType=INTEGER},
     integral = #{record.integral,jdbcType=INTEGER},
     status = #{record.status,jdbcType=VARCHAR},
+    sex = #{record.sex,jdbcType=VARCHAR},
+    name = #{record.name,jdbcType=VARCHAR},
+    phone = #{record.phone,jdbcType=VARCHAR},
+    email = #{record.email,jdbcType=VARCHAR},
+    online = #{record.online,jdbcType=INTEGER},
+    isdel = #{record.isdel,jdbcType=INTEGER},
+    starttime = #{record.starttime,jdbcType=VARCHAR},
+    finaltime = #{record.finaltime,jdbcType=VARCHAR},
     createtime = #{record.createtime,jdbcType=VARCHAR},
     updatetime = #{record.updatetime,jdbcType=VARCHAR}
     <if test="_parameter != null" >
@@ -323,6 +418,30 @@
       <if test="status != null" >
         status = #{status,jdbcType=VARCHAR},
       </if>
+      <if test="sex != null" >
+        sex = #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="online != null" >
+        online = #{online,jdbcType=INTEGER},
+      </if>
+      <if test="isdel != null" >
+        isdel = #{isdel,jdbcType=INTEGER},
+      </if>
+      <if test="starttime != null" >
+        starttime = #{starttime,jdbcType=VARCHAR},
+      </if>
+      <if test="finaltime != null" >
+        finaltime = #{finaltime,jdbcType=VARCHAR},
+      </if>
       <if test="createtime != null" >
         createtime = #{createtime,jdbcType=VARCHAR},
       </if>
@@ -341,6 +460,14 @@
         grow = #{grow,jdbcType=INTEGER},
         integral = #{integral,jdbcType=INTEGER},
         status = #{status,jdbcType=VARCHAR},
+        sex = #{sex,jdbcType=VARCHAR},
+        name = #{name,jdbcType=VARCHAR},
+        phone = #{phone,jdbcType=VARCHAR},
+        email = #{email,jdbcType=VARCHAR},
+        online = #{online,jdbcType=INTEGER},
+        isdel = #{isdel,jdbcType=INTEGER},
+        starttime = #{starttime,jdbcType=VARCHAR},
+        finaltime = #{finaltime,jdbcType=VARCHAR},
         createtime = #{createtime,jdbcType=VARCHAR},
         updatetime = #{updatetime,jdbcType=VARCHAR}
     where uid = #{uid,jdbcType=INTEGER}
