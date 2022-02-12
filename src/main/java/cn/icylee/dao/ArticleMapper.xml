@@ -28,6 +28,7 @@
       <if test="ids != null and ids != ''">AND labelid REGEXP '${ids}'</if>
       <if test="plateid != null and plateid != ''">AND FIND_IN_SET(plateid,'${plateid}')</if>
       <if test="title != null and title != ''">AND title LIKE '%${title}%'</if>
+      <if test="article != null and article != ''">AND FIND_IN_SET(userid,'${article}')</if>
       <if test="type != null and type != ''">AND `type` = '${type}'</if>
       <if test="publish != null and publish != ''">AND publish = '${publish}'</if>
       <if test="status != null and status != ''">AND status = '${status}'</if>
@@ -43,6 +44,7 @@
     <if test="ids != null and ids != ''">AND labelid REGEXP '${ids}'</if>
     <if test="plateid != null and plateid != ''">AND FIND_IN_SET(plateid,'${plateid}')</if>
     <if test="title != null and title != ''">AND title LIKE '%${title}%'</if>
+    <if test="article != null and article != ''">AND FIND_IN_SET(userid,'${article}')</if>
     <if test="type != null and type != ''">AND `type` = '${type}'</if>
     <if test="publish != null and publish != ''">AND publish = '${publish}'</if>
     <if test="status != null and status != ''">AND status = '${status}'</if>

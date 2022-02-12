@@ -13,6 +13,8 @@ public class Comment {
 
     private Integer comid;
 
+    private Integer status;
+
     private String createtime;
 
     private Map<String, Comment> commentList;
@@ -25,6 +27,8 @@ public class Comment {
 
     private String reviewName;
 
+    private String article;
+
     private String avatar;
 
     private boolean hidden = true;
@@ -34,6 +38,14 @@ public class Comment {
     private Integer is;
 
     private boolean like;
+
+    public String getArticle() {
+        return article;
+    }
+
+    public void setArticle(String article) {
+        this.article = article;
+    }
 
     public boolean isLike() {
         return like;
@@ -153,6 +165,14 @@ public class Comment {
 
     public void setComid(Integer comid) {
         this.comid = comid;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public String getCreatetime() {

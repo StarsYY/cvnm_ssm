@@ -39,7 +39,10 @@
 		</javaClientGenerator>
 
 		<!-- 指定数据库表 -->
-		<table tableName="prefer"/>
-		<table tableName="follow"/>
+<!--		<table tableName="message"/>-->
+		<table tableName="verify">
+			<columnOverride column="introduce" jdbcType="VARCHAR"/>
+			<columnOverride column="detail" jdbcType="VARCHAR"/>
+		</table>
 	</context>
 </generatorConfiguration>

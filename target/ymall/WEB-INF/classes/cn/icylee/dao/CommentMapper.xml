@@ -7,8 +7,35 @@
     <result column="userid" property="userid" jdbcType="INTEGER" />
     <result column="articleid" property="articleid" jdbcType="INTEGER" />
     <result column="comid" property="comid" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
     <result column="createtime" property="createtime" jdbcType="VARCHAR" />
   </resultMap>
+
+  <select id="getCommentTotal" parameterType="cn.icylee.bean.TableParameter" resultType="java.lang.Integer">
+    SELECT count(*) FROM comment
+    <where>
+      <if test="comment != null and comment != ''">AND comment LIKE '%${comment}%'</if>
+      <if test="cids != null and cids != ''">AND FIND_IN_SET(userid, '${cids}')</if>
+      <if test="ids != null and ids != ''">AND FIND_IN_SET(articleid, '${ids}')</if>
+      <if test="status != null and status != ''">AND status LIKE '%${status}%'</if>
+    </where>
+  </select>
+
+  <select id="getCommentList" parameterType="cn.icylee.bean.TableParameter" resultType="cn.icylee.bean.Comment">
+    SELECT * FROM
+      ( SELECT * FROM comment WHERE 1 = 1
+        <if test="comment != null and comment != ''">AND comment LIKE '%${comment}%'</if>
+        <if test="cids != null and cids != ''">AND FIND_IN_SET(userid, '${cids}')</if>
+        <if test="ids != null and ids != ''">AND FIND_IN_SET(articleid, '${ids}')</if>
+        <if test="status != null and status != ''">AND status LIKE '%${status}%'</if>
+        LIMIT #{page}, #{limit} ) u
+    ORDER BY id ${sort}
+  </select>
+
+  <delete id="deleteComment" parameterType="java.lang.String">
+    delete from comment where id in(${ids})
+  </delete>
+
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >
@@ -68,7 +95,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, comment, userid, articleid, comid, createtime
+    id, comment, userid, articleid, comid, status, createtime
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.icylee.bean.CommentExample" >
     select
@@ -102,11 +129,11 @@
   </delete>
   <insert id="insert" parameterType="cn.icylee.bean.Comment" >
     insert into comment (id, comment, userid,
-                         articleid, comid, createtime
-    )
+                         articleid, comid, status,
+                         createtime)
     values (#{id,jdbcType=INTEGER}, #{comment,jdbcType=VARCHAR}, #{userid,jdbcType=INTEGER},
-            #{articleid,jdbcType=INTEGER}, #{comid,jdbcType=INTEGER}, #{createtime,jdbcType=VARCHAR}
-           )
+            #{articleid,jdbcType=INTEGER}, #{comid,jdbcType=INTEGER}, #{status,jdbcType=INTEGER},
+            #{createtime,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="cn.icylee.bean.Comment" >
     insert into comment
@@ -125,6 +152,9 @@
       </if>
       <if test="comid != null" >
         comid,
+      </if>
+      <if test="status != null" >
+        status,
       </if>
       <if test="createtime != null" >
         createtime,
@@ -145,6 +175,9 @@
       </if>
       <if test="comid != null" >
         #{comid,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=VARCHAR},
@@ -175,6 +208,9 @@
       <if test="record.comid != null" >
         comid = #{record.comid,jdbcType=INTEGER},
       </if>
+      <if test="record.status != null" >
+        status = #{record.status,jdbcType=INTEGER},
+      </if>
       <if test="record.createtime != null" >
         createtime = #{record.createtime,jdbcType=VARCHAR},
       </if>
@@ -190,6 +226,7 @@
     userid = #{record.userid,jdbcType=INTEGER},
     articleid = #{record.articleid,jdbcType=INTEGER},
     comid = #{record.comid,jdbcType=INTEGER},
+    status = #{record.status,jdbcType=INTEGER},
     createtime = #{record.createtime,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -210,6 +247,9 @@
       <if test="comid != null" >
         comid = #{comid,jdbcType=INTEGER},
       </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
       <if test="createtime != null" >
         createtime = #{createtime,jdbcType=VARCHAR},
       </if>
@@ -222,6 +262,7 @@
         userid = #{userid,jdbcType=INTEGER},
         articleid = #{articleid,jdbcType=INTEGER},
         comid = #{comid,jdbcType=INTEGER},
+        status = #{status,jdbcType=INTEGER},
         createtime = #{createtime,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>

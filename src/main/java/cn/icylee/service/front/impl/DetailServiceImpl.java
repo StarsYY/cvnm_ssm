@@ -204,9 +204,9 @@ public class DetailServiceImpl implements DetailService {
     @Override
     public int saveComment(Comment comment) {
         UserExample userExample = new UserExample();
-        UserExample.Criteria criteria = userExample.createCriteria();
-        criteria.andNicknameEqualTo(comment.getUsername());
+        userExample.createCriteria().andNicknameEqualTo(comment.getUsername());
         comment.setUserid(userMapper.selectByExample(userExample).get(0).getUid());
+        comment.setStatus(0);
         comment.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         return commentMapper.insert(comment);
     }

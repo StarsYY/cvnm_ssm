@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.icylee.dao.MessageMapper" >
+  <resultMap id="BaseResultMap" type="cn.icylee.bean.Message" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="senderuid" property="senderuid" jdbcType="INTEGER" />
+    <result column="receiveuid" property="receiveuid" jdbcType="INTEGER" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="read" property="read" jdbcType="INTEGER" />
+    <result column="addition" property="addition" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="createtime" property="createtime" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <select id="getMessageTotal" parameterType="cn.icylee.bean.TableParameter" resultType="java.lang.Integer">
+    SELECT count(*) FROM message
+    <where>
+      <if test="ids != null and ids != ''">AND FIND_IN_SET(senderuid, '${ids}')</if>
+      <if test="introduction != null and introduction != ''">AND `content` LIKE '%${introduction}%'</if>
+      <if test="cids != null and cids != ''">AND FIND_IN_SET(receiveuid, '${cids}')</if>
+      <if test="status != null and status != ''">AND `type` = ${status}</if>
+    </where>
+  </select>
+
+  <select id="getMessageList" parameterType="cn.icylee.bean.TableParameter" resultType="cn.icylee.bean.Message">
+    SELECT * FROM
+    ( SELECT * FROM message WHERE 1 = 1
+    <if test="ids != null and ids != ''">AND FIND_IN_SET(senderuid, '${ids}')</if>
+    <if test="introduction != null and introduction != ''">AND `content` LIKE '%${introduction}%'</if>
+    <if test="cids != null and cids != ''">AND FIND_IN_SET(receiveuid, '${cids}')</if>
+    <if test="status != null and status != ''">AND `type` = ${status}</if>
+    LIMIT #{page}, #{limit} ) u
+    ORDER BY id ${sort}
+  </select>
+
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, senderuid, receiveuid, content, read, addition, type, createtime
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.icylee.bean.MessageExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from message
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from message
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from message
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="cn.icylee.bean.MessageExample" >
+    delete from message
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="cn.icylee.bean.Message" >
+    insert into message (id, senderuid, receiveuid, 
+      content, read, addition, 
+      type, createtime)
+    values (#{id,jdbcType=INTEGER}, #{senderuid,jdbcType=INTEGER}, #{receiveuid,jdbcType=INTEGER}, 
+      #{content,jdbcType=VARCHAR}, #{read,jdbcType=INTEGER}, #{addition,jdbcType=VARCHAR}, 
+      #{type,jdbcType=INTEGER}, #{createtime,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.icylee.bean.Message" >
+    insert into message
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="senderuid != null" >
+        senderuid,
+      </if>
+      <if test="receiveuid != null" >
+        receiveuid,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="read != null" >
+        read,
+      </if>
+      <if test="addition != null" >
+        addition,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="senderuid != null" >
+        #{senderuid,jdbcType=INTEGER},
+      </if>
+      <if test="receiveuid != null" >
+        #{receiveuid,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="read != null" >
+        #{read,jdbcType=INTEGER},
+      </if>
+      <if test="addition != null" >
+        #{addition,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="cn.icylee.bean.MessageExample" resultType="java.lang.Integer" >
+    select count(*) from message
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update message
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.senderuid != null" >
+        senderuid = #{record.senderuid,jdbcType=INTEGER},
+      </if>
+      <if test="record.receiveuid != null" >
+        receiveuid = #{record.receiveuid,jdbcType=INTEGER},
+      </if>
+      <if test="record.content != null" >
+        content = #{record.content,jdbcType=VARCHAR},
+      </if>
+      <if test="record.read != null" >
+        read = #{record.read,jdbcType=INTEGER},
+      </if>
+      <if test="record.addition != null" >
+        addition = #{record.addition,jdbcType=VARCHAR},
+      </if>
+      <if test="record.type != null" >
+        type = #{record.type,jdbcType=INTEGER},
+      </if>
+      <if test="record.createtime != null" >
+        createtime = #{record.createtime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update message
+    set id = #{record.id,jdbcType=INTEGER},
+      senderuid = #{record.senderuid,jdbcType=INTEGER},
+      receiveuid = #{record.receiveuid,jdbcType=INTEGER},
+      content = #{record.content,jdbcType=VARCHAR},
+      read = #{record.read,jdbcType=INTEGER},
+      addition = #{record.addition,jdbcType=VARCHAR},
+      type = #{record.type,jdbcType=INTEGER},
+      createtime = #{record.createtime,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.icylee.bean.Message" >
+    update message
+    <set >
+      <if test="senderuid != null" >
+        senderuid = #{senderuid,jdbcType=INTEGER},
+      </if>
+      <if test="receiveuid != null" >
+        receiveuid = #{receiveuid,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="read != null" >
+        read = #{read,jdbcType=INTEGER},
+      </if>
+      <if test="addition != null" >
+        addition = #{addition,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.icylee.bean.Message" >
+    update message
+    set senderuid = #{senderuid,jdbcType=INTEGER},
+      receiveuid = #{receiveuid,jdbcType=INTEGER},
+      content = #{content,jdbcType=VARCHAR},
+      read = #{read,jdbcType=INTEGER},
+      addition = #{addition,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      createtime = #{createtime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

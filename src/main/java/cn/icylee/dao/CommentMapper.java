@@ -3,6 +3,8 @@ package cn.icylee.dao;
 import cn.icylee.bean.Comment;
 import cn.icylee.bean.CommentExample;
 import java.util.List;
+
+import cn.icylee.bean.TableParameter;
 import org.apache.ibatis.annotations.Param;
 
 public interface CommentMapper {
@@ -27,4 +29,10 @@ public interface CommentMapper {
     int updateByPrimaryKeySelective(Comment record);
 
     int updateByPrimaryKey(Comment record);
+
+    int getCommentTotal(TableParameter tableParameter);
+
+    List<Comment> getCommentList(TableParameter tableParameter);
+
+    int deleteComment(String ids);
 }

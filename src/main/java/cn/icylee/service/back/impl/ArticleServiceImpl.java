@@ -148,6 +148,20 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public TableParameter setIdsTool(TableParameter tableParameter) {
+        if (tableParameter.getNickname() != null && !tableParameter.getNickname().equals("")) {
+            UserExample userExample = new UserExample();
+            userExample.createCriteria().andNicknameLike("%" + tableParameter.getNickname() + "%");
+
+            List<User> userList = userMapper.selectByExample(userExample);
+            if (userList.size() > 0) {
+                StringBuilder ids = new StringBuilder();
+                for (User user : userList) {
+                    ids.append(user.getUid()).append(",");
+                }
+                tableParameter.setArticle(ids.toString());
+            }
+        }
+
         if (tableParameter.getPlateid() != null && !tableParameter.getPlateid().equals("0") && !tableParameter.getPlateid().equals("")) {
             String s = getAllPid(Integer.parseInt(tableParameter.getPlateid())).substring(0, getAllPid(Integer.parseInt(tableParameter.getPlateid())).length() - 1);
             tableParameter.setPlateid(s);
