@@ -129,8 +129,8 @@ public class ArticleServiceImpl implements ArticleService {
         return allPlate;
     }
 
-    /**
-     * 不好使
+    /*
+     不好使
      */
     @Override
     public StringBuilder getAllPid(int pid) {
@@ -162,6 +162,9 @@ public class ArticleServiceImpl implements ArticleService {
             }
         }
 
+        /*
+        不好使
+         */
         if (tableParameter.getPlateid() != null && !tableParameter.getPlateid().equals("0") && !tableParameter.getPlateid().equals("")) {
             String s = getAllPid(Integer.parseInt(tableParameter.getPlateid())).substring(0, getAllPid(Integer.parseInt(tableParameter.getPlateid())).length() - 1);
             tableParameter.setPlateid(s);
