@@ -15,6 +15,11 @@
     ORDER BY id ${sort}
   </select>
 
+  <select id="getHotModular" resultType="cn.icylee.bean.Modular">
+    SELECT *, (SELECT COUNT(*) FROM course WHERE modular.id = course.modularid) AS `count`
+    FROM modular HAVING `count` > 0 ORDER BY `count` DESC LIMIT 5
+  </select>
+
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >

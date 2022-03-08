@@ -11,6 +11,36 @@ public class Modular {
 
     private String updatetime;
 
+    private Integer count;
+
+    private boolean select = false;
+
+    private String ids;
+
+    public String getIds() {
+        return ids;
+    }
+
+    public void setIds(String ids) {
+        this.ids = ids;
+    }
+
+    public boolean isSelect() {
+        return select;
+    }
+
+    public void setSelect(boolean select) {
+        this.select = select;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
     public Integer getId() {
         return id;
     }

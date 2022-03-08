@@ -41,6 +41,54 @@
     ORDER BY id ${sort}
   </select>
 
+  <select id="getHotCourseList" parameterType="java.lang.Integer" resultType="cn.icylee.bean.Course">
+    SELECT course.id, course.userid, course.`name`, course.price, course.modularid, course.cover, course.watch, u.nickname AS author
+    FROM course LEFT JOIN `user` AS u ON course.userid = u.uid
+    WHERE course.`status` = '已发布'
+    <if test="id != 0">AND course.modularid = #{id}</if>
+    ORDER BY course.watch DESC LIMIT 8
+  </select>
+
+  <select id="getNewCourseList" parameterType="java.lang.Integer" resultType="cn.icylee.bean.Course">
+    SELECT course.id, course.userid, course.`name`, course.price, course.modularid, course.cover, course.watch, u.nickname AS author
+    FROM course LEFT JOIN `user` AS u ON course.userid = u.uid
+    WHERE course.`status` = '已发布'
+    <if test="id != 0">AND course.modularid = #{id}</if>
+    ORDER BY course.createtime DESC LIMIT 8
+  </select>
+
+  <select id="getNavCourseList" parameterType="java.lang.String" resultType="cn.icylee.bean.Course">
+    SELECT course.id, course.userid, course.`name`, course.price, course.modularid, course.cover, course.watch
+    FROM course WHERE course.`status` = '已发布' AND FIND_IN_SET(modularid,'${ids}')
+    ORDER BY course.createtime DESC LIMIT 4
+  </select>
+
+  <select id="getAllCourseList" parameterType="cn.icylee.bean.Modular" resultType="cn.icylee.bean.Course">
+    SELECT course.id, course.userid, course.`name`, course.price, course.modularid, course.cover, course.watch, u.nickname AS author
+    FROM course LEFT JOIN `user` AS u ON course.userid = u.uid
+    WHERE course.`status` = '已发布'
+    <if test="ancestor != 0">AND FIND_IN_SET(modularid,'${ids}')</if>
+    <if test="count == 0">AND price = 0</if>
+    <if test="count == 99">AND price BETWEEN 100 AND 9900</if>
+    <if test="count == 199">AND price BETWEEN 9901 AND 19900</if>
+    <if test="count == 499">AND price BETWEEN 19901 AND 49900</if>
+    <if test="count == 999">AND price BETWEEN 49901 AND 99900</if>
+    <if test="count == 1000">AND price >= 99901</if>
+    <if test="modular == 'new'">ORDER BY course.createtime DESC</if>
+    <if test="modular == 'hot'">ORDER BY course.watch DESC</if>
+  </select>
+
+  <select id="getAllCourseTotal" parameterType="cn.icylee.bean.Modular" resultType="java.lang.Integer">
+    SELECT count(*) FROM course WHERE course.`status` = '已发布'
+    <if test="ancestor != 0">AND FIND_IN_SET(modularid,'${ids}')</if>
+    <if test="count == 0">AND price = 0</if>
+    <if test="count == 99">AND price BETWEEN 100 AND 9900</if>
+    <if test="count == 199">AND price BETWEEN 9901 AND 19900</if>
+    <if test="count == 499">AND price BETWEEN 19901 AND 49900</if>
+    <if test="count == 999">AND price BETWEEN 49901 AND 99900</if>
+    <if test="count == 1000">AND price >= 99901</if>
+  </select>
+
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >

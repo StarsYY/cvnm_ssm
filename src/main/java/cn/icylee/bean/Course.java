@@ -35,6 +35,26 @@ public class Course {
 
     private String modular;
 
+    private Integer num;
+
+    private Boolean collect = false;
+
+    public Boolean getCollect() {
+        return collect;
+    }
+
+    public void setCollect(Boolean collect) {
+        this.collect = collect;
+    }
+
+    public Integer getNum() {
+        return num;
+    }
+
+    public void setNum(Integer num) {
+        this.num = num;
+    }
+
     private Map<String, String> labelMap;
 
     public Double getScore() {

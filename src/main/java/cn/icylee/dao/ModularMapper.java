@@ -30,4 +30,6 @@ public interface ModularMapper {
     int updateByPrimaryKey(Modular record);
 
     List<Modular> getModularList(TableParameter tableParameter);
+
+    List<Modular> getHotModular();
 }

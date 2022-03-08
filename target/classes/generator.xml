@@ -40,8 +40,8 @@
 
 		<!-- 指定数据库表 -->
 <!--		<table tableName="modular"/>-->
-		<table tableName="course">
-			<columnOverride column="introduction" jdbcType="VARCHAR"/>
+		<table tableName="discuss">
+			<columnOverride column="discuss" jdbcType="VARCHAR"/>
 		</table>
 	</context>
 </generatorConfiguration>
