@@ -45,6 +45,36 @@ public class User {
 
     private Integer article;
 
+    private Integer count;
+
+    private Integer watch;
+
+    private Double score;
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
+    public Integer getWatch() {
+        return watch;
+    }
+
+    public void setWatch(Integer watch) {
+        this.watch = watch;
+    }
+
+    public Double getScore() {
+        return score;
+    }
+
+    public void setScore(Double score) {
+        this.score = score;
+    }
+
     public boolean isFollow() {
         return follow;
     }

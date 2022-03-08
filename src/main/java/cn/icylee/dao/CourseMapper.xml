@@ -89,6 +89,29 @@
     <if test="count == 1000">AND price >= 99901</if>
   </select>
 
+  <select id="getUser" parameterType="java.lang.Integer" resultType="cn.icylee.bean.User">
+    select u.uid, u.nickname, u.portrait, u.summary,
+           round(avg(case when c1.courseid is null then 5 when c1.courseid is not null then c1.avg_score end), 1) as score
+    from
+      course as c0
+        left join (
+          select
+            courseid, avg(score) as avg_score
+          from
+            discuss
+          group by
+            courseid
+        ) as c1 on c1.courseid = c0.id
+        left join
+          `user` u on c0.userid = u.uid
+    where
+      c0.userid = #{uid}
+  </select>
+
+  <select id="getUserNum" parameterType="java.lang.Integer" resultType="cn.icylee.bean.User">
+    SELECT COUNT(*) AS count, SUM(watch) AS watch FROM course WHERE userid = #{uid}
+  </select>
+
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >

@@ -19,7 +19,14 @@ public class CDTController {
     @ResponseBody
     @RequestMapping(value = "video", method = RequestMethod.GET)
     public Map<String, Object> showCourse(Discuss discuss) {
-        return ResponseData.success(cdtService.getCourse(discuss), "course");
+        int num = cdtService.updateCourse(discuss.getCourseid());
+        return num > 0 ? ResponseData.success(cdtService.getCourse(discuss), "course") : ResponseData.error("网络故障");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "user", method = RequestMethod.GET)
+    public Map<String, Object> getUser(int uid) {
+        return ResponseData.success(cdtService.getUser(uid), "作者");
     }
 
     @ResponseBody

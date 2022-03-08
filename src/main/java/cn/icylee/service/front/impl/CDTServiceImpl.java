@@ -31,6 +31,12 @@ public class CDTServiceImpl implements CDTService {
     @Autowired
     FollowMapper followMapper;
 
+    public int updateCourse(int id) {
+        Course course = courseMapper.selectByPrimaryKey(id);
+        course.setWatch(course.getWatch() + 1);
+        return courseMapper.updateByPrimaryKeySelective(course);
+    }
+
     @Override
     public Course getCourse(Discuss discuss) {
         Course course = courseMapper.selectByPrimaryKey(discuss.getCourseid());
@@ -49,7 +55,6 @@ public class CDTServiceImpl implements CDTService {
         if (discussMapper.countByExample(discussExample) != 0) {
             course.setScore(Double.parseDouble(new DecimalFormat("#.0").format(discussMapper.getAVGCourse(discuss.getCourseid()))));
         }
-        course.setWatch(course.getWatch() + 1);
 
         if (!discuss.getAuthor().equals("")) {
             UserExample userExample = new UserExample();
@@ -63,6 +68,15 @@ public class CDTServiceImpl implements CDTService {
         }
 
         return course;
+    }
+
+    @Override
+    public User getUser(int uid) {
+        User user = courseMapper.getUser(uid);
+        User u = courseMapper.getUserNum(uid);
+        user.setCount(u.getCount());
+        user.setWatch(u.getWatch());
+        return user;
     }
 
     @Override

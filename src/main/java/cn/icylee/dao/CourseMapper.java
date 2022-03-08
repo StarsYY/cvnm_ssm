@@ -1,11 +1,9 @@
 package cn.icylee.dao;
 
-import cn.icylee.bean.Course;
-import cn.icylee.bean.CourseExample;
+import cn.icylee.bean.*;
+
 import java.util.List;
 
-import cn.icylee.bean.Modular;
-import cn.icylee.bean.TableParameter;
 import org.apache.ibatis.annotations.Param;
 
 public interface CourseMapper {
@@ -44,4 +42,8 @@ public interface CourseMapper {
     List<Course> getAllCourseList(Modular modular);
 
     int getAllCourseTotal(Modular modular);
+
+    User getUser(int uid);
+
+    User getUserNum(int uid);
 }
