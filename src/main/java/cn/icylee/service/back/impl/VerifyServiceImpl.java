@@ -34,6 +34,8 @@ public class VerifyServiceImpl implements VerifyService {
                     ids.append(user.getUid()).append(",");
                 }
                 tableParameter.setIds(ids.toString());
+            } else {
+                tableParameter.setIds(",0,");
             }
         }
         return tableParameter;

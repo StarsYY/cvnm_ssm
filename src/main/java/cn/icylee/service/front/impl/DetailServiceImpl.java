@@ -110,6 +110,18 @@ public class DetailServiceImpl implements DetailService {
 
         user.setGrow(Tool.setLevel(user.getGrow()));
 
+        ArticleExample articleExample = new ArticleExample();
+        articleExample.createCriteria().andUseridEqualTo(user.getUid());
+        user.setArticle(articleMapper.countByExample(articleExample));
+
+        FollowExample followExample = new FollowExample();
+        followExample.createCriteria().andDatasourceEqualTo("user").andDataidEqualTo(user.getUid());
+        user.setFans(followMapper.countByExample(followExample));
+
+        CommentExample ce = new CommentExample();
+        ce.createCriteria().andUseridEqualTo(user.getUid());
+        user.setCount(commentMapper.countByExample(ce));
+
         if (!comment.getUsername().equals("") && comment.getUsername() != null) {
             int userId = getUserId(comment.getUsername());
 
@@ -148,7 +160,15 @@ public class DetailServiceImpl implements DetailService {
 
             User user = userMapper.selectByPrimaryKey(cm.getUserid());
 
-            user.setGrow(Tool.setLevel(user.getGrow()));
+            cm.setGrow(Tool.setLevel(user.getGrow()));
+
+            ArticleExample articleExample = new ArticleExample();
+            articleExample.createCriteria().andUseridEqualTo(user.getUid());
+            user.setArticle(articleMapper.countByExample(articleExample));
+
+            CommentExample ce = new CommentExample();
+            ce.createCriteria().andUseridEqualTo(user.getUid());
+            user.setCount(commentMapper.countByExample(ce));
 
             if (!comment.getUsername().equals("") && comment.getUsername() != null) {
                 FollowExample fee = new FollowExample();

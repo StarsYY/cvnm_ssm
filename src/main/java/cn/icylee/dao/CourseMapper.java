@@ -46,4 +46,6 @@ public interface CourseMapper {
     User getUser(int uid);
 
     User getUserNum(int uid);
+
+    List<Course> getFavorites(int uid);
 }

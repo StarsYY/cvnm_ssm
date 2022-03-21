@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.icylee.dao.OrderMapper" >
+  <resultMap id="BaseResultMap" type="cn.icylee.bean.Order" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="number" property="number" jdbcType="VARCHAR" />
+    <result column="userid" property="userid" jdbcType="INTEGER" />
+    <result column="courseid" property="courseid" jdbcType="INTEGER" />
+    <result column="transaction" property="transaction" jdbcType="INTEGER" />
+    <result column="payment" property="payment" jdbcType="INTEGER" />
+    <result column="paytime" property="paytime" jdbcType="VARCHAR" />
+    <result column="invalidtime" property="invalidtime" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <select id="getOrderList" parameterType="cn.icylee.bean.TableParameter" resultType="cn.icylee.bean.Order">
+    select od.*, `user`.nickname as username, course.`name`
+    from
+    ( SELECT * FROM `order` WHERE 1 = 1
+    <if test="ids != null and ids != ''">AND FIND_IN_SET(userid,'${ids}')</if>
+    <if test="cids != null and cids != ''">AND FIND_IN_SET(courseid,'${cids}')</if>
+    <if test="transaction == 0 or transaction == 1 or transaction == 2">AND `transaction` = #{transaction}</if>
+    <if test="payment != null and payment != ''">AND payment = '${payment}'</if>
+    LIMIT #{page}, #{limit} ) od
+        left join `user` on `user`.uid = od.userid
+        left join course on course.id = od.courseid
+    ORDER BY id ${sort}
+  </select>
+
+  <select id="getOrderTotal" parameterType="cn.icylee.bean.TableParameter" resultType="java.lang.Integer">
+    SELECT count(*) FROM `order`
+    <where>
+      <if test="ids != null and ids != ''">AND FIND_IN_SET(userid,'${ids}')</if>
+      <if test="cids != null and cids != ''">AND FIND_IN_SET(courseid,'${cids}')</if>
+      <if test="transaction != null and transaction != ''">AND `transaction` = #{transaction}</if>
+      <if test="payment != null and payment != ''">AND payment = '${payment}'</if>
+    </where>
+  </select>
+
+  <select id="getMyOrder" parameterType="cn.icylee.bean.Order" resultType="cn.icylee.bean.Order">
+    select `order`.*, course.`name`, course.cover, course.price from `order`
+    left join course on `order`.courseid = course.id
+    where `order`.userid = #{userid}
+    <if test="payment == 1">and payment is null</if>
+    <if test="payment == 2">and payment is not null</if>
+  </select>
+
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, `number`, userid, courseid, `transaction`, payment, paytime, invalidtime, createtime
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.icylee.bean.OrderExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from `order`
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      `order` by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from `order`
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from `order`
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="cn.icylee.bean.OrderExample" >
+    delete from `order`
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="cn.icylee.bean.Order" >
+    insert into `order` (id, `number`, userid,
+      courseid, `transaction`, payment,
+      paytime, invalidtime, createtime
+      )
+    values (#{id,jdbcType=INTEGER}, #{number,jdbcType=VARCHAR}, #{userid,jdbcType=INTEGER}, 
+      #{courseid,jdbcType=INTEGER}, #{transaction,jdbcType=INTEGER}, #{payment,jdbcType=INTEGER}, 
+      #{paytime,jdbcType=VARCHAR}, #{invalidtime,jdbcType=VARCHAR}, #{createtime,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.icylee.bean.Order" >
+    insert into `order`
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="number != null" >
+        `number`,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="courseid != null" >
+        courseid,
+      </if>
+      <if test="transaction != null" >
+        `transaction`,
+      </if>
+      <if test="payment != null" >
+        payment,
+      </if>
+      <if test="paytime != null" >
+        paytime,
+      </if>
+      <if test="invalidtime != null" >
+        invalidtime,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="number != null" >
+        #{number,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="courseid != null" >
+        #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="transaction != null" >
+        #{transaction,jdbcType=INTEGER},
+      </if>
+      <if test="payment != null" >
+        #{payment,jdbcType=INTEGER},
+      </if>
+      <if test="paytime != null" >
+        #{paytime,jdbcType=VARCHAR},
+      </if>
+      <if test="invalidtime != null" >
+        #{invalidtime,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="cn.icylee.bean.OrderExample" resultType="java.lang.Integer" >
+    select count(*) from `order`
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update `order`
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.number != null" >
+        `number` = #{record.number,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userid != null" >
+        userid = #{record.userid,jdbcType=INTEGER},
+      </if>
+      <if test="record.courseid != null" >
+        courseid = #{record.courseid,jdbcType=INTEGER},
+      </if>
+      <if test="record.transaction != null" >
+        `transaction` = #{record.transaction,jdbcType=INTEGER},
+      </if>
+      <if test="record.payment != null" >
+        payment = #{record.payment,jdbcType=INTEGER},
+      </if>
+      <if test="record.paytime != null" >
+        paytime = #{record.paytime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.invalidtime != null" >
+        invalidtime = #{record.invalidtime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createtime != null" >
+        createtime = #{record.createtime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update `order`
+    set id = #{record.id,jdbcType=INTEGER},
+      `number` = #{record.number,jdbcType=VARCHAR},
+      userid = #{record.userid,jdbcType=INTEGER},
+      courseid = #{record.courseid,jdbcType=INTEGER},
+      `transaction` = #{record.transaction,jdbcType=INTEGER},
+      payment = #{record.payment,jdbcType=INTEGER},
+      paytime = #{record.paytime,jdbcType=VARCHAR},
+      invalidtime = #{record.invalidtime,jdbcType=VARCHAR},
+      createtime = #{record.createtime,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.icylee.bean.Order" >
+    update `order`
+    <set >
+      <if test="number != null" >
+        `number` = #{number,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null" >
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="courseid != null" >
+        courseid = #{courseid,jdbcType=INTEGER},
+      </if>
+      <if test="transaction != null" >
+        `transaction` = #{transaction,jdbcType=INTEGER},
+      </if>
+      <if test="payment != null" >
+        payment = #{payment,jdbcType=INTEGER},
+      </if>
+      <if test="paytime != null" >
+        paytime = #{paytime,jdbcType=VARCHAR},
+      </if>
+      <if test="invalidtime != null" >
+        invalidtime = #{invalidtime,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.icylee.bean.Order" >
+    update `order`
+    set `number` = #{number,jdbcType=VARCHAR},
+      userid = #{userid,jdbcType=INTEGER},
+      courseid = #{courseid,jdbcType=INTEGER},
+      `transaction` = #{transaction,jdbcType=INTEGER},
+      payment = #{payment,jdbcType=INTEGER},
+      paytime = #{paytime,jdbcType=VARCHAR},
+      invalidtime = #{invalidtime,jdbcType=VARCHAR},
+      createtime = #{createtime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

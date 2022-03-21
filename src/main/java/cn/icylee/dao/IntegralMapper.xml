@@ -87,7 +87,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, userid, grow, integral, describe, createtime
+    id, userid, grow, integral, `describe`, createtime
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.icylee.bean.IntegralExample" >
     select
@@ -121,7 +121,7 @@
   </delete>
   <insert id="insert" parameterType="cn.icylee.bean.Integral" >
     insert into integral (id, userid, grow, 
-      integral, describe, createtime
+      integral, `describe`, createtime
       )
     values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{grow,jdbcType=INTEGER}, 
       #{integral,jdbcType=INTEGER}, #{describe,jdbcType=VARCHAR}, #{createtime,jdbcType=VARCHAR}
@@ -143,7 +143,7 @@
         integral,
       </if>
       <if test="describe != null" >
-        describe,
+        `describe`,
       </if>
       <if test="createtime != null" >
         createtime,
@@ -192,7 +192,7 @@
         integral = #{record.integral,jdbcType=INTEGER},
       </if>
       <if test="record.describe != null" >
-        describe = #{record.describe,jdbcType=VARCHAR},
+        `describe` = #{record.describe,jdbcType=VARCHAR},
       </if>
       <if test="record.createtime != null" >
         createtime = #{record.createtime,jdbcType=VARCHAR},
@@ -208,7 +208,7 @@
       userid = #{record.userid,jdbcType=INTEGER},
       grow = #{record.grow,jdbcType=INTEGER},
       integral = #{record.integral,jdbcType=INTEGER},
-      describe = #{record.describe,jdbcType=VARCHAR},
+      `describe` = #{record.describe,jdbcType=VARCHAR},
       createtime = #{record.createtime,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -227,7 +227,7 @@
         integral = #{integral,jdbcType=INTEGER},
       </if>
       <if test="describe != null" >
-        describe = #{describe,jdbcType=VARCHAR},
+        `describe` = #{describe,jdbcType=VARCHAR},
       </if>
       <if test="createtime != null" >
         createtime = #{createtime,jdbcType=VARCHAR},
@@ -240,7 +240,7 @@
     set userid = #{userid,jdbcType=INTEGER},
       grow = #{grow,jdbcType=INTEGER},
       integral = #{integral,jdbcType=INTEGER},
-      describe = #{describe,jdbcType=VARCHAR},
+      `describe` = #{describe,jdbcType=VARCHAR},
       createtime = #{createtime,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>

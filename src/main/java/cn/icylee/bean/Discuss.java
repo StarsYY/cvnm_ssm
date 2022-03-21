@@ -23,6 +23,56 @@ public class Discuss {
 
     private Integer rep;
 
+    private Integer admRep;
+
+    private String username;
+
+    private String course;
+
+    private String admDis;
+
+    private Discuss reDis;
+
+    public Discuss getReDis() {
+        return reDis;
+    }
+
+    public void setReDis(Discuss reDis) {
+        this.reDis = reDis;
+    }
+
+    public Integer getAdmRep() {
+        return admRep;
+    }
+
+    public void setAdmRep(Integer admRep) {
+        this.admRep = admRep;
+    }
+
+    public String getAdmDis() {
+        return admDis;
+    }
+
+    public void setAdmDis(String admDis) {
+        this.admDis = admDis;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getCourse() {
+        return course;
+    }
+
+    public void setCourse(String course) {
+        this.course = course;
+    }
+
     public Integer getRep() {
         return rep;
     }

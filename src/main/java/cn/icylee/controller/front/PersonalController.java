@@ -98,4 +98,36 @@ public class PersonalController {
         return detailService.saveFollowAuthor(comment) > 0 ? ResponseData.success("success", "关注或取消关注成功") : ResponseData.error("欸哎，我堵在这了つ ◕_◕ ༽つ");
     }
 
+    @ResponseBody
+    @RequestMapping(value = "verify", method = RequestMethod.POST)
+    public Map<String, Object> getVerify(@RequestBody String data) {
+        String name = JSONObject.fromObject(data).getString("name");
+        return ResponseData.success(personalService.getVerify(name), "认证");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "integral", method = RequestMethod.POST)
+    public Map<String, Object> getIntegral(@RequestBody String data) {
+        String name = JSONObject.fromObject(data).getString("name");
+        Integer page = Integer.parseInt(JSONObject.fromObject(data).getString("page"));
+        Map<String, Object> map = new HashMap<>();
+        map.put("integral", personalService.getIntegral(name, page));
+        map.put("total", personalService.getIntegralTotal(name));
+        return ResponseData.success(map, "积分");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "draft", method = RequestMethod.POST)
+    public Map<String, Object> getMyDraft(@RequestBody String data) {
+        String name = JSONObject.fromObject(data).getString("name");
+        return ResponseData.success(personalService.getMyDraft(name), "草稿");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "reply", method = RequestMethod.POST)
+    public Map<String, Object> getMyComment(@RequestBody String data) {
+        String name = JSONObject.fromObject(data).getString("name");
+        return ResponseData.success(personalService.getMyComment(name), "我的回复");
+    }
+
 }

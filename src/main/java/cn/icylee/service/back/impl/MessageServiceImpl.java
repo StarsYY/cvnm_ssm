@@ -31,6 +31,8 @@ public class MessageServiceImpl implements MessageService {
                     ids.append(user.getUid()).append(",");
                 }
                 tableParameter.setIds(ids.toString());
+            } else {
+                tableParameter.setIds(",0,");
             }
         }
         if (tableParameter.getLabel() != null && !tableParameter.getLabel().equals("")) {
@@ -44,6 +46,8 @@ public class MessageServiceImpl implements MessageService {
                     cids.append(user.getUid()).append(",");
                 }
                 tableParameter.setCids(cids.toString());
+            } else {
+                tableParameter.setCids(",0,");
             }
         }
         return tableParameter;

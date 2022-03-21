@@ -54,6 +54,14 @@ public class TableParameter {
 
     private String modular;
 
+    private Integer transaction;
+
+    private String payment;
+
+    private String discuss;
+
+    private String course;
+
     private String sort;
 
     public int getPage() {

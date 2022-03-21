@@ -40,8 +40,6 @@ public class CourseServiceImpl implements CourseService {
         List<Course> courseList = courseMapper.getCourseList(tableParameter);
         
         for (Course course : courseList) {
-            String author = userMapper.selectByPrimaryKey(course.getUserid()).getNickname();
-
             String[] labelId = course.getLabelid().substring(1, course.getLabelid().length() - 1).split(",");
 
             Map<String, String> map = new HashMap<>();
@@ -49,13 +47,6 @@ public class CourseServiceImpl implements CourseService {
                 String label = labelMapper.selectByPrimaryKey(Integer.parseInt(value)).getLabel();
                 map.put(value, label);
             }
-
-            if (course.getId() == 1) {
-                course.setScore(4.7);
-            }
-
-            course.setModular(modularMapper.selectByPrimaryKey(course.getModularid()).getModular());
-            course.setAuthor(author);
             course.setLabelMap(map);
         }
 

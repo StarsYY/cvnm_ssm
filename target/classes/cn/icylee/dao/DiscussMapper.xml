@@ -15,12 +15,36 @@
   <select id="getDiscuss" parameterType="cn.icylee.bean.Discuss" resultType="cn.icylee.bean.Discuss">
     SELECT discuss.*, u.nickname AS author, u.portrait AS portrait
     FROM discuss LEFT JOIN `user` u ON u.uid = discuss.userid
-    WHERE discuss.courseid = #{courseid}
+    WHERE discuss.courseid = #{courseid} and discuss.status = 1 and discuss.disid = 0
   </select>
 
   <select id="getAVGCourse" parameterType="java.lang.Integer" resultType="java.lang.Double">
     SELECT AVG(score) FROM discuss WHERE courseid = #{id}
   </select>
+
+  <select id="getDiscussTotal" parameterType="cn.icylee.bean.TableParameter" resultType="java.lang.Integer">
+    SELECT count(*) FROM discuss
+    where disid = 0
+    <if test="discuss != null and discuss != ''">AND discuss LIKE '%${discuss}%'</if>
+    <if test="cids != null and cids != ''">AND FIND_IN_SET(userid, '${cids}')</if>
+    <if test="ids != null and ids != ''">AND FIND_IN_SET(courseid, '${ids}')</if>
+    <if test="status != null and status != ''">AND status LIKE '%${status}%'</if>
+  </select>
+
+  <select id="getDiscussList" parameterType="cn.icylee.bean.TableParameter" resultType="cn.icylee.bean.Discuss">
+    SELECT * FROM
+    ( SELECT * FROM discuss WHERE disid = 0
+    <if test="discuss != null and discuss != ''">AND discuss LIKE '%${discuss}%'</if>
+    <if test="cids != null and cids != ''">AND FIND_IN_SET(userid, '${cids}')</if>
+    <if test="ids != null and ids != ''">AND FIND_IN_SET(courseid, '${ids}')</if>
+    <if test="status != null and status != ''">AND status LIKE '%${status}%'</if>
+    LIMIT #{page}, #{limit} ) u
+    ORDER BY id ${sort}
+  </select>
+
+  <delete id="deleteDiscuss" parameterType="java.lang.String">
+    delete from discuss where id in(${ids})
+  </delete>
 
   <sql id="Example_Where_Clause" >
     <where >

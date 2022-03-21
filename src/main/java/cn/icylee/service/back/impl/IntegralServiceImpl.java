@@ -31,6 +31,8 @@ public class IntegralServiceImpl implements IntegralService {
                     ids.append(user.getUid()).append(",");
                 }
                 tableParameter.setIds(ids.toString());
+            } else {
+                tableParameter.setIds(",0,");
             }
         }
         return tableParameter;

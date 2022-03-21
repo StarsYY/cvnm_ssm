@@ -36,6 +36,8 @@ public class CommentServiceImpl implements CommentService {
                     ids.append(article.getId()).append(",");
                 }
                 tableParameter.setIds(ids.toString());
+            } else {
+                tableParameter.setIds(",0,");
             }
         }
         if (tableParameter.getNickname() != null && !tableParameter.getNickname().equals("")) {
@@ -49,6 +51,8 @@ public class CommentServiceImpl implements CommentService {
                     cids.append(user.getUid()).append(",");
                 }
                 tableParameter.setCids(cids.toString());
+            } else {
+                tableParameter.setCids(",0,");
             }
         }
         return tableParameter;

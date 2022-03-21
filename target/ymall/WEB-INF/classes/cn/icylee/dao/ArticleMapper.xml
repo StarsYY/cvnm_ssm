@@ -96,6 +96,14 @@
     LIMIT #{page}, #{limit}
   </select>
 
+  <select id="getMyDraft" parameterType="INTEGER" resultType="cn.icylee.bean.Article">
+    SELECT article.id, article.title, article.userid, article.plateid, article.createtime, plate.plate
+    FROM article
+    LEFT JOIN plate ON plate.id=article.plateid
+    WHERE article.userid = #{uid} AND article.status = '草稿'
+    ORDER BY article.createtime DESC
+  </select>
+
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >

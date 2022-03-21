@@ -33,6 +33,12 @@ public class PersonalServiceImpl implements PersonalService {
     @Autowired
     PlateMapper plateMapper;
 
+    @Autowired
+    VerifyMapper verifyMapper;
+
+    @Autowired
+    IntegralMapper integralMapper;
+
     private User getUserByUsername(String username) {
         UserExample userExample = new UserExample();
         userExample.createCriteria().andNicknameEqualTo(username);
@@ -260,6 +266,54 @@ public class PersonalServiceImpl implements PersonalService {
     @Override
     public List<User> getMyFollow(String username, String loginName) {
         return getMyFansOrFollow(false, username, loginName);
+    }
+
+    @Override
+    public Verify getVerify(String username) {
+        int id = getUserByUsername(username).getUid();
+        VerifyExample verifyExample = new VerifyExample();
+        verifyExample.createCriteria().andUseridEqualTo(id).andTypeEqualTo(1);
+        List<Verify> verifyList = verifyMapper.selectByExample(verifyExample);
+        return verifyList.size() > 0 ? verifyList.get(0) : null;
+    }
+
+    @Override
+    public List<Integral> getIntegral(String username, Integer page) {
+        int id = getUserByUsername(username).getUid();
+        IntegralExample integralExample = new IntegralExample();
+        integralExample.createCriteria().andUseridEqualTo(id);
+        page = (page - 1) * 20;
+        integralExample.setOrderByClause(" createtime desc limit " + page + ", 10");
+        return integralMapper.selectByExample(integralExample);
+    }
+
+    @Override
+    public Integer getIntegralTotal(String username) {
+        int id = getUserByUsername(username).getUid();
+        IntegralExample integralExample = new IntegralExample();
+        integralExample.createCriteria().andUseridEqualTo(id);
+        return integralMapper.countByExample(integralExample);
+    }
+
+    @Override
+    public List<Article> getMyDraft(String username) {
+        int id = getUserByUsername(username).getUid();
+        return articleMapper.getMyDraft(id);
+    }
+
+    @Override
+    public List<Comment> getMyComment(String username) {
+        int id = getUserByUsername(username).getUid();
+        List<Comment> commentList = commentMapper.getMyReply(id);
+
+        for (Comment comment : commentList) {
+            if (comment.getComid() != 0) {
+                comment.setCm(commentMapper.getMyReplyRe(comment.getComid()));
+            } else {
+                comment.setCm(null);
+            }
+        }
+        return commentList;
     }
 
 }

@@ -1,11 +1,18 @@
 package cn.icylee.utils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Tool {
+
+    public static String getOrderIdByUUId() {
+        Calendar calendar = Calendar.getInstance();
+        String number = calendar.get(Calendar.YEAR) + String.format("%02d", (calendar.get(Calendar.MONTH) + 1)) + String.format("%2d", calendar.get(Calendar.DAY_OF_MONTH));
+        int hashCodeV = UUID.randomUUID().toString().hashCode();
+        if(hashCodeV < 0) { //有可能是负数
+            hashCodeV = - hashCodeV;
+        }
+        return number + String.format("%010d", hashCodeV);
+    }
 
     public static int setLevel(int grow) {
         int level = 0;

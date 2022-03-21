@@ -19,9 +19,13 @@ public class Comment {
 
     private Map<String, Comment> commentList;
 
+    private Integer grow;
+
     private Integer up;
 
     private User user;
+
+    private Comment cm;
 
     private String username;
 
@@ -38,6 +42,22 @@ public class Comment {
     private Integer is;
 
     private boolean like;
+
+    public Comment getCm() {
+        return cm;
+    }
+
+    public void setCm(Comment cm) {
+        this.cm = cm;
+    }
+
+    public Integer getGrow() {
+        return grow;
+    }
+
+    public void setGrow(Integer grow) {
+        this.grow = grow;
+    }
 
     public String getArticle() {
         return article;

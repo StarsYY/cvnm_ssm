@@ -39,9 +39,9 @@
 		</javaClientGenerator>
 
 		<!-- 指定数据库表 -->
-<!--		<table tableName="modular"/>-->
-		<table tableName="discuss">
-			<columnOverride column="discuss" jdbcType="VARCHAR"/>
-		</table>
+		<table tableName="order"/>
+<!--		<table tableName="discuss">-->
+<!--			<columnOverride column="discuss" jdbcType="VARCHAR"/>-->
+<!--		</table>-->
 	</context>
 </generatorConfiguration>

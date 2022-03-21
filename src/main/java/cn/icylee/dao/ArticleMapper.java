@@ -46,4 +46,6 @@ public interface ArticleMapper {
     List<Article> getTagArticle(TableParameter tableParameter);
 
     int getCountTagArticle(TableParameter tableParameter);
+
+    List<Article> getMyDraft(Integer uid);
 }

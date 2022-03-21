@@ -56,7 +56,7 @@ public class ArticleServiceImpl implements ArticleService {
 
                 LabelExample labelExample = new LabelExample();
                 LabelExample.Criteria criteria = labelExample.createCriteria();
-                criteria.andCategoryidEqualTo("%," + category.getId() + ",%");
+                criteria.andCategoryidLike("%," + category.getId() + ",%");
                 List<Label> labelList = labelMapper.selectByExample(labelExample);
 
                 List<LabelTree> treeFinal = new ArrayList<>();

@@ -86,7 +86,7 @@ public class CDTServiceImpl implements CDTService {
         int userid = userMapper.selectByExample(userExample).get(0).getUid();
 
         DiscussExample discussExample = new DiscussExample();
-        discussExample.createCriteria().andUseridEqualTo(userid).andCourseidEqualTo(discuss.getCourseid());
+        discussExample.createCriteria().andUseridEqualTo(userid).andCourseidEqualTo(discuss.getCourseid()).andDisidEqualTo(0);
 
         if (discussMapper.countByExample(discussExample) > 0) {
             return 0;
@@ -102,12 +102,19 @@ public class CDTServiceImpl implements CDTService {
         int userid = userMapper.selectByExample(userExample).get(0).getUid();
 
         DiscussExample discussExample = new DiscussExample();
-        discussExample.createCriteria().andUseridEqualTo(userid).andCourseidEqualTo(discuss.getCourseid());
+        if (discuss.getDisid() == 0) {
+            discussExample.createCriteria().andUseridEqualTo(userid).andCourseidEqualTo(discuss.getCourseid()).andDisidEqualTo(0);
+        } else {
+            discussExample.createCriteria().andUseridEqualTo(userid).andCourseidEqualTo(discuss.getCourseid()).andDisidEqualTo(discuss.getDisid());
+        }
 
         if (discussMapper.countByExample(discussExample) == 0) {
             discuss.setUserid(userid);
-            discuss.setDisid(0);
-            discuss.setStatus(0);
+            if ((discuss.getDisid() > 0)) {
+                discuss.setStatus(1);
+            } else {
+                discuss.setStatus(0);
+            }
             discuss.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
             return discussMapper.insert(discuss);
         } else {
@@ -118,6 +125,19 @@ public class CDTServiceImpl implements CDTService {
     @Override
     public List<Discuss> getDiscuss(Discuss discuss) {
         List<Discuss> discussList = discussMapper.getDiscuss(discuss);
+
+        for (Discuss dcc: discussList) {
+            DiscussExample discussExample = new DiscussExample();
+            discussExample.createCriteria().andDisidEqualTo(dcc.getId());
+            List<Discuss> discusses = discussMapper.selectByExample(discussExample);
+            if (discusses.size() != 0) {
+                dcc.setAdmRep(1);
+                dcc.setReDis(discusses.get(0));
+            } else {
+                dcc.setAdmRep(0);
+                dcc.setReDis(null);
+            }
+        }
 
         if (!discuss.getAuthor().equals("")) {
             for (Discuss dc : discussList) {

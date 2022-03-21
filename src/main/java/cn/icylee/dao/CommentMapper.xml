@@ -36,6 +36,23 @@
     delete from comment where id in(${ids})
   </delete>
 
+  <select id="getMyReply" parameterType="java.lang.Integer" resultType="cn.icylee.bean.Comment">
+    SELECT `comment`.*, article.title AS article, u1.nickname AS username, u1.portrait AS avatar, u2.nickname AS reviewName
+    FROM `comment`
+           LEFT JOIN article ON article.id=`comment`.articleid
+           LEFT JOIN `user` u1 ON u1.uid=`comment`.userid
+           LEFT JOIN `user` u2 ON u2.uid=article.userid
+    WHERE `comment`.userid = #{uid} AND `comment`.`status` = 1
+    ORDER BY `comment`.createtime DESC
+  </select>
+
+  <select id="getMyReplyRe" parameterType="java.lang.Integer" resultType="cn.icylee.bean.Comment">
+    SELECT `comment`.*, u1.nickname AS username
+    FROM `comment`
+           LEFT JOIN `user` u1 ON u1.uid=`comment`.userid
+    WHERE `comment`.id = #{comid} AND `comment`.`status` = 1
+  </select>
+
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >

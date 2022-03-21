@@ -3,6 +3,8 @@ package cn.icylee.dao;
 import cn.icylee.bean.Discuss;
 import cn.icylee.bean.DiscussExample;
 import java.util.List;
+
+import cn.icylee.bean.TableParameter;
 import org.apache.ibatis.annotations.Param;
 
 public interface DiscussMapper {
@@ -31,4 +33,10 @@ public interface DiscussMapper {
     List<Discuss> getDiscuss(Discuss discuss);
 
     Double getAVGCourse(Integer id);
+
+    int getDiscussTotal(TableParameter tableParameter);
+
+    List<Discuss> getDiscussList(TableParameter tableParameter);
+
+    int deleteDiscuss(String ids);
 }

@@ -1,7 +1,6 @@
 package cn.icylee.service.front;
 
-import cn.icylee.bean.Article;
-import cn.icylee.bean.User;
+import cn.icylee.bean.*;
 
 import java.util.List;
 import java.util.Map;
@@ -25,5 +24,15 @@ public interface PersonalService {
     List<User> getMyFans(String username, String loginName);
 
     List<User> getMyFollow(String username, String loginName);
+
+    Verify getVerify(String username);
+
+    List<Integral> getIntegral(String username, Integer page);
+
+    Integer getIntegralTotal(String username);
+
+    List<Article> getMyDraft(String username);
+
+    List<Comment> getMyComment(String username);
 
 }

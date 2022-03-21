@@ -35,4 +35,8 @@ public interface CommentMapper {
     List<Comment> getCommentList(TableParameter tableParameter);
 
     int deleteComment(String ids);
+
+    List<Comment> getMyReply(Integer uid);
+
+    Comment getMyReplyRe(Integer comid);
 }
