@@ -18,18 +18,29 @@ public class VerifyFServiceImpl implements VerifyFService {
     VerifyMapper verifyMapper;
 
     @Override
-    public Verify getVerifyByUid(int uid) {
+    public List<Verify> getVerifyByUid(int uid) {
         VerifyExample verifyExample = new VerifyExample();
-        verifyExample.createCriteria().andUseridEqualTo(uid).andTypeEqualTo(1);
-        List<Verify> verifyList = verifyMapper.selectByExample(verifyExample);
-        return verifyList.size() != 0 ? verifyList.get(0) : null;
+        verifyExample.createCriteria().andUseridEqualTo(uid);
+        return verifyMapper.selectByExample(verifyExample);
     }
 
     @Override
     public int saveVerify(Verify verify) {
-        verify.setStatus(0);
-        verify.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        verify.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        return verifyMapper.insert(verify);
+        VerifyExample verifyExample = new VerifyExample();
+        verifyExample.createCriteria().andUseridEqualTo(verify.getUserid()).andPositionEqualTo(verify.getPosition());
+        int num = verifyMapper.countByExample(verifyExample);
+
+        if (num == 0) {
+            verify.setId(null);
+            verify.setStatus(0);
+            verify.setCreatetime(new Date());
+            verify.setUpdatetime(new Date());
+            return verifyMapper.insert(verify);
+        } else {
+            verify.setId(verifyMapper.selectByExample(verifyExample).get(0).getId());
+            verify.setStatus(0);
+            verify.setUpdatetime(new Date());
+            return verifyMapper.updateByPrimaryKeySelective(verify);
+        }
     }
 }

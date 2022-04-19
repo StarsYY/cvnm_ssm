@@ -33,4 +33,6 @@ public interface MessageMapper {
     int getMessageTotal(TableParameter tableParameter);
 
     List<Message> getMessageList(TableParameter tableParameter);
+
+    int deleteMessageByComment(String ids);
 }

@@ -1,54 +1,36 @@
 package cn.icylee.bean;
 
+import lombok.Data;
+
+@Data
 public class Index {
+    private Integer defOrTree;
 
-    private int defOrTree;
+    private Integer leftId;
 
-    private int leftId;
+    private Integer contentTag;
 
-    private int contentTag;
+    private Integer uid;
+
+    private String username;
+
+    private String loginName;
+
+    private String title;
+
+    private String type;
+
+    private String hot;
+
+    private Integer payment;
+
+    private String ids;
 
     private int page;
 
     private int limit;
 
-    public int getDefOrTree() {
-        return defOrTree;
-    }
-
-    public void setDefOrTree(int defOrTree) {
-        this.defOrTree = defOrTree;
-    }
-
-    public int getLeftId() {
-        return leftId;
-    }
-
-    public void setLeftId(int leftId) {
-        this.leftId = leftId;
-    }
-
-    public int getContentTag() {
-        return contentTag;
-    }
-
-    public void setContentTag(int contentTag) {
-        this.contentTag = contentTag;
-    }
-
     public int getPage() {
-        return page;
-    }
-
-    public void setPage(int page) {
-        this.page = page;
-    }
-
-    public int getLimit() {
-        return limit;
-    }
-
-    public void setLimit(int limit) {
-        this.limit = limit;
+        return page * limit;
     }
 }

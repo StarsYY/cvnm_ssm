@@ -3,8 +3,10 @@ package cn.icylee.service.back.impl;
 import cn.icylee.bean.*;
 import cn.icylee.dao.CourseMapper;
 import cn.icylee.dao.DiscussMapper;
+import cn.icylee.dao.MessageMapper;
 import cn.icylee.dao.UserMapper;
 import cn.icylee.service.back.DiscussService;
+import cn.icylee.service.front.GrowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,12 @@ public class DiscussServiceImpl implements DiscussService {
 
     @Autowired
     UserMapper userMapper;
+
+    @Autowired
+    GrowService growService;
+
+    @Autowired
+    MessageMapper messageMapper;
 
     @Override
     public TableParameter setIdsTool(TableParameter tableParameter) {
@@ -88,6 +96,10 @@ public class DiscussServiceImpl implements DiscussService {
                 discuss.setStatus(0);
             } else {
                 discuss.setStatus(1);
+
+                if (discussMapper.updateByPrimaryKeySelective(discuss) > 0) {
+                    return growService.updateIncreaseIntegralAndGrowFromCommentOrDiscuss(discuss.getUserid()) > 0 ? 2 : 0;
+                }
             }
             return discussMapper.updateByPrimaryKeySelective(discuss);
         }
@@ -112,7 +124,20 @@ public class DiscussServiceImpl implements DiscussService {
         StringBuilder ids = new StringBuilder();
         ids.append(id).append(",").append(setIds(id, ids));
         String Ids = ids.substring(0, ids.length() / 2 - 1);
-        return discussMapper.deleteDiscuss(Ids) >= 0 ? Arrays.stream(Ids.split(",")).mapToInt(Integer::parseInt).toArray() : null;
+
+        int num = discussMapper.deleteDiscuss(Ids);
+        if (num >= 0) {
+            MessageExample messageExample = new MessageExample();
+            messageExample.createCriteria().andDatasourceEqualTo("discuss").andAdditionEqualTo(id);
+            messageMapper.deleteByExample(messageExample);
+
+            messageExample.clear();
+            messageExample.createCriteria().andContentEqualTo(String.valueOf(id)).andDatasourceEqualTo("course");
+            messageMapper.deleteByExample(messageExample);
+
+            return Arrays.stream(Ids.split(",")).mapToInt(Integer::parseInt).toArray();
+        }
+        return null;
     }
     
 }

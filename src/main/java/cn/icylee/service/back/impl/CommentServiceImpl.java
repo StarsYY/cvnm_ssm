@@ -1,10 +1,9 @@
 package cn.icylee.service.back.impl;
 
 import cn.icylee.bean.*;
-import cn.icylee.dao.ArticleMapper;
-import cn.icylee.dao.CommentMapper;
-import cn.icylee.dao.UserMapper;
+import cn.icylee.dao.*;
 import cn.icylee.service.back.CommentService;
+import cn.icylee.service.front.GrowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +21,18 @@ public class CommentServiceImpl implements CommentService {
 
     @Autowired
     UserMapper userMapper;
+
+    @Autowired
+    GrowService growService;
+
+    @Autowired
+    PreferMapper preferMapper;
+
+    @Autowired
+    ReportMapper reportMapper;
+
+    @Autowired
+    MessageMapper messageMapper;
 
     @Override
     public TableParameter setIdsTool(TableParameter tableParameter) {
@@ -84,6 +95,10 @@ public class CommentServiceImpl implements CommentService {
                 comment.setStatus(0);
             } else {
                 comment.setStatus(1);
+
+                if (commentMapper.updateByPrimaryKeySelective(comment) > 0) {
+                    return growService.updateIncreaseIntegralAndGrowFromCommentOrDiscuss(comment.getUserid()) > 0 ? 2 : 0;
+                }
             }
             return commentMapper.updateByPrimaryKeySelective(comment);
         }
@@ -108,7 +123,19 @@ public class CommentServiceImpl implements CommentService {
         StringBuilder ids = new StringBuilder();
         ids.append(id).append(",").append(setIds(id, ids));
         String Ids = ids.substring(0, ids.length() / 2 - 1);
-        return commentMapper.deleteComment(Ids) >= 0 ? Arrays.stream(Ids.split(",")).mapToInt(Integer::parseInt).toArray() : null;
+        int num = commentMapper.deleteComment(Ids);
+        if (num >= 0) {
+            preferMapper.deletePreferByComment(Ids);
+            reportMapper.deleteReportByComment(Ids);
+            messageMapper.deleteMessageByComment(Ids);
+
+            MessageExample messageExample = new MessageExample();
+            messageExample.createCriteria().andContentEqualTo(String.valueOf(id)).andDatasourceEqualTo("article");
+            messageMapper.deleteByExample(messageExample);
+
+            return Arrays.stream(Ids.split(",")).mapToInt(Integer::parseInt).toArray();
+        }
+        return null;
     }
 
 }

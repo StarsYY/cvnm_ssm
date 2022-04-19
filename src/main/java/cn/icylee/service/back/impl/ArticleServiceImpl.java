@@ -3,6 +3,7 @@ package cn.icylee.service.back.impl;
 import cn.icylee.bean.*;
 import cn.icylee.dao.*;
 import cn.icylee.service.back.ArticleService;
+import cn.icylee.service.front.GrowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,12 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     UserMapper userMapper;
+
+    @Autowired
+    GrowService growService;
+
+    @Autowired
+    MessageMapper messageMapper;
 
     @Override
     public List<LabelTree> getLabelTree() {
@@ -264,10 +271,12 @@ public class ArticleServiceImpl implements ArticleService {
     public Map<String, String> searchUser(String name) {
         UserExample userExample = new UserExample();
         UserExample.Criteria criteria = userExample.createCriteria();
-        criteria.andNicknameLike("%" + name + "%");
+        criteria.andNicknameLike("%" + name + "%").andStatusEqualTo("启用").andIsdelEqualTo(0);
         Map<String, String> map = new HashMap<>();
         for (User user : userMapper.selectByExample(userExample)) {
-            map.put(user.getUid().toString(), user.getNickname());
+            if (!(new Date().compareTo(user.getStarttime()) >= 0 && new Date().compareTo(user.getFinaltime()) <= 0)) {
+                map.put(user.getUid().toString(), user.getNickname());
+            }
         }
         return map;
     }
@@ -293,8 +302,8 @@ public class ArticleServiceImpl implements ArticleService {
 
         article.setIsdel(0);
 
-        article.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        article.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        article.setCreatetime(new Date());
+        article.setUpdatetime(new Date());
         return articleMapper.insert(article);
     }
 
@@ -314,7 +323,7 @@ public class ArticleServiceImpl implements ArticleService {
         if (articleMapper.selectByExample(articleExample).size() > 0) {
             return 0;
         }
-        article.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        article.setUpdatetime(new Date());
         return articleMapper.updateByPrimaryKeySelective(article);
     }
 
@@ -325,7 +334,13 @@ public class ArticleServiceImpl implements ArticleService {
                 article.setStatus("待审核");
             } else if (article.getStatus().equals("待审核")) {
                 article.setStatus("已发布");
+                article.setUpdatetime(new Date());
+
+                if (articleMapper.updateByPrimaryKeySelective(article) > 0) {
+                    return growService.updateIncreaseIntegralAndGrowFromArticleOrCourse(article.getUserid());
+                }
             }
+            article.setUpdatetime(new Date());
             return articleMapper.updateByPrimaryKeySelective(article);
         }
         return 0;
@@ -339,6 +354,7 @@ public class ArticleServiceImpl implements ArticleService {
             } else {
                 article.setTag("精华");
             }
+            article.setUpdatetime(new Date());
             return articleMapper.updateByPrimaryKeySelective(article);
         }
         return 0;
@@ -352,6 +368,35 @@ public class ArticleServiceImpl implements ArticleService {
             } else {
                 article.setTag("");
             }
+            article.setUpdatetime(new Date());
+            return articleMapper.updateByPrimaryKeySelective(article);
+        }
+        return 0;
+    }
+
+    @Override
+    public int updateHot(Article article) {
+        if (article.getHot().equals(getArticleById(article.getId()).getHot())) {
+            if (article.getHot().equals("Top")) {
+                article.setHot("Hot");
+            } else {
+                article.setHot("Top");
+            }
+            article.setUpdatetime(new Date());
+            return articleMapper.updateByPrimaryKeySelective(article);
+        }
+        return 0;
+    }
+
+    @Override
+    public int updateRHot(Article article) {
+        if (article.getHot().equals(getArticleById(article.getId()).getHot())) {
+            if (article.getHot().equals("")) {
+                article.setHot("Hot");
+            } else {
+                article.setHot("");
+            }
+            article.setUpdatetime(new Date());
             return articleMapper.updateByPrimaryKeySelective(article);
         }
         return 0;
@@ -365,12 +410,21 @@ public class ArticleServiceImpl implements ArticleService {
         } else {
             article.setIsdel(1);
         }
+        article.setUpdatetime(new Date());
         return articleMapper.updateByPrimaryKeySelective(article);
     }
 
     @Override
     public int deleteArticleR(int id) {
         return articleMapper.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public int saveMessageByArticle(Message message) {
+        message.setRead(0);
+        message.setType(1);
+        message.setCreatetime(new Date());
+        return messageMapper.insert(message);
     }
 
 }

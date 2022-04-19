@@ -10,6 +10,7 @@ import cn.icylee.service.back.VerifyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -55,6 +56,8 @@ public class VerifyServiceImpl implements VerifyService {
     public int updateStatus(Verify verify) {
         if (verify.getStatus().equals(verifyMapper.selectByPrimaryKey(verify.getId()).getStatus())) {
             verify.setStatus(1 - verify.getStatus());
+            verify.setUpdatetime(new Date());
+
             return verifyMapper.updateByPrimaryKeySelective(verify);
         }
         return 0;

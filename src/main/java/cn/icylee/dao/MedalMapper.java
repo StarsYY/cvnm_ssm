@@ -31,4 +31,6 @@ public interface MedalMapper {
     int updateByPrimaryKey(Medal record);
 
     List<Medal> getMedalList(TableParameter tableParameter);
+
+    List<Medal> getUserMedal(int uid);
 }

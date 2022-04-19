@@ -4,9 +4,9 @@ import cn.icylee.bean.Admin;
 
 public interface LoginService {
 
-    Admin getByUsername(String username);
+    int login(String username, String password);
 
-    int updateOnline(String username);
+    Admin getByUsername(String username);
 
     int updateLogOut(String username);
 

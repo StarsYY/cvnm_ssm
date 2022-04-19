@@ -7,14 +7,35 @@
     <result column="ancestor" property="ancestor" jdbcType="INTEGER" />
     <result column="icon" property="icon" jdbcType="VARCHAR" />
     <result column="describe" property="describe" jdbcType="VARCHAR" />
-    <result column="createtime" property="createtime" jdbcType="VARCHAR" />
-    <result column="updatetime" property="updatetime" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
   </resultMap>
 
   <select id="getPlateList" parameterType="cn.icylee.bean.TableParameter" resultType="cn.icylee.bean.Plate">
     SELECT * FROM
         ( SELECT * FROM plate WHERE plate LIKE '%${plate}%' LIMIT #{page}, #{limit} ) u
     ORDER BY id ${sort}
+  </select>
+
+  <select id="getIndexPlate" parameterType="java.lang.Integer" resultType="cn.icylee.bean.Plate">
+    SELECT plate.*,
+           (case when a_c.count_article is null then 0 when a_c.count_article is not null then a_c.count_article end) as articleCount,
+           (case when f_c.count_follow is null then 0 when f_c.count_follow is not null then f_c.count_follow end) as followCount
+    from plate
+           LEFT JOIN ( SELECT plateid, count(*) as count_article from article GROUP BY plateid ) as a_c on a_c.plateid = plate.id
+           LEFT JOIN ( SELECT dataid, datasource, count(*) as count_follow from follow GROUP BY dataid ) as f_c on f_c.dataid = plate.id and f_c.datasource = 'plate'
+    where plate.id = #{id}
+  </select>
+
+  <select id="getFollowPlate" parameterType="cn.icylee.bean.Index" resultType="cn.icylee.bean.Plate">
+    SELECT plate.*,
+           (case when a_c.count_article is null then 0 when a_c.count_article is not null then a_c.count_article end) as articleCount
+    FROM plate
+           LEFT JOIN follow ON follow.userid=#{uid} AND follow.datasource="plate"
+           LEFT JOIN ( SELECT plateid, count(*) as count_article from article GROUP BY plateid ) as a_c on a_c.plateid = plate.id
+    WHERE plate.id=follow.dataid
+    ORDER BY follow.createtime DESC
+    LIMIT #{page}, #{limit}
   </select>
 
   <sql id="Example_Where_Clause" >
@@ -113,8 +134,8 @@
                        icon, `describe`, createtime,
                        updatetime)
     values (#{id,jdbcType=INTEGER}, #{plate,jdbcType=VARCHAR}, #{ancestor,jdbcType=INTEGER},
-            #{icon,jdbcType=VARCHAR}, #{describe,jdbcType=VARCHAR}, #{createtime,jdbcType=VARCHAR},
-            #{updatetime,jdbcType=VARCHAR})
+            #{icon,jdbcType=VARCHAR}, #{describe,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP},
+            #{updatetime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="cn.icylee.bean.Plate" >
     insert into plate
@@ -158,10 +179,10 @@
         #{describe,jdbcType=VARCHAR},
       </if>
       <if test="createtime != null" >
-        #{createtime,jdbcType=VARCHAR},
+        #{createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatetime != null" >
-        #{updatetime,jdbcType=VARCHAR},
+        #{updatetime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -190,10 +211,10 @@
         `describe` = #{record.describe,jdbcType=VARCHAR},
       </if>
       <if test="record.createtime != null" >
-        createtime = #{record.createtime,jdbcType=VARCHAR},
+        createtime = #{record.createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.updatetime != null" >
-        updatetime = #{record.updatetime,jdbcType=VARCHAR},
+        updatetime = #{record.updatetime,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -207,8 +228,8 @@
     ancestor = #{record.ancestor,jdbcType=INTEGER},
     icon = #{record.icon,jdbcType=VARCHAR},
     `describe` = #{record.describe,jdbcType=VARCHAR},
-    createtime = #{record.createtime,jdbcType=VARCHAR},
-    updatetime = #{record.updatetime,jdbcType=VARCHAR}
+    createtime = #{record.createtime,jdbcType=TIMESTAMP},
+    updatetime = #{record.updatetime,jdbcType=TIMESTAMP}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -229,10 +250,10 @@
         `describe` = #{describe,jdbcType=VARCHAR},
       </if>
       <if test="createtime != null" >
-        createtime = #{createtime,jdbcType=VARCHAR},
+        createtime = #{createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatetime != null" >
-        updatetime = #{updatetime,jdbcType=VARCHAR},
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -243,8 +264,8 @@
         ancestor = #{ancestor,jdbcType=INTEGER},
         icon = #{icon,jdbcType=VARCHAR},
         `describe` = #{describe,jdbcType=VARCHAR},
-        createtime = #{createtime,jdbcType=VARCHAR},
-        updatetime = #{updatetime,jdbcType=VARCHAR}
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+        updatetime = #{updatetime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

@@ -1,9 +1,11 @@
 package cn.icylee.controller.back;
 
+import cn.icylee.bean.Upload;
 import cn.icylee.bean.Verify;
 import cn.icylee.bean.TableParameter;
 import cn.icylee.service.back.VerifyService;
 import cn.icylee.utils.ResponseData;
+import cn.icylee.utils.UploadFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +40,7 @@ public class VerifyController {
     @ResponseBody
     @RequestMapping(value = "change", method = RequestMethod.POST)
     public Map<String, Object> updateStatus(@RequestBody Verify verify) {
-        return verifyService.updateStatus(verify) > -1 ? ResponseData.success("success", "更改成功") : ResponseData.error("网络故障");
+        return verifyService.updateStatus(verify) > 0 ? ResponseData.success("success", "更改成功") : ResponseData.error("网络故障");
     }
 
     @ResponseBody
@@ -45,5 +48,5 @@ public class VerifyController {
     public Map<String, Object> deleteVerify(@RequestBody Verify verify) {
         return verifyService.deleteVerify(verify.getId()) > 0 ? ResponseData.success("success", "删除成功") : ResponseData.error("网络故障");
     }
-    
+
 }

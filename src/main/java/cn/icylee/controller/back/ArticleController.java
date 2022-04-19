@@ -103,19 +103,31 @@ public class ArticleController {
     @ResponseBody
     @RequestMapping(value = "change", method = RequestMethod.POST)
     public Map<String, Object> updateStatus(@RequestBody Article article) {
-        return articleService.updateStatus(article) > 0 ? ResponseData.success("success", "更改成功") : null;
+        return articleService.updateStatus(article) > 0 ? ResponseData.success("success", "更改成功") : ResponseData.error("网络故障");
     }
 
     @ResponseBody
     @RequestMapping(value = "changeTag", method = RequestMethod.POST)
     public Map<String, Object> updateTag(@RequestBody Article article) {
-        return articleService.updateTag(article) > 0 ? ResponseData.success("success", "更改成功") : null;
+        return articleService.updateTag(article) > 0 ? ResponseData.success("success", "更改成功") : ResponseData.error("网络故障");
     }
 
     @ResponseBody
     @RequestMapping(value = "changeRTag", method = RequestMethod.POST)
     public Map<String, Object> updateRTag(@RequestBody Article article) {
-        return articleService.updateRTag(article) > 0 ? ResponseData.success("success", "更改成功") : null;
+        return articleService.updateRTag(article) > 0 ? ResponseData.success("success", "更改成功") : ResponseData.error("网络故障");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "changeHot", method = RequestMethod.POST)
+    public Map<String, Object> updateHot(@RequestBody Article article) {
+        return articleService.updateHot(article) > 0 ? ResponseData.success("success", "更改成功") : ResponseData.error("网络故障");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "changeRHot", method = RequestMethod.POST)
+    public Map<String, Object> updateRHot(@RequestBody Article article) {
+        return articleService.updateRHot(article) > 0 ? ResponseData.success("success", "更改成功") : ResponseData.error("网络故障");
     }
 
     @ResponseBody
@@ -128,6 +140,12 @@ public class ArticleController {
     @RequestMapping(value = "deleteR", method = RequestMethod.POST)
     public Map<String, Object> deleteArticleR(@RequestBody Article article) {
         return articleService.deleteArticleR(article.getId()) > 0 ? ResponseData.success("success", "彻底删除") : ResponseData.error("网络故障");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "sendMessage", method = RequestMethod.POST)
+    public Map<String, Object> sendMessageByArticle(@RequestBody Message message) {
+        return articleService.saveMessageByArticle(message) > 0 ? ResponseData.success("success", "发送成功") : ResponseData.error("网络故障");
     }
 
     @ResponseBody

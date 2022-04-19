@@ -79,8 +79,9 @@ public class PlateServiceImpl implements PlateService {
         if (plateMapper.selectByExample(plateExample).size() > 0) {
             return null;
         }
-        plate.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        plate.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+
+        plate.setCreatetime(new Date());
+        plate.setUpdatetime(new Date());
 
         plateMapper.insert(plate);
 
@@ -103,7 +104,8 @@ public class PlateServiceImpl implements PlateService {
         if (plateMapper.selectByExample(plateExample).size() > 0) {
             return 0;
         }
-        plate.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        plate.setUpdatetime(new Date());
+
         return plateMapper.updateByPrimaryKeySelective(plate);
     }
 

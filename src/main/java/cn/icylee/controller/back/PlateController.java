@@ -42,8 +42,11 @@ public class PlateController {
     @ResponseBody
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public Map<String, Object> savePlate(@RequestBody Plate plate) {
-        Plate plate1 = plateService.savePlate(plate);
-        return plate1 != null ? ResponseData.success(plate1, "添加成功") : ResponseData.error("该板块已存在");
+        plate = plateService.savePlate(plate);
+        Map<String, Object> map = new HashMap<>();
+        map.put("plate", plate);
+        map.put("optionPlate", plateService.getOptionPlate(0));
+        return plate != null ? ResponseData.success(map, "添加成功") : ResponseData.error("该板块已存在");
     }
 
     @ResponseBody
@@ -58,7 +61,11 @@ public class PlateController {
         int num = plateService.deletePlate(plate.getId());
 
         if (num == 1) {
-            return ResponseData.success("success", "删除成功");
+            List<LabelTree> optionsPlate = plateService.getOptionPlate(0);
+            Map<String, Object> map = new HashMap<>();
+            map.put("optionPlate", optionsPlate);
+
+            return ResponseData.success(map, "删除成功");
         } else if (num == 0) {
             return ResponseData.error("网络故障");
         } else if (num == -1){

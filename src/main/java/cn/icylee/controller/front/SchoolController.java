@@ -22,6 +22,7 @@ public class SchoolController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Map<String, Object> getHotModular() {
         Map<String, Object> map = new HashMap<>();
+        map.put("rotations", schoolService.getRotations());
         map.put("courseNav", schoolService.getHotModular());
         map.put("leftNav", schoolService.getLeftNav());
         return ResponseData.success(map, "Nav");

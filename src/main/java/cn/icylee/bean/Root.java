@@ -1,13 +1,19 @@
 package cn.icylee.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
+
 public class Root {
     private Integer id;
 
     private String root;
 
-    private String createtime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createtime;
 
-    private String updatetime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date updatetime;
 
     public Integer getId() {
         return id;
@@ -25,19 +31,19 @@ public class Root {
         this.root = root == null ? null : root.trim();
     }
 
-    public String getCreatetime() {
+    public Date getCreatetime() {
         return createtime;
     }
 
-    public void setCreatetime(String createtime) {
-        this.createtime = createtime == null ? null : createtime.trim();
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
     }
 
-    public String getUpdatetime() {
+    public Date getUpdatetime() {
         return updatetime;
     }
 
-    public void setUpdatetime(String updatetime) {
-        this.updatetime = updatetime == null ? null : updatetime.trim();
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
     }
 }

@@ -151,8 +151,9 @@ public class LabelServiceImpl implements LabelService {
         if (labelMapper.selectByExample(labelExample).size() > 0) {
             return null;
         }
-        label.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        label.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+
+        label.setCreatetime(new Date());
+        label.setUpdatetime(new Date());
 
         int num = labelMapper.insert(label);
 
@@ -184,7 +185,7 @@ public class LabelServiceImpl implements LabelService {
         if (labelMapper.selectByExample(labelExample).size() > 0) {
             return null;
         }
-        label.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        label.setUpdatetime(new Date());
 
         int num = labelMapper.updateByPrimaryKeySelective(label);
 

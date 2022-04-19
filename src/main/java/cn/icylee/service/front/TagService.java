@@ -5,15 +5,18 @@ import cn.icylee.bean.Label;
 import cn.icylee.bean.Plate;
 import cn.icylee.bean.TableParameter;
 
+import java.text.ParseException;
 import java.util.List;
 
 public interface TagService {
 
-    List<Label> getPageLabel(TableParameter tableParameter);
+    List<Label> getPageLabel(TableParameter tableParameter) throws ParseException;
 
     int labelCount();
 
-    Label getLabelById(int id);
+    Label getLabelById(Label label);
+
+    int saveFollowByLabelId(Label label);
 
     List<Plate> getAllPlate();
 

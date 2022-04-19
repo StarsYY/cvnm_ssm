@@ -1,5 +1,9 @@
 package cn.icylee.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
+
 public class Order {
     private Integer id;
 
@@ -13,11 +17,14 @@ public class Order {
 
     private Integer payment;
 
-    private String paytime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date paytime;
 
-    private String invalidtime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date invalidtime;
 
-    private String createtime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createtime;
 
     private String username;
 
@@ -117,27 +124,27 @@ public class Order {
         this.payment = payment;
     }
 
-    public String getPaytime() {
+    public Date getPaytime() {
         return paytime;
     }
 
-    public void setPaytime(String paytime) {
-        this.paytime = paytime == null ? null : paytime.trim();
+    public void setPaytime(Date paytime) {
+        this.paytime = paytime;
     }
 
-    public String getInvalidtime() {
+    public Date getInvalidtime() {
         return invalidtime;
     }
 
-    public void setInvalidtime(String invalidtime) {
-        this.invalidtime = invalidtime == null ? null : invalidtime.trim();
+    public void setInvalidtime(Date invalidtime) {
+        this.invalidtime = invalidtime;
     }
 
-    public String getCreatetime() {
+    public Date getCreatetime() {
         return createtime;
     }
 
-    public void setCreatetime(String createtime) {
-        this.createtime = createtime == null ? null : createtime.trim();
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
     }
 }

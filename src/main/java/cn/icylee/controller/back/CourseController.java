@@ -4,16 +4,18 @@ import cn.icylee.bean.*;
 import cn.icylee.service.back.ArticleService;
 import cn.icylee.service.back.CourseService;
 import cn.icylee.service.back.ModularService;
+import cn.icylee.service.back.VideoService;
 import cn.icylee.utils.ResponseData;
 import cn.icylee.utils.UploadFile;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +33,9 @@ public class CourseController {
 
     @Autowired
     ArticleService articleService;
+
+    @Autowired
+    VideoService videoService;
 
     @ResponseBody
     @RequestMapping(value = "", method = RequestMethod.GET)
@@ -83,13 +88,27 @@ public class CourseController {
 
     @ResponseBody
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public Map<String, Object> saveCourse(@RequestBody Course course) {
-        return courseService.saveCourse(course) > 0 ? ResponseData.success("success", "添加成功") : ResponseData.error("课程名重复");
+    public Map<String, Object> saveCourse(@RequestBody Course course) throws IOException {
+        int id = courseService.saveCourse(course);
+        if (id > 0) {
+            ObjectMapper mapper = new ObjectMapper();
+            List<Video> videoList = mapper.readValue(course.getVideo(), new TypeReference<List<Video>>(){});
+            return videoService.saveVideo(videoList, id) ? ResponseData.success("success", "添加成功") : ResponseData.error("网络故障");
+        }
+        return ResponseData.error("课程名重复");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "searchUser", method = RequestMethod.GET)
+    public Map<String, Object> searchUser(String name) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("userList", courseService.searchUser(name));
+        return ResponseData.success(map, "用户列表");
     }
 
     @ResponseBody
     @RequestMapping(value = "update", method = RequestMethod.POST)
-    public Map<String, Object> updateCourse(@RequestBody Course course) {
+    public Map<String, Object> updateCourse(@RequestBody Course course) throws IOException {
         return courseService.updateCourse(course) > 0 ? ResponseData.success("success", "修改成功") : ResponseData.error("已有该课程");
     }
 
@@ -103,6 +122,12 @@ public class CourseController {
     @RequestMapping(value = "delete", method = RequestMethod.POST)
     public Map<String, Object> deleteCourse(@RequestBody Course course) {
         return courseService.deleteCourse(course.getId()) > 0 ? ResponseData.success("success", "删除成功") : ResponseData.error("网络故障");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "deleteR", method = RequestMethod.POST)
+    public Map<String, Object> deleteCourseR(@RequestBody Course course) {
+        return courseService.deleteCourseR(course.getId()) > 0 ? ResponseData.success("success", "彻底删除") : ResponseData.error("网络故障");
     }
 
     @ResponseBody

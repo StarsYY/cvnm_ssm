@@ -55,7 +55,7 @@ public class AdminController {
     @ResponseBody
     @RequestMapping(value = "change", method = RequestMethod.POST)
     public Map<String, Object> updateStatus(@RequestBody Admin admin) {
-        return adminService.updateStatus(admin) > -1 ? ResponseData.success("success", "更改成功") : null;
+        return adminService.updateStatus(admin) > 0 ? ResponseData.success("success", "更改成功") : null;
     }
 
     @ResponseBody

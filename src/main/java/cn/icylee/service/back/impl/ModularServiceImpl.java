@@ -29,8 +29,7 @@ public class ModularServiceImpl implements ModularService {
 
     @Override
     public List<Modular> getPageModular(TableParameter tableParameter) {
-        List<Modular> modularList = modularMapper.getModularList(tableParameter);
-        return modularList;
+        return modularMapper.getModularList(tableParameter);
     }
 
     @Override
@@ -66,8 +65,9 @@ public class ModularServiceImpl implements ModularService {
         if (modularMapper.selectByExample(modularExample).size() > 0) {
             return null;
         }
-        modular.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        modular.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+
+        modular.setCreatetime(new Date());
+        modular.setUpdatetime(new Date());
 
         modularMapper.insert(modular);
 
@@ -82,7 +82,8 @@ public class ModularServiceImpl implements ModularService {
         if (modularMapper.selectByExample(modularExample).size() > 0) {
             return 0;
         }
-        modular.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        modular.setUpdatetime(new Date());
+
         return modularMapper.updateByPrimaryKeySelective(modular);
     }
 

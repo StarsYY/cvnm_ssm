@@ -4,6 +4,7 @@ import cn.icylee.bean.Comment;
 import cn.icylee.bean.CommentExample;
 import java.util.List;
 
+import cn.icylee.bean.Index;
 import cn.icylee.bean.TableParameter;
 import org.apache.ibatis.annotations.Param;
 
@@ -36,7 +37,7 @@ public interface CommentMapper {
 
     int deleteComment(String ids);
 
-    List<Comment> getMyReply(Integer uid);
+    List<Comment> getMyReply(Index index);
 
     Comment getMyReplyRe(Integer comid);
 }

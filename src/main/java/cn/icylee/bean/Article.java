@@ -1,5 +1,8 @@
 package cn.icylee.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
 import java.util.Map;
 
 public class Article {
@@ -33,11 +36,15 @@ public class Article {
 
     private String source;
 
+    private Integer isopen;
+
     private Integer isdel;
 
-    private String createtime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createtime;
 
-    private String updatetime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date updatetime;
 
     private Map<String, String> labelMap;
 
@@ -51,6 +58,8 @@ public class Article {
 
     private String plate;
 
+    private String icon;
+
     private Integer comment;
 
     private Integer up;
@@ -59,11 +68,29 @@ public class Article {
 
     private Integer collect;
 
-    private boolean like;
+    private boolean like = false;
 
-    private boolean unlike;
+    private boolean unlike = false;
 
-    private boolean star;
+    private boolean star = false;
+
+    private String url;
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
 
     public Integer getCollect() {
         return collect;
@@ -289,6 +316,14 @@ public class Article {
         this.source = source == null ? null : source.trim();
     }
 
+    public Integer getIsopen() {
+        return isopen;
+    }
+
+    public void setIsopen(Integer isopen) {
+        this.isopen = isopen;
+    }
+
     public Integer getIsdel() {
         return isdel;
     }
@@ -297,19 +332,19 @@ public class Article {
         this.isdel = isdel;
     }
 
-    public String getCreatetime() {
+    public Date getCreatetime() {
         return createtime;
     }
 
-    public void setCreatetime(String createtime) {
-        this.createtime = createtime == null ? null : createtime.trim();
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
     }
 
-    public String getUpdatetime() {
+    public Date getUpdatetime() {
         return updatetime;
     }
 
-    public void setUpdatetime(String updatetime) {
-        this.updatetime = updatetime == null ? null : updatetime.trim();
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
     }
 }

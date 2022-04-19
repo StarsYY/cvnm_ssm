@@ -14,12 +14,12 @@
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="phone" property="phone" jdbcType="VARCHAR" />
     <result column="email" property="email" jdbcType="VARCHAR" />
-    <result column="online" property="online" jdbcType="INTEGER" />
+    <result column="isadmin" property="isadmin" jdbcType="INTEGER" />
     <result column="isdel" property="isdel" jdbcType="INTEGER" />
-    <result column="starttime" property="starttime" jdbcType="VARCHAR" />
-    <result column="finaltime" property="finaltime" jdbcType="VARCHAR" />
-    <result column="createtime" property="createtime" jdbcType="VARCHAR" />
-    <result column="updatetime" property="updatetime" jdbcType="VARCHAR" />
+    <result column="starttime" property="starttime" jdbcType="TIMESTAMP" />
+    <result column="finaltime" property="finaltime" jdbcType="TIMESTAMP" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
   </resultMap>
 
   <select id="getUserList" parameterType="cn.icylee.bean.TableParameter" resultType="cn.icylee.bean.User">
@@ -54,6 +54,11 @@
       LIMIT 6
   </select>
 
+  <select id="getExpert" resultType="cn.icylee.bean.User">
+    SELECT `user`.* from `user`
+                           JOIN verify on verify.userid = `user`.uid and verify.`position` = '专家' and verify.`status` = 1
+  </select>
+
   <select id="getFansUser" parameterType="INTEGER" resultType="cn.icylee.bean.User">
     SELECT `user`.uid, `user`.nickname, `user`.summary, `user`.portrait, `user`.grow, `user`.`status`
     FROM `user`
@@ -63,20 +68,30 @@
       LIMIT 6
   </select>
 
-  <select id="getFollowUser2" parameterType="INTEGER" resultType="cn.icylee.bean.User">
+  <select id="getFollowUser2" parameterType="cn.icylee.bean.Index" resultType="cn.icylee.bean.User">
     SELECT `user`.uid, `user`.nickname, `user`.summary, `user`.portrait, `user`.grow, `user`.`status`
     FROM `user`
            LEFT JOIN follow ON follow.userid=#{uid} AND follow.datasource="user"
     WHERE `user`.uid=follow.dataid
     ORDER BY follow.createtime DESC
+      LIMIT #{page}, #{limit}
   </select>
 
-  <select id="getFansUser2" parameterType="INTEGER" resultType="cn.icylee.bean.User">
+  <select id="getFansUser2" parameterType="cn.icylee.bean.Index" resultType="cn.icylee.bean.User">
     SELECT `user`.uid, `user`.nickname, `user`.summary, `user`.portrait, `user`.grow, `user`.`status`
     FROM `user`
            LEFT JOIN follow ON follow.dataid=#{uid} AND follow.datasource="user"
     WHERE `user`.uid=follow.userid
     ORDER BY follow.createtime DESC
+      LIMIT #{page}, #{limit}
+  </select>
+
+  <select id="getSearchUser" parameterType="java.lang.String" resultType="cn.icylee.bean.User">
+    SELECT `user`.uid, `user`.nickname, `user`.summary, `user`.portrait, `user`.grow, `user`.`status`
+    FROM verify
+           LEFT JOIN `user` ON `user`.uid=verify.userid
+    WHERE verify.position = '讲师' and verify.`status` = 1 and `user`.status = '启用' and `user`.isdel = 0
+    <if test="nickname != null and nickname != ''"> and `user`.nickname like '%${nickname}%'</if>
   </select>
 
   <sql id="Example_Where_Clause" >
@@ -139,7 +154,7 @@
   </sql>
   <sql id="Base_Column_List" >
     uid, nickname, password, summary, portrait, grow, integral, status, sex, name, phone,
-    email, online, isdel, starttime, finaltime, createtime, updatetime
+    email, isadmin, isdel, starttime, finaltime, createtime, updatetime
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.icylee.bean.UserExample" >
     select
@@ -171,20 +186,20 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="cn.icylee.bean.User" >
+  <insert id="insert" parameterType="cn.icylee.bean.User" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid" >
     insert into user (uid, nickname, password,
                       summary, portrait, grow,
                       integral, status, sex,
                       name, phone, email,
-                      online, isdel, starttime,
+                      isadmin, isdel, starttime,
                       finaltime, createtime, updatetime
     )
     values (#{uid,jdbcType=INTEGER}, #{nickname,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
             #{summary,jdbcType=VARCHAR}, #{portrait,jdbcType=VARCHAR}, #{grow,jdbcType=INTEGER},
             #{integral,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR},
             #{name,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
-            #{online,jdbcType=INTEGER}, #{isdel,jdbcType=INTEGER}, #{starttime,jdbcType=VARCHAR},
-            #{finaltime,jdbcType=VARCHAR}, #{createtime,jdbcType=VARCHAR}, #{updatetime,jdbcType=VARCHAR}
+            #{isadmin,jdbcType=INTEGER}, #{isdel,jdbcType=INTEGER}, #{starttime,jdbcType=TIMESTAMP},
+            #{finaltime,jdbcType=TIMESTAMP}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}
            )
   </insert>
   <insert id="insertSelective" parameterType="cn.icylee.bean.User" >
@@ -226,8 +241,8 @@
       <if test="email != null" >
         email,
       </if>
-      <if test="online != null" >
-        online,
+      <if test="isadmin != null" >
+        isadmin,
       </if>
       <if test="isdel != null" >
         isdel,
@@ -282,23 +297,23 @@
       <if test="email != null" >
         #{email,jdbcType=VARCHAR},
       </if>
-      <if test="online != null" >
-        #{online,jdbcType=INTEGER},
+      <if test="isadmin != null" >
+        #{isadmin,jdbcType=INTEGER},
       </if>
       <if test="isdel != null" >
         #{isdel,jdbcType=INTEGER},
       </if>
       <if test="starttime != null" >
-        #{starttime,jdbcType=VARCHAR},
+        #{starttime,jdbcType=TIMESTAMP},
       </if>
       <if test="finaltime != null" >
-        #{finaltime,jdbcType=VARCHAR},
+        #{finaltime,jdbcType=TIMESTAMP},
       </if>
       <if test="createtime != null" >
-        #{createtime,jdbcType=VARCHAR},
+        #{createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatetime != null" >
-        #{updatetime,jdbcType=VARCHAR},
+        #{updatetime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -347,23 +362,23 @@
       <if test="record.email != null" >
         email = #{record.email,jdbcType=VARCHAR},
       </if>
-      <if test="record.online != null" >
-        online = #{record.online,jdbcType=INTEGER},
+      <if test="record.isadmin != null" >
+        isadmin = #{record.isadmin,jdbcType=INTEGER},
       </if>
       <if test="record.isdel != null" >
         isdel = #{record.isdel,jdbcType=INTEGER},
       </if>
       <if test="record.starttime != null" >
-        starttime = #{record.starttime,jdbcType=VARCHAR},
+        starttime = #{record.starttime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.finaltime != null" >
-        finaltime = #{record.finaltime,jdbcType=VARCHAR},
+        finaltime = #{record.finaltime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.createtime != null" >
-        createtime = #{record.createtime,jdbcType=VARCHAR},
+        createtime = #{record.createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.updatetime != null" >
-        updatetime = #{record.updatetime,jdbcType=VARCHAR},
+        updatetime = #{record.updatetime,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -384,12 +399,12 @@
     name = #{record.name,jdbcType=VARCHAR},
     phone = #{record.phone,jdbcType=VARCHAR},
     email = #{record.email,jdbcType=VARCHAR},
-    online = #{record.online,jdbcType=INTEGER},
+    isadmin = #{record.isadmin,jdbcType=INTEGER},
     isdel = #{record.isdel,jdbcType=INTEGER},
-    starttime = #{record.starttime,jdbcType=VARCHAR},
-    finaltime = #{record.finaltime,jdbcType=VARCHAR},
-    createtime = #{record.createtime,jdbcType=VARCHAR},
-    updatetime = #{record.updatetime,jdbcType=VARCHAR}
+    starttime = #{record.starttime,jdbcType=TIMESTAMP},
+    finaltime = #{record.finaltime,jdbcType=TIMESTAMP},
+    createtime = #{record.createtime,jdbcType=TIMESTAMP},
+    updatetime = #{record.updatetime,jdbcType=TIMESTAMP}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -430,23 +445,23 @@
       <if test="email != null" >
         email = #{email,jdbcType=VARCHAR},
       </if>
-      <if test="online != null" >
-        online = #{online,jdbcType=INTEGER},
+      <if test="isadmin != null" >
+        isadmin = #{isadmin,jdbcType=INTEGER},
       </if>
       <if test="isdel != null" >
         isdel = #{isdel,jdbcType=INTEGER},
       </if>
       <if test="starttime != null" >
-        starttime = #{starttime,jdbcType=VARCHAR},
+        starttime = #{starttime,jdbcType=TIMESTAMP},
       </if>
       <if test="finaltime != null" >
-        finaltime = #{finaltime,jdbcType=VARCHAR},
+        finaltime = #{finaltime,jdbcType=TIMESTAMP},
       </if>
       <if test="createtime != null" >
-        createtime = #{createtime,jdbcType=VARCHAR},
+        createtime = #{createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatetime != null" >
-        updatetime = #{updatetime,jdbcType=VARCHAR},
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where uid = #{uid,jdbcType=INTEGER}
@@ -464,12 +479,12 @@
         name = #{name,jdbcType=VARCHAR},
         phone = #{phone,jdbcType=VARCHAR},
         email = #{email,jdbcType=VARCHAR},
-        online = #{online,jdbcType=INTEGER},
+        isadmin = #{isadmin,jdbcType=INTEGER},
         isdel = #{isdel,jdbcType=INTEGER},
-        starttime = #{starttime,jdbcType=VARCHAR},
-        finaltime = #{finaltime,jdbcType=VARCHAR},
-        createtime = #{createtime,jdbcType=VARCHAR},
-        updatetime = #{updatetime,jdbcType=VARCHAR}
+        starttime = #{starttime,jdbcType=TIMESTAMP},
+        finaltime = #{finaltime,jdbcType=TIMESTAMP},
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+        updatetime = #{updatetime,jdbcType=TIMESTAMP}
     where uid = #{uid,jdbcType=INTEGER}
   </update>
 </mapper>

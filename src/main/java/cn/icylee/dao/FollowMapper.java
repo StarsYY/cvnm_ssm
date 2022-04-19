@@ -27,4 +27,6 @@ public interface FollowMapper {
     int updateByPrimaryKeySelective(Follow record);
 
     int updateByPrimaryKey(Follow record);
+
+    int getFollowByUid(Integer uid);
 }

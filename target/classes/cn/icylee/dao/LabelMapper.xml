@@ -6,8 +6,8 @@
     <result column="label" property="label" jdbcType="VARCHAR" />
     <result column="categoryid" property="categoryid" jdbcType="VARCHAR" />
     <result column="describe" property="describe" jdbcType="VARCHAR" />
-    <result column="createtime" property="createtime" jdbcType="VARCHAR" />
-    <result column="updatetime" property="updatetime" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
   </resultMap>
 
   <select id="getLabelForArticle" parameterType="cn.icylee.bean.TableParameter" resultType="cn.icylee.bean.Label">
@@ -37,7 +37,15 @@
     SELECT * FROM label WHERE 1 = 1
     <if test="label != null and label != ''">AND `label` LIKE '%${label}%'</if>
     <if test="title == 'name'">ORDER BY label</if>
-    LIMIT #{page}, #{limit}
+  </select>
+
+  <select id="getFollowLabel" parameterType="cn.icylee.bean.Index" resultType="cn.icylee.bean.Label">
+    SELECT label.*
+    FROM label
+           LEFT JOIN follow ON follow.userid=#{uid} AND follow.datasource="label"
+    WHERE label.id=follow.dataid
+    ORDER BY follow.createtime DESC
+      LIMIT #{page}, #{limit}
   </select>
 
   <sql id="Example_Where_Clause" >
@@ -136,7 +144,7 @@
                        `describe`, createtime, updatetime
     )
     values (#{id,jdbcType=INTEGER}, #{label,jdbcType=VARCHAR}, #{categoryid,jdbcType=VARCHAR},
-            #{describe,jdbcType=VARCHAR}, #{createtime,jdbcType=VARCHAR}, #{updatetime,jdbcType=VARCHAR}
+            #{describe,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}
            )
   </insert>
   <insert id="insertSelective" parameterType="cn.icylee.bean.Label" >
@@ -175,10 +183,10 @@
         #{describe,jdbcType=VARCHAR},
       </if>
       <if test="createtime != null" >
-        #{createtime,jdbcType=VARCHAR},
+        #{createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatetime != null" >
-        #{updatetime,jdbcType=VARCHAR},
+        #{updatetime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -204,10 +212,10 @@
         `describe` = #{record.describe,jdbcType=VARCHAR},
       </if>
       <if test="record.createtime != null" >
-        createtime = #{record.createtime,jdbcType=VARCHAR},
+        createtime = #{record.createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.updatetime != null" >
-        updatetime = #{record.updatetime,jdbcType=VARCHAR},
+        updatetime = #{record.updatetime,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -220,8 +228,8 @@
     label = #{record.label,jdbcType=VARCHAR},
     categoryid = #{record.categoryid,jdbcType=VARCHAR},
     `describe` = #{record.describe,jdbcType=VARCHAR},
-    createtime = #{record.createtime,jdbcType=VARCHAR},
-    updatetime = #{record.updatetime,jdbcType=VARCHAR}
+    createtime = #{record.createtime,jdbcType=TIMESTAMP},
+    updatetime = #{record.updatetime,jdbcType=TIMESTAMP}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -239,10 +247,10 @@
         `describe` = #{describe,jdbcType=VARCHAR},
       </if>
       <if test="createtime != null" >
-        createtime = #{createtime,jdbcType=VARCHAR},
+        createtime = #{createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatetime != null" >
-        updatetime = #{updatetime,jdbcType=VARCHAR},
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -252,8 +260,8 @@
     set label = #{label,jdbcType=VARCHAR},
         categoryid = #{categoryid,jdbcType=VARCHAR},
         `describe` = #{describe,jdbcType=VARCHAR},
-        createtime = #{createtime,jdbcType=VARCHAR},
-        updatetime = #{updatetime,jdbcType=VARCHAR}
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+        updatetime = #{updatetime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

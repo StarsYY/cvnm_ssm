@@ -8,7 +8,7 @@
     <result column="articleid" property="articleid" jdbcType="INTEGER" />
     <result column="comid" property="comid" jdbcType="INTEGER" />
     <result column="status" property="status" jdbcType="INTEGER" />
-    <result column="createtime" property="createtime" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
   </resultMap>
 
   <select id="getCommentTotal" parameterType="cn.icylee.bean.TableParameter" resultType="java.lang.Integer">
@@ -36,7 +36,7 @@
     delete from comment where id in(${ids})
   </delete>
 
-  <select id="getMyReply" parameterType="java.lang.Integer" resultType="cn.icylee.bean.Comment">
+  <select id="getMyReply" parameterType="cn.icylee.bean.Index" resultType="cn.icylee.bean.Comment">
     SELECT `comment`.*, article.title AS article, u1.nickname AS username, u1.portrait AS avatar, u2.nickname AS reviewName
     FROM `comment`
            LEFT JOIN article ON article.id=`comment`.articleid
@@ -44,6 +44,7 @@
            LEFT JOIN `user` u2 ON u2.uid=article.userid
     WHERE `comment`.userid = #{uid} AND `comment`.`status` = 1
     ORDER BY `comment`.createtime DESC
+    LIMIT #{page}, #{limit}
   </select>
 
   <select id="getMyReplyRe" parameterType="java.lang.Integer" resultType="cn.icylee.bean.Comment">
@@ -150,7 +151,7 @@
                          createtime)
     values (#{id,jdbcType=INTEGER}, #{comment,jdbcType=VARCHAR}, #{userid,jdbcType=INTEGER},
             #{articleid,jdbcType=INTEGER}, #{comid,jdbcType=INTEGER}, #{status,jdbcType=INTEGER},
-            #{createtime,jdbcType=VARCHAR})
+            #{createtime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="cn.icylee.bean.Comment" >
     insert into comment
@@ -197,7 +198,7 @@
         #{status,jdbcType=INTEGER},
       </if>
       <if test="createtime != null" >
-        #{createtime,jdbcType=VARCHAR},
+        #{createtime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -229,7 +230,7 @@
         status = #{record.status,jdbcType=INTEGER},
       </if>
       <if test="record.createtime != null" >
-        createtime = #{record.createtime,jdbcType=VARCHAR},
+        createtime = #{record.createtime,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -244,7 +245,7 @@
     articleid = #{record.articleid,jdbcType=INTEGER},
     comid = #{record.comid,jdbcType=INTEGER},
     status = #{record.status,jdbcType=INTEGER},
-    createtime = #{record.createtime,jdbcType=VARCHAR}
+    createtime = #{record.createtime,jdbcType=TIMESTAMP}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -268,7 +269,7 @@
         status = #{status,jdbcType=INTEGER},
       </if>
       <if test="createtime != null" >
-        createtime = #{createtime,jdbcType=VARCHAR},
+        createtime = #{createtime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -280,7 +281,7 @@
         articleid = #{articleid,jdbcType=INTEGER},
         comid = #{comid,jdbcType=INTEGER},
         status = #{status,jdbcType=INTEGER},
-        createtime = #{createtime,jdbcType=VARCHAR}
+        createtime = #{createtime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

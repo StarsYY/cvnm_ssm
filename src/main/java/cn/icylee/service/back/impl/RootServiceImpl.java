@@ -46,8 +46,9 @@ public class RootServiceImpl implements RootService {
         if (rootMapper.selectByExample(rootExample).size() > 0) {
             return null;
         }
-        root.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        root.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+
+        root.setCreatetime(new Date());
+        root.setUpdatetime(new Date());
 
         rootMapper.insert(root);
 
@@ -62,7 +63,8 @@ public class RootServiceImpl implements RootService {
         if (rootMapper.selectByExample(rootExample).size() > 0) {
             return null;
         }
-        root.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+
+        root.setUpdatetime(new Date());
 
         int num = rootMapper.updateByPrimaryKeySelective(root);
 

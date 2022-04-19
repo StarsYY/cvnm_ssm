@@ -1,5 +1,9 @@
 package cn.icylee.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
+
 public class Integral {
     private Integer id;
 
@@ -11,7 +15,8 @@ public class Integral {
 
     private String describe;
 
-    private String createtime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createtime;
 
     private String username;
 
@@ -63,11 +68,11 @@ public class Integral {
         this.describe = describe == null ? null : describe.trim();
     }
 
-    public String getCreatetime() {
+    public Date getCreatetime() {
         return createtime;
     }
 
-    public void setCreatetime(String createtime) {
-        this.createtime = createtime == null ? null : createtime.trim();
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
     }
 }

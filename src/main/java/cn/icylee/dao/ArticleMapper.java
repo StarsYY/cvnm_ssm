@@ -1,11 +1,9 @@
 package cn.icylee.dao;
 
-import cn.icylee.bean.Article;
-import cn.icylee.bean.ArticleExample;
+import cn.icylee.bean.*;
+
 import java.util.List;
 
-import cn.icylee.bean.Index;
-import cn.icylee.bean.TableParameter;
 import org.apache.ibatis.annotations.Param;
 
 public interface ArticleMapper {
@@ -35,17 +33,29 @@ public interface ArticleMapper {
 
     List<Article> getArticleList(TableParameter tableParameter);
 
-    List<Article> getNewArticle(Index index);
+    List<Article> getMostHotArticle(Index index);
 
-    List<Article> getNewCommentArticle(Index index);
+    List<Article> getIndexArticle(Index index);
 
-    List<Article> getMostCommentArticle(Index index);
+    List<Article> getFollowUser(Index index);
 
-    List<Article> getCollectArticle(Integer uid);
+    List<Article> getFollowPlate(Index index);
+
+    List<Article> getFollowLabel(Index index);
+
+    List<Article> getCollectArticle(Index index);
 
     List<Article> getTagArticle(TableParameter tableParameter);
 
     int getCountTagArticle(TableParameter tableParameter);
 
-    List<Article> getMyDraft(Integer uid);
+    List<Article> getMyDraft(Index index);
+
+    List<Article> getMyAudit(Index index);
+
+    int getWatch(Integer uid);
+
+    List<Article> getSearchArticle(Search search);
+
+    int getSearchTotal(Search search);
 }

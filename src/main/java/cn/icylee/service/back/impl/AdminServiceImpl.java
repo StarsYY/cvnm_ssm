@@ -45,13 +45,12 @@ public class AdminServiceImpl implements AdminService {
         if (adminMapper.selectByExample(adminExample).size() > 0) {
             return 0;
         }
-        admin.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        admin.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        admin.setCreatetime(new Date());
+        admin.setUpdatetime(new Date());
         if (admin.getAvatar().equals("")) {
             admin.setAvatar("https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
         }
         admin.setStatus(1);
-        admin.setOnline(0);
         admin.setPassword(DigestUtils.md5DigestAsHex(admin.getPassword().getBytes()));
         return adminMapper.insert(admin);
     }
@@ -69,7 +68,7 @@ public class AdminServiceImpl implements AdminService {
         if (adminMapper.selectByExample(adminExample).size() > 0) {
             return 0;
         }
-        admin.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        admin.setUpdatetime(new Date());
         if (!admin.getPassword().equals(getAdminById(admin.getId()).getPassword())) {
             // 对原来的密码进行修改
             admin.setPassword(DigestUtils.md5DigestAsHex(admin.getPassword().getBytes()));

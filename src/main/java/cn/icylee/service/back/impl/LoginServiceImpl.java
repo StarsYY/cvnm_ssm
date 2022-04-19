@@ -6,6 +6,7 @@ import cn.icylee.dao.AdminMapper;
 import cn.icylee.service.back.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 
 import java.util.List;
 
@@ -14,6 +15,26 @@ public class LoginServiceImpl implements LoginService {
 
     @Autowired
     AdminMapper adminMapper;
+
+    @Override
+    public int login(String username, String password) {
+        AdminExample adminExample = new AdminExample();
+        adminExample.createCriteria().andUsernameEqualTo(username);
+        if (adminMapper.countByExample(adminExample) > 0) {
+            Admin admin = adminMapper.selectByExample(adminExample).get(0);
+
+            if (admin.getStatus() == 0) {
+                return 0;
+            } else {
+                if (admin.getPassword().equals(DigestUtils.md5DigestAsHex(password.getBytes()))) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            }
+        }
+        return -2;
+    }
 
     @Override
     public Admin getByUsername(String username) {
@@ -28,22 +49,11 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public int updateOnline(String username) {
-        AdminExample adminExample = new AdminExample();
-        AdminExample.Criteria criteria = adminExample.createCriteria();
-        criteria.andUsernameEqualTo(username);
-        Admin admin = adminMapper.selectByExample(adminExample).get(0);
-        admin.setOnline(1);
-        return adminMapper.updateByPrimaryKeySelective(admin);
-    }
-
-    @Override
     public int updateLogOut(String username) {
         AdminExample adminExample = new AdminExample();
         AdminExample.Criteria criteria = adminExample.createCriteria();
         criteria.andUsernameEqualTo(username);
         Admin admin = adminMapper.selectByExample(adminExample).get(0);
-        admin.setOnline(0);
         return adminMapper.updateByPrimaryKeySelective(admin);
     }
 

@@ -8,9 +8,9 @@
     <result column="courseid" property="courseid" jdbcType="INTEGER" />
     <result column="transaction" property="transaction" jdbcType="INTEGER" />
     <result column="payment" property="payment" jdbcType="INTEGER" />
-    <result column="paytime" property="paytime" jdbcType="VARCHAR" />
-    <result column="invalidtime" property="invalidtime" jdbcType="VARCHAR" />
-    <result column="createtime" property="createtime" jdbcType="VARCHAR" />
+    <result column="paytime" property="paytime" jdbcType="TIMESTAMP" />
+    <result column="invalidtime" property="invalidtime" jdbcType="TIMESTAMP" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
   </resultMap>
 
   <select id="getOrderList" parameterType="cn.icylee.bean.TableParameter" resultType="cn.icylee.bean.Order">
@@ -37,12 +37,19 @@
     </where>
   </select>
 
-  <select id="getMyOrder" parameterType="cn.icylee.bean.Order" resultType="cn.icylee.bean.Order">
+  <select id="getMyOrder" parameterType="cn.icylee.bean.Index" resultType="cn.icylee.bean.Order">
     select `order`.*, course.`name`, course.cover, course.price from `order`
     left join course on `order`.courseid = course.id
-    where `order`.userid = #{userid}
+    where `order`.userid = #{uid}
     <if test="payment == 1">and payment is null</if>
     <if test="payment == 2">and payment is not null</if>
+    LIMIT #{page}, #{limit}
+  </select>
+
+  <select id="getDashMoney" resultType="cn.icylee.bean.Order">
+    select `order`.*, course.price from `order`
+    left join course on `order`.courseid = course.id
+    where `order`.transaction = 2
   </select>
 
   <sql id="Example_Where_Clause" >
@@ -117,7 +124,7 @@
       <include refid="Example_Where_Clause" />
     </if>
     <if test="orderByClause != null" >
-      `order` by ${orderByClause}
+      order by ${orderByClause}
     </if>
   </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -136,14 +143,14 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="cn.icylee.bean.Order" >
+  <insert id="insert" parameterType="cn.icylee.bean.Order" useGeneratedKeys="true" keyProperty="id" keyColumn="id" >
     insert into `order` (id, `number`, userid,
       courseid, `transaction`, payment,
       paytime, invalidtime, createtime
       )
     values (#{id,jdbcType=INTEGER}, #{number,jdbcType=VARCHAR}, #{userid,jdbcType=INTEGER}, 
       #{courseid,jdbcType=INTEGER}, #{transaction,jdbcType=INTEGER}, #{payment,jdbcType=INTEGER}, 
-      #{paytime,jdbcType=VARCHAR}, #{invalidtime,jdbcType=VARCHAR}, #{createtime,jdbcType=VARCHAR}
+      #{paytime,jdbcType=TIMESTAMP}, #{invalidtime,jdbcType=TIMESTAMP}, #{createtime,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" parameterType="cn.icylee.bean.Order" >
@@ -197,13 +204,13 @@
         #{payment,jdbcType=INTEGER},
       </if>
       <if test="paytime != null" >
-        #{paytime,jdbcType=VARCHAR},
+        #{paytime,jdbcType=TIMESTAMP},
       </if>
       <if test="invalidtime != null" >
-        #{invalidtime,jdbcType=VARCHAR},
+        #{invalidtime,jdbcType=TIMESTAMP},
       </if>
       <if test="createtime != null" >
-        #{createtime,jdbcType=VARCHAR},
+        #{createtime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -235,13 +242,13 @@
         payment = #{record.payment,jdbcType=INTEGER},
       </if>
       <if test="record.paytime != null" >
-        paytime = #{record.paytime,jdbcType=VARCHAR},
+        paytime = #{record.paytime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.invalidtime != null" >
-        invalidtime = #{record.invalidtime,jdbcType=VARCHAR},
+        invalidtime = #{record.invalidtime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.createtime != null" >
-        createtime = #{record.createtime,jdbcType=VARCHAR},
+        createtime = #{record.createtime,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -256,9 +263,9 @@
       courseid = #{record.courseid,jdbcType=INTEGER},
       `transaction` = #{record.transaction,jdbcType=INTEGER},
       payment = #{record.payment,jdbcType=INTEGER},
-      paytime = #{record.paytime,jdbcType=VARCHAR},
-      invalidtime = #{record.invalidtime,jdbcType=VARCHAR},
-      createtime = #{record.createtime,jdbcType=VARCHAR}
+      paytime = #{record.paytime,jdbcType=TIMESTAMP},
+      invalidtime = #{record.invalidtime,jdbcType=TIMESTAMP},
+      createtime = #{record.createtime,jdbcType=TIMESTAMP}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -282,13 +289,13 @@
         payment = #{payment,jdbcType=INTEGER},
       </if>
       <if test="paytime != null" >
-        paytime = #{paytime,jdbcType=VARCHAR},
+        paytime = #{paytime,jdbcType=TIMESTAMP},
       </if>
       <if test="invalidtime != null" >
-        invalidtime = #{invalidtime,jdbcType=VARCHAR},
+        invalidtime = #{invalidtime,jdbcType=TIMESTAMP},
       </if>
       <if test="createtime != null" >
-        createtime = #{createtime,jdbcType=VARCHAR},
+        createtime = #{createtime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -300,9 +307,9 @@
       courseid = #{courseid,jdbcType=INTEGER},
       `transaction` = #{transaction,jdbcType=INTEGER},
       payment = #{payment,jdbcType=INTEGER},
-      paytime = #{paytime,jdbcType=VARCHAR},
-      invalidtime = #{invalidtime,jdbcType=VARCHAR},
-      createtime = #{createtime,jdbcType=VARCHAR}
+      paytime = #{paytime,jdbcType=TIMESTAMP},
+      invalidtime = #{invalidtime,jdbcType=TIMESTAMP},
+      createtime = #{createtime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

@@ -67,8 +67,8 @@ public class CategoryServiceImpl implements CategoryService {
         if (categoryMapper.selectByExample(categoryExample).size() > 0) {
             return null;
         }
-        category.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        category.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        category.setCreatetime(new Date());
+        category.setUpdatetime(new Date());
 
         categoryMapper.insert(category);
 
@@ -85,7 +85,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (categoryMapper.selectByExample(categoryExample).size() > 0) {
             return null;
         }
-        category.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        category.setUpdatetime(new Date());
 
         int num = categoryMapper.updateByPrimaryKeySelective(category);
 

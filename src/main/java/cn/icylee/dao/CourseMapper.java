@@ -47,5 +47,9 @@ public interface CourseMapper {
 
     User getUserNum(int uid);
 
-    List<Course> getFavorites(int uid);
+    List<Course> getFavorites(Index index);
+
+    List<Course> getLearnCourse(Index index);
+
+    List<Course> getRecommend(int id);
 }

@@ -1,5 +1,9 @@
 package cn.icylee.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 public class Comment {
@@ -15,7 +19,8 @@ public class Comment {
 
     private Integer status;
 
-    private String createtime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createtime;
 
     private Map<String, Comment> commentList;
 
@@ -35,13 +40,21 @@ public class Comment {
 
     private String avatar;
 
-    private boolean hidden = true;
-
     private boolean reply = true;
 
     private Integer is;
 
     private boolean like;
+
+    private List<Medal> medalList;
+
+    public List<Medal> getMedalList() {
+        return medalList;
+    }
+
+    public void setMedalList(List<Medal> medalList) {
+        this.medalList = medalList;
+    }
 
     public Comment getCm() {
         return cm;
@@ -131,14 +144,6 @@ public class Comment {
         this.avatar = avatar;
     }
 
-    public boolean isHidden() {
-        return hidden;
-    }
-
-    public void setHidden(boolean hidden) {
-        this.hidden = hidden;
-    }
-
     public boolean isReply() {
         return reply;
     }
@@ -195,11 +200,11 @@ public class Comment {
         this.status = status;
     }
 
-    public String getCreatetime() {
+    public Date getCreatetime() {
         return createtime;
     }
 
-    public void setCreatetime(String createtime) {
-        this.createtime = createtime == null ? null : createtime.trim();
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
     }
 }

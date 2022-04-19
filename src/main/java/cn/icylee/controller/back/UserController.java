@@ -4,6 +4,7 @@ import cn.icylee.bean.User;
 import cn.icylee.bean.TableParameter;
 import cn.icylee.bean.Upload;
 import cn.icylee.service.back.UserService;
+import cn.icylee.service.front.SendMessageService;
 import cn.icylee.utils.ResponseData;
 import cn.icylee.utils.UploadFile;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    SendMessageService sendMessageService;
 
     @ResponseBody
     @RequestMapping(value = "", method = RequestMethod.GET)
@@ -43,7 +47,17 @@ public class UserController {
     @ResponseBody
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public Map<String, Object> saveUser(@RequestBody User user) {
-        return userService.saveUser(user) > 0 ? ResponseData.success("success", "添加成功") : ResponseData.error("已有此用户");
+        User uu = userService.saveUser(user);
+
+        if (uu.getUid() == -1) {
+            return ResponseData.error("已有此用户");
+        } else if (uu.getUid() == 0) {
+            return ResponseData.error("网络故障，请重试");
+        } else {
+            return sendMessageService.saveMessageFromLogin(uu) > 0
+                    ? ResponseData.success("success", "添加成功")
+                    : ResponseData.error("添加成功，消息发送失败");
+        }
     }
 
     @ResponseBody
@@ -55,7 +69,7 @@ public class UserController {
     @ResponseBody
     @RequestMapping(value = "change", method = RequestMethod.POST)
     public Map<String, Object> updateStatus(@RequestBody User user) {
-        return userService.updateStatus(user) > -1 ? ResponseData.success("success", "更改成功") : null;
+        return userService.updateStatus(user) > 0 ? ResponseData.success("success", "更改成功") : null;
     }
 
     @ResponseBody

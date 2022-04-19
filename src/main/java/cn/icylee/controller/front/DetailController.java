@@ -1,8 +1,10 @@
 package cn.icylee.controller.front;
 
 import cn.icylee.bean.Comment;
+import cn.icylee.bean.Report;
 import cn.icylee.bean.Upload;
 import cn.icylee.service.front.DetailService;
+import cn.icylee.service.front.UserMedalService;
 import cn.icylee.utils.ResponseData;
 import cn.icylee.utils.UploadFile;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,25 +27,44 @@ public class DetailController {
     @Autowired
     DetailService detailService;
 
+    @Autowired
+    UserMedalService userMedalService;
+
     @ResponseBody
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Map<String, Object> getArticleById(Comment comment) {
-        return detailService.updateArticleWatch(comment.getArticleid()) > 0 ? ResponseData.success(detailService.getArticleById(comment), "文章详情") : ResponseData.error("欸哎，我堵在这了つ ◕_◕ ༽つ");
+        Map<String, Object> map = new HashMap<>();
+        map.put("article", detailService.getArticleById(comment));
+        if (userMedalService.saveUserMedal(detailService.getUsernameTool(comment.getArticleid())) > 0) {
+            map.put("userMedal", detailService.getUserMedal(detailService.getUidTool(comment.getArticleid())));
+        }
+        return detailService.updateArticleWatch(comment.getArticleid()) > 0 ? ResponseData.success(map, "文章详情") : ResponseData.error("欸哎，我堵在这了つ ◕_◕ ༽つ");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "left", method = RequestMethod.GET)
+    public Map<String, Object> getLeft(int uid) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("leftUserHotArticle", detailService.getHotArticleByUid(uid));
+        map.put("leftUserNewArticle", detailService.getNewArticleByUid(uid));
+        return ResponseData.success(map, "用户热门，最新文章");
     }
 
     @ResponseBody
     @RequestMapping(value = "comment", method = RequestMethod.GET)
     public Map<String, Object> getAllComment(Comment comment) {
-        return ResponseData.success(detailService.getAllComment(comment), "文章评论");
+        return ResponseData.success(detailService.saveGetAllComment(comment), "文章评论");
     }
 
     @ResponseBody
     @RequestMapping(value = "comment/add", method = RequestMethod.POST)
     public Map<String, Object> saveComment(@RequestBody Comment comment) {
-        Map<String, Object> map = new HashMap<>();
-        int success = detailService.saveComment(comment);
-        map.put("commentList", detailService.getAllComment(comment));
-        return success > 0 ? ResponseData.success(map, "评论成功") : ResponseData.error("欸哎，我堵在这了つ ◕_◕ ༽つ");
+        int num = detailService.saveComment(comment);
+
+        if (num == -1) {
+            return ResponseData.error("您已经对此文章评论过该内容，不能重复提交。");
+        }
+        return num > 0 ? ResponseData.success("success", "评论成功") : ResponseData.error("欸哎，我堵在这了つ ◕_◕ ༽つ");
     }
 
     @ResponseBody
@@ -57,7 +78,7 @@ public class DetailController {
     public Map<String, Object> upComment(@RequestBody Comment comment) {
         Map<String, Object> map = new HashMap<>();
         int success = detailService.savePreferUpArticleComment(comment);
-        map.put("commentList", detailService.getAllComment(comment));
+        map.put("commentList", detailService.saveGetAllComment(comment));
         return success > 0 ? ResponseData.success(map, "点赞评论成功") : ResponseData.error("欸哎，我堵在这了つ ◕_◕ ༽つ");
     }
 
@@ -72,8 +93,14 @@ public class DetailController {
     public Map<String, Object> followAuthor(@RequestBody Comment comment) {
         Map<String, Object> map = new HashMap<>();
         int success = detailService.saveFollowAuthor(comment);
-        map.put("commentList", detailService.getAllComment(comment));
+        map.put("commentList", detailService.saveGetAllComment(comment));
         return success > 0 ? ResponseData.success(map, "关注或取消关注成功") : ResponseData.error("欸哎，我堵在这了つ ◕_◕ ༽つ");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "report", method = RequestMethod.POST)
+    public Map<String, Object> reportArticleOrComment(@RequestBody Report report) {
+        return detailService.saveReport(report) > 0 ? ResponseData.success("success", "举报成功") : ResponseData.error("欸哎，我堵在这了つ ◕_◕ ༽つ");
     }
 
     @ResponseBody

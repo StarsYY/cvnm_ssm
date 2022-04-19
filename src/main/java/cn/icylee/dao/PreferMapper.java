@@ -27,4 +27,6 @@ public interface PreferMapper {
     int updateByPrimaryKeySelective(Prefer record);
 
     int updateByPrimaryKey(Prefer record);
+
+    int deletePreferByComment(String ids);
 }

@@ -1,6 +1,7 @@
 package cn.icylee.bean;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class AdminExample {
@@ -504,66 +505,6 @@ public class AdminExample {
             return (Criteria) this;
         }
 
-        public Criteria andOnlineIsNull() {
-            addCriterion("online is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andOnlineIsNotNull() {
-            addCriterion("online is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andOnlineEqualTo(Integer value) {
-            addCriterion("online =", value, "online");
-            return (Criteria) this;
-        }
-
-        public Criteria andOnlineNotEqualTo(Integer value) {
-            addCriterion("online <>", value, "online");
-            return (Criteria) this;
-        }
-
-        public Criteria andOnlineGreaterThan(Integer value) {
-            addCriterion("online >", value, "online");
-            return (Criteria) this;
-        }
-
-        public Criteria andOnlineGreaterThanOrEqualTo(Integer value) {
-            addCriterion("online >=", value, "online");
-            return (Criteria) this;
-        }
-
-        public Criteria andOnlineLessThan(Integer value) {
-            addCriterion("online <", value, "online");
-            return (Criteria) this;
-        }
-
-        public Criteria andOnlineLessThanOrEqualTo(Integer value) {
-            addCriterion("online <=", value, "online");
-            return (Criteria) this;
-        }
-
-        public Criteria andOnlineIn(List<Integer> values) {
-            addCriterion("online in", values, "online");
-            return (Criteria) this;
-        }
-
-        public Criteria andOnlineNotIn(List<Integer> values) {
-            addCriterion("online not in", values, "online");
-            return (Criteria) this;
-        }
-
-        public Criteria andOnlineBetween(Integer value1, Integer value2) {
-            addCriterion("online between", value1, value2, "online");
-            return (Criteria) this;
-        }
-
-        public Criteria andOnlineNotBetween(Integer value1, Integer value2) {
-            addCriterion("online not between", value1, value2, "online");
-            return (Criteria) this;
-        }
-
         public Criteria andCreatetimeIsNull() {
             addCriterion("createtime is null");
             return (Criteria) this;
@@ -574,62 +515,52 @@ public class AdminExample {
             return (Criteria) this;
         }
 
-        public Criteria andCreatetimeEqualTo(String value) {
+        public Criteria andCreatetimeEqualTo(Date value) {
             addCriterion("createtime =", value, "createtime");
             return (Criteria) this;
         }
 
-        public Criteria andCreatetimeNotEqualTo(String value) {
+        public Criteria andCreatetimeNotEqualTo(Date value) {
             addCriterion("createtime <>", value, "createtime");
             return (Criteria) this;
         }
 
-        public Criteria andCreatetimeGreaterThan(String value) {
+        public Criteria andCreatetimeGreaterThan(Date value) {
             addCriterion("createtime >", value, "createtime");
             return (Criteria) this;
         }
 
-        public Criteria andCreatetimeGreaterThanOrEqualTo(String value) {
+        public Criteria andCreatetimeGreaterThanOrEqualTo(Date value) {
             addCriterion("createtime >=", value, "createtime");
             return (Criteria) this;
         }
 
-        public Criteria andCreatetimeLessThan(String value) {
+        public Criteria andCreatetimeLessThan(Date value) {
             addCriterion("createtime <", value, "createtime");
             return (Criteria) this;
         }
 
-        public Criteria andCreatetimeLessThanOrEqualTo(String value) {
+        public Criteria andCreatetimeLessThanOrEqualTo(Date value) {
             addCriterion("createtime <=", value, "createtime");
             return (Criteria) this;
         }
 
-        public Criteria andCreatetimeLike(String value) {
-            addCriterion("createtime like", value, "createtime");
-            return (Criteria) this;
-        }
-
-        public Criteria andCreatetimeNotLike(String value) {
-            addCriterion("createtime not like", value, "createtime");
-            return (Criteria) this;
-        }
-
-        public Criteria andCreatetimeIn(List<String> values) {
+        public Criteria andCreatetimeIn(List<Date> values) {
             addCriterion("createtime in", values, "createtime");
             return (Criteria) this;
         }
 
-        public Criteria andCreatetimeNotIn(List<String> values) {
+        public Criteria andCreatetimeNotIn(List<Date> values) {
             addCriterion("createtime not in", values, "createtime");
             return (Criteria) this;
         }
 
-        public Criteria andCreatetimeBetween(String value1, String value2) {
+        public Criteria andCreatetimeBetween(Date value1, Date value2) {
             addCriterion("createtime between", value1, value2, "createtime");
             return (Criteria) this;
         }
 
-        public Criteria andCreatetimeNotBetween(String value1, String value2) {
+        public Criteria andCreatetimeNotBetween(Date value1, Date value2) {
             addCriterion("createtime not between", value1, value2, "createtime");
             return (Criteria) this;
         }
@@ -644,62 +575,52 @@ public class AdminExample {
             return (Criteria) this;
         }
 
-        public Criteria andUpdatetimeEqualTo(String value) {
+        public Criteria andUpdatetimeEqualTo(Date value) {
             addCriterion("updatetime =", value, "updatetime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdatetimeNotEqualTo(String value) {
+        public Criteria andUpdatetimeNotEqualTo(Date value) {
             addCriterion("updatetime <>", value, "updatetime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdatetimeGreaterThan(String value) {
+        public Criteria andUpdatetimeGreaterThan(Date value) {
             addCriterion("updatetime >", value, "updatetime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdatetimeGreaterThanOrEqualTo(String value) {
+        public Criteria andUpdatetimeGreaterThanOrEqualTo(Date value) {
             addCriterion("updatetime >=", value, "updatetime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdatetimeLessThan(String value) {
+        public Criteria andUpdatetimeLessThan(Date value) {
             addCriterion("updatetime <", value, "updatetime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdatetimeLessThanOrEqualTo(String value) {
+        public Criteria andUpdatetimeLessThanOrEqualTo(Date value) {
             addCriterion("updatetime <=", value, "updatetime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdatetimeLike(String value) {
-            addCriterion("updatetime like", value, "updatetime");
-            return (Criteria) this;
-        }
-
-        public Criteria andUpdatetimeNotLike(String value) {
-            addCriterion("updatetime not like", value, "updatetime");
-            return (Criteria) this;
-        }
-
-        public Criteria andUpdatetimeIn(List<String> values) {
+        public Criteria andUpdatetimeIn(List<Date> values) {
             addCriterion("updatetime in", values, "updatetime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdatetimeNotIn(List<String> values) {
+        public Criteria andUpdatetimeNotIn(List<Date> values) {
             addCriterion("updatetime not in", values, "updatetime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdatetimeBetween(String value1, String value2) {
+        public Criteria andUpdatetimeBetween(Date value1, Date value2) {
             addCriterion("updatetime between", value1, value2, "updatetime");
             return (Criteria) this;
         }
 
-        public Criteria andUpdatetimeNotBetween(String value1, String value2) {
+        public Criteria andUpdatetimeNotBetween(Date value1, Date value2) {
             addCriterion("updatetime not between", value1, value2, "updatetime");
             return (Criteria) this;
         }

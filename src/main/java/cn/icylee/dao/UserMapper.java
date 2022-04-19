@@ -1,5 +1,6 @@
 package cn.icylee.dao;
 
+import cn.icylee.bean.Index;
 import cn.icylee.bean.TableParameter;
 import cn.icylee.bean.User;
 import cn.icylee.bean.UserExample;
@@ -37,9 +38,13 @@ public interface UserMapper {
 
     List<User> getFollowUser(Integer uid);
 
+    List<User> getExpert();
+
     List<User> getFansUser(Integer uid);
 
-    List<User> getFollowUser2(Integer uid);
+    List<User> getFollowUser2(Index index);
 
-    List<User> getFansUser2(Integer uid);
+    List<User> getFansUser2(Index index);
+
+    List<User> getSearchUser(String nickname);
 }

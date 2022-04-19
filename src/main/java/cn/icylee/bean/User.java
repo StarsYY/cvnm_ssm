@@ -1,5 +1,9 @@
 package cn.icylee.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
+
 public class User {
     private Integer uid;
 
@@ -25,17 +29,21 @@ public class User {
 
     private String email;
 
-    private Integer online;
+    private Integer isadmin;
 
     private Integer isdel;
 
-    private String starttime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date starttime;
 
-    private String finaltime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date finaltime;
 
-    private String createtime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createtime;
 
-    private String updatetime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date updatetime;
 
     private boolean follow;
 
@@ -50,6 +58,36 @@ public class User {
     private Integer watch;
 
     private Double score;
+
+    private String repassword;
+
+    private String position;
+
+    private Integer unreadMessage;
+
+    public Integer getUnreadMessage() {
+        return unreadMessage;
+    }
+
+    public void setUnreadMessage(Integer unreadMessage) {
+        this.unreadMessage = unreadMessage;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public String getRepassword() {
+        return repassword;
+    }
+
+    public void setRepassword(String repassword) {
+        this.repassword = repassword;
+    }
 
     public Integer getCount() {
         return count;
@@ -203,12 +241,12 @@ public class User {
         this.email = email == null ? null : email.trim();
     }
 
-    public Integer getOnline() {
-        return online;
+    public Integer getIsadmin() {
+        return isadmin;
     }
 
-    public void setOnline(Integer online) {
-        this.online = online;
+    public void setIsadmin(Integer isadmin) {
+        this.isadmin = isadmin;
     }
 
     public Integer getIsdel() {
@@ -219,35 +257,35 @@ public class User {
         this.isdel = isdel;
     }
 
-    public String getStarttime() {
+    public Date getStarttime() {
         return starttime;
     }
 
-    public void setStarttime(String starttime) {
-        this.starttime = starttime == null ? null : starttime.trim();
+    public void setStarttime(Date starttime) {
+        this.starttime = starttime;
     }
 
-    public String getFinaltime() {
+    public Date getFinaltime() {
         return finaltime;
     }
 
-    public void setFinaltime(String finaltime) {
-        this.finaltime = finaltime == null ? null : finaltime.trim();
+    public void setFinaltime(Date finaltime) {
+        this.finaltime = finaltime;
     }
 
-    public String getCreatetime() {
+    public Date getCreatetime() {
         return createtime;
     }
 
-    public void setCreatetime(String createtime) {
-        this.createtime = createtime == null ? null : createtime.trim();
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
     }
 
-    public String getUpdatetime() {
+    public Date getUpdatetime() {
         return updatetime;
     }
 
-    public void setUpdatetime(String updatetime) {
-        this.updatetime = updatetime == null ? null : updatetime.trim();
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
     }
 }

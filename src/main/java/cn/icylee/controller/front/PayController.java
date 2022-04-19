@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.text.ParseException;
 import java.util.Map;
 
 @Controller
@@ -27,8 +28,28 @@ public class PayController {
 
     @ResponseBody
     @RequestMapping(value = "confirm/pay", method = RequestMethod.POST)
-    public Map<String, Object> saveOrder(@RequestBody Order order) {
-        return payService.saveOrder(order) > 0 ? ResponseData.success("success", "添加订单") : ResponseData.error("网络故障");
+    public Map<String, Object> saveOrder(@RequestBody Order order) throws ParseException {
+        order = payService.saveOrder(order);
+        return order != null ? ResponseData.success(order.getId(), "添加订单") : ResponseData.error("网络故障");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "confirm/userIntegral", method = RequestMethod.POST)
+    public Map<String, Object> getUserIntegral(@RequestBody Order order) {
+        int num = payService.getUserIntegral(order.getUsername());
+        return num > 0 ? ResponseData.success(num, "获取用户积分") : ResponseData.error("网络故障");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "confirm/pay/integral", method = RequestMethod.POST)
+    public Map<String, Object> saveOrderByIntegralPay(@RequestBody Order order) throws ParseException {
+        return payService.saveOrderByIntegralPay(order) > 0 ? ResponseData.success("success", "兑换课程") : ResponseData.error("网络故障");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "order/pay", method = RequestMethod.POST)
+    public Map<String, Object> getOrderById(@RequestBody Order order) {
+        return ResponseData.success(payService.getOrderById(order.getId()), "订单");
     }
 
 }

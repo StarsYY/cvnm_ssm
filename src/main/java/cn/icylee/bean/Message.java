@@ -1,5 +1,9 @@
 package cn.icylee.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
+
 public class Message {
     private Integer id;
 
@@ -11,22 +15,88 @@ public class Message {
 
     private Integer read;
 
-    private String addition;
+    private String datasource;
+
+    private Integer addition;
 
     private Integer type;
 
-    private String createtime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createtime;
 
     private String sendername;
 
     private String receivename;
 
-    public String getSendername() {
-        return sendername;
+    private String articleTitle;
+
+    private String courseName;
+
+    private String receiveContent;
+
+    private String receivedContent;
+
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date receiveTime;
+
+    private String username;
+
+    private Boolean select = false;
+
+    public String getCourseName() {
+        return courseName;
     }
 
-    public void setSendername(String sendername) {
-        this.sendername = sendername;
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
+    public Boolean getSelect() {
+        return select;
+    }
+
+    public void setSelect(Boolean select) {
+        this.select = select;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Date getReceiveTime() {
+        return receiveTime;
+    }
+
+    public void setReceiveTime(Date receiveTime) {
+        this.receiveTime = receiveTime;
+    }
+
+    public String getReceiveContent() {
+        return receiveContent;
+    }
+
+    public void setReceiveContent(String receiveContent) {
+        this.receiveContent = receiveContent;
+    }
+
+    public String getReceivedContent() {
+        return receivedContent;
+    }
+
+    public void setReceivedContent(String receivedContent) {
+        this.receivedContent = receivedContent;
+    }
+
+    public String getArticleTitle() {
+        return articleTitle;
+    }
+
+    public void setArticleTitle(String articleTitle) {
+        this.articleTitle = articleTitle;
     }
 
     public String getReceivename() {
@@ -35,6 +105,14 @@ public class Message {
 
     public void setReceivename(String receivename) {
         this.receivename = receivename;
+    }
+
+    public String getSendername() {
+        return sendername;
+    }
+
+    public void setSendername(String sendername) {
+        this.sendername = sendername;
     }
 
     public Integer getId() {
@@ -77,12 +155,20 @@ public class Message {
         this.read = read;
     }
 
-    public String getAddition() {
+    public String getDatasource() {
+        return datasource;
+    }
+
+    public void setDatasource(String datasource) {
+        this.datasource = datasource == null ? null : datasource.trim();
+    }
+
+    public Integer getAddition() {
         return addition;
     }
 
-    public void setAddition(String addition) {
-        this.addition = addition == null ? null : addition.trim();
+    public void setAddition(Integer addition) {
+        this.addition = addition;
     }
 
     public Integer getType() {
@@ -93,11 +179,11 @@ public class Message {
         this.type = type;
     }
 
-    public String getCreatetime() {
+    public Date getCreatetime() {
         return createtime;
     }
 
-    public void setCreatetime(String createtime) {
-        this.createtime = createtime == null ? null : createtime.trim();
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
     }
 }

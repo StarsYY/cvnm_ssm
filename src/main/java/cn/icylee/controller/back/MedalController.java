@@ -51,7 +51,11 @@ public class MedalController {
     @ResponseBody
     @RequestMapping(value = "delete", method = RequestMethod.POST)
     public Map<String, Object> deleteMedal(@RequestBody Medal medal) {
-        return medalService.deleteMedal(medal.getId()) > 0 ? ResponseData.success("success", "删除成功") : ResponseData.error("网络故障");
+        int num = medalService.deleteMedal(medal.getId());
+        if (num == -1) {
+            return ResponseData.error("存在用户拥有此勋章，不能删除！");
+        }
+        return num > 0 ? ResponseData.success("success", "删除成功") : ResponseData.error("网络故障");
     }
 
     @ResponseBody

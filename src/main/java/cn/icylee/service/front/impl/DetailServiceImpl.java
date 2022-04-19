@@ -3,6 +3,8 @@ package cn.icylee.service.front.impl;
 import cn.icylee.bean.*;
 import cn.icylee.dao.*;
 import cn.icylee.service.front.DetailService;
+import cn.icylee.service.front.GrowService;
+import cn.icylee.service.front.UserMedalService;
 import cn.icylee.utils.Tool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +36,18 @@ public class DetailServiceImpl implements DetailService {
     @Autowired
     FollowMapper followMapper;
 
-    @Override
+    @Autowired
+    ReportMapper reportMapper;
+
+    @Autowired
+    MedalMapper medalMapper;
+
+    @Autowired
+    UserMedalService userMedalService;
+
+    @Autowired
+    GrowService growService;
+
     public int getUserId(String username) {
         UserExample userExample = new UserExample();
         UserExample.Criteria criteria = userExample.createCriteria();
@@ -43,9 +56,28 @@ public class DetailServiceImpl implements DetailService {
     }
 
     @Override
+    public List<Article> getHotArticleByUid(int uid) {
+        ArticleExample articleExample = new ArticleExample();
+        articleExample.createCriteria().andHotEqualTo("Hot").andIsdelEqualTo(0)
+                .andStatusEqualTo("已发布").andPublishEqualTo("公开").andUseridEqualTo(uid);
+        articleExample.setOrderByClause(" createtime desc limit 6");
+        return articleMapper.selectByExample(articleExample);
+    }
+
+    @Override
+    public List<Article> getNewArticleByUid(int uid) {
+        ArticleExample articleExample = new ArticleExample();
+        articleExample.createCriteria().andIsdelEqualTo(0).andStatusEqualTo("已发布")
+                .andPublishEqualTo("公开").andUseridEqualTo(uid);
+        articleExample.setOrderByClause(" createtime desc limit 6");
+        return articleMapper.selectByExample(articleExample);
+    }
+
+    @Override
     public int updateArticleWatch(int id) {
         Article article = articleMapper.selectByPrimaryKey(id);
         article.setWatch(article.getWatch() + 1);
+        article.setUpdatetime(new Date());
         return articleMapper.updateByPrimaryKeySelective(article);
     }
 
@@ -139,10 +171,29 @@ public class DetailServiceImpl implements DetailService {
     }
 
     @Override
-    public List<Comment> getAllComment(Comment comment) {
+    public String getUsernameTool(int articleId) {
+        return userMapper.selectByPrimaryKey(articleMapper.selectByPrimaryKey(articleId).getUserid()).getNickname();
+    }
+
+    @Override
+    public int getUidTool(int articleId) {
+        return userMapper.selectByPrimaryKey(articleMapper.selectByPrimaryKey(articleId).getUserid()).getUid();
+    }
+
+    @Override
+    public List<Medal> getUserMedal(int uid) {
+        List<Medal> medalList = medalMapper.getUserMedal(uid);
+        if (medalList.size() > 5) {
+            medalList = medalList.subList(0, 5);
+        }
+        return medalList;
+    }
+
+    @Override
+    public List<Comment> saveGetAllComment(Comment comment) {
         CommentExample commentExample = new CommentExample();
         CommentExample.Criteria criteria = commentExample.createCriteria();
-        criteria.andArticleidEqualTo(comment.getArticleid()).andComidEqualTo(0);
+        criteria.andArticleidEqualTo(comment.getArticleid()).andComidEqualTo(0).andStatusEqualTo(1);
 
         List<Comment> commentList = commentMapper.selectByExample(commentExample);
         for (Comment cm : commentList) {
@@ -182,6 +233,14 @@ public class DetailServiceImpl implements DetailService {
             }
 
             cm.setUser(user);
+
+            if (userMedalService.saveUserMedal(user.getNickname()) > 0) {
+                List<Medal> medalList = getUserMedal(user.getUid());
+                if (medalList.size() > 3) {
+                    medalList = medalList.subList(0, 3);
+                }
+                cm.setMedalList(medalList);
+            }
         }
 
         return commentList;
@@ -191,7 +250,7 @@ public class DetailServiceImpl implements DetailService {
     public Map<String, Comment> getAllReply(int aid, int cid, Map<String, Comment> CommentList, int reviewId, int recursion, String nickname) {
         CommentExample commentExample = new CommentExample();
         CommentExample.Criteria criteria = commentExample.createCriteria();
-        criteria.andArticleidEqualTo(aid).andComidEqualTo(cid);
+        criteria.andArticleidEqualTo(aid).andComidEqualTo(cid).andStatusEqualTo(1);
 
         List<Comment> commentList = commentMapper.selectByExample(commentExample);
         if (commentList.size() > 0) {
@@ -225,9 +284,22 @@ public class DetailServiceImpl implements DetailService {
     public int saveComment(Comment comment) {
         UserExample userExample = new UserExample();
         userExample.createCriteria().andNicknameEqualTo(comment.getUsername());
-        comment.setUserid(userMapper.selectByExample(userExample).get(0).getUid());
+
+        int uid = userMapper.selectByExample(userExample).get(0).getUid();
+
+        CommentExample commentExample = new CommentExample();
+        commentExample.createCriteria()
+                .andArticleidEqualTo(comment.getArticleid())
+                .andComidEqualTo(comment.getComid())
+                .andCommentEqualTo(comment.getComment())
+                .andUseridEqualTo(uid);
+        if (commentMapper.countByExample(commentExample) > 0) {
+            return -1;
+        }
+
+        comment.setUserid(uid);
         comment.setStatus(0);
-        comment.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        comment.setCreatetime(new Date());
         return commentMapper.insert(comment);
     }
 
@@ -246,12 +318,18 @@ public class DetailServiceImpl implements DetailService {
             prefer.setDatasource("article");
             prefer.setDataid(comment.getArticleid());
             prefer.setPush(comment.getIs());
-            prefer.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            prefer.setCreatetime(new Date());
 
-            return preferMapper.insert(prefer);
+            if (preferMapper.insert(prefer) > 0) {
+                return growService.updateIncreaseIntegralAndGrowFromPrefer(userId);
+            }
         } else {
-            return preferMapper.deleteByPrimaryKey(preferList.get(0).getId());
+            if (preferMapper.deleteByPrimaryKey(preferList.get(0).getId()) > 0) {
+                return growService.updateDecreaseIntegralAndGrowFromPrefer(userId);
+            }
         }
+
+        return 0;
     }
 
     @Override
@@ -269,12 +347,18 @@ public class DetailServiceImpl implements DetailService {
             prefer.setDatasource("comment");
             prefer.setDataid(comment.getComid());
             prefer.setPush(comment.getIs());
-            prefer.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            prefer.setCreatetime(new Date());
 
-            return preferMapper.insert(prefer);
+            if (preferMapper.insert(prefer) > 0) {
+                return growService.updateIncreaseIntegralAndGrowFromPrefer(userId);
+            }
         } else {
-            return preferMapper.deleteByPrimaryKey(preferList.get(0).getId());
+            if (preferMapper.deleteByPrimaryKey(preferList.get(0).getId()) > 0) {
+                return growService.updateDecreaseIntegralAndGrowFromPrefer(userId);
+            }
         }
+
+        return 0;
     }
 
     @Override
@@ -291,12 +375,18 @@ public class DetailServiceImpl implements DetailService {
             follow.setUserid(userId);
             follow.setDatasource("article");
             follow.setDataid(comment.getArticleid());
-            follow.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            follow.setCreatetime(new Date());
 
-            return followMapper.insert(follow);
+            if (followMapper.insert(follow) > 0) {
+                return growService.updateIncreaseIntegralAndGrowFromFollow(userId);
+            }
         } else {
-            return followMapper.deleteByPrimaryKey(followList.get(0).getId());
+            if (followMapper.deleteByPrimaryKey(followList.get(0).getId()) > 0) {
+                return growService.updateDecreaseIntegralAndGrowFromFollow(userId);
+            }
         }
+
+        return 0;
     }
 
     @Override
@@ -313,12 +403,25 @@ public class DetailServiceImpl implements DetailService {
             follow.setUserid(userId);
             follow.setDatasource("user");
             follow.setDataid(comment.getUserid());
-            follow.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            follow.setCreatetime(new Date());
 
-            return followMapper.insert(follow);
+            if (followMapper.insert(follow) > 0) {
+                return growService.updateIncreaseIntegralAndGrowFromFollow(userId);
+            }
         } else {
-            return followMapper.deleteByPrimaryKey(followList.get(0).getId());
+            if (followMapper.deleteByPrimaryKey(followList.get(0).getId()) > 0) {
+                return growService.updateDecreaseIntegralAndGrowFromFollow(userId);
+            }
         }
+
+        return 0;
+    }
+
+    @Override
+    public int saveReport(Report report) {
+        report.setUserid(getUserId(report.getUsername()));
+        report.setCreatetime(new Date());
+        return reportMapper.insert(report);
     }
 
 }

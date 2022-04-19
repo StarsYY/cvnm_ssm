@@ -1,5 +1,6 @@
 package cn.icylee.dao;
 
+import cn.icylee.bean.Index;
 import cn.icylee.bean.Label;
 import cn.icylee.bean.LabelExample;
 import java.util.List;
@@ -39,4 +40,6 @@ public interface LabelMapper {
     String[] getLabelIds(Label label);
 
     List<Label> getLabelListForTags(TableParameter tableParameter);
+
+    List<Label> getFollowLabel(Index index);
 }

@@ -5,8 +5,8 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="category" property="category" jdbcType="VARCHAR" />
     <result column="rootid" property="rootid" jdbcType="INTEGER" />
-    <result column="createtime" property="createtime" jdbcType="VARCHAR" />
-    <result column="updatetime" property="updatetime" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
   </resultMap>
 
   <select id="getCategoryIds" parameterType="java.lang.String" resultType="java.lang.String">
@@ -117,7 +117,7 @@
     insert into category (id, category, rootid,
                           createtime, updatetime)
     values (#{id,jdbcType=INTEGER}, #{category,jdbcType=VARCHAR}, #{rootid,jdbcType=INTEGER},
-            #{createtime,jdbcType=VARCHAR}, #{updatetime,jdbcType=VARCHAR})
+            #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="cn.icylee.bean.Category" >
     insert into category
@@ -149,10 +149,10 @@
         #{rootid,jdbcType=INTEGER},
       </if>
       <if test="createtime != null" >
-        #{createtime,jdbcType=VARCHAR},
+        #{createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatetime != null" >
-        #{updatetime,jdbcType=VARCHAR},
+        #{updatetime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -175,10 +175,10 @@
         rootid = #{record.rootid,jdbcType=INTEGER},
       </if>
       <if test="record.createtime != null" >
-        createtime = #{record.createtime,jdbcType=VARCHAR},
+        createtime = #{record.createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.updatetime != null" >
-        updatetime = #{record.updatetime,jdbcType=VARCHAR},
+        updatetime = #{record.updatetime,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -190,8 +190,8 @@
     set id = #{record.id,jdbcType=INTEGER},
     category = #{record.category,jdbcType=VARCHAR},
     rootid = #{record.rootid,jdbcType=INTEGER},
-    createtime = #{record.createtime,jdbcType=VARCHAR},
-    updatetime = #{record.updatetime,jdbcType=VARCHAR}
+    createtime = #{record.createtime,jdbcType=TIMESTAMP},
+    updatetime = #{record.updatetime,jdbcType=TIMESTAMP}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -206,10 +206,10 @@
         rootid = #{rootid,jdbcType=INTEGER},
       </if>
       <if test="createtime != null" >
-        createtime = #{createtime,jdbcType=VARCHAR},
+        createtime = #{createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatetime != null" >
-        updatetime = #{updatetime,jdbcType=VARCHAR},
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -218,8 +218,8 @@
     update category
     set category = #{category,jdbcType=VARCHAR},
         rootid = #{rootid,jdbcType=INTEGER},
-        createtime = #{createtime,jdbcType=VARCHAR},
-        updatetime = #{updatetime,jdbcType=VARCHAR}
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+        updatetime = #{updatetime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

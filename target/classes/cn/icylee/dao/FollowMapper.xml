@@ -6,8 +6,15 @@
     <result column="userid" property="userid" jdbcType="INTEGER" />
     <result column="datasource" property="datasource" jdbcType="VARCHAR" />
     <result column="dataid" property="dataid" jdbcType="INTEGER" />
-    <result column="createtime" property="createtime" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
   </resultMap>
+
+  <select id="getFollowByUid" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT COUNT(*) from follow
+    LEFT JOIN article on follow.dataid = article.id
+    where follow.datasource = 'article' and article.userid = #{uid}
+  </select>
+
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >
@@ -103,7 +110,7 @@
     insert into follow (id, userid, datasource,
                         dataid, createtime)
     values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{datasource,jdbcType=VARCHAR},
-            #{dataid,jdbcType=INTEGER}, #{createtime,jdbcType=VARCHAR})
+            #{dataid,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="cn.icylee.bean.Follow" >
     insert into follow
@@ -138,7 +145,7 @@
         #{dataid,jdbcType=INTEGER},
       </if>
       <if test="createtime != null" >
-        #{createtime,jdbcType=VARCHAR},
+        #{createtime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -164,7 +171,7 @@
         dataid = #{record.dataid,jdbcType=INTEGER},
       </if>
       <if test="record.createtime != null" >
-        createtime = #{record.createtime,jdbcType=VARCHAR},
+        createtime = #{record.createtime,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -177,7 +184,7 @@
     userid = #{record.userid,jdbcType=INTEGER},
     datasource = #{record.datasource,jdbcType=VARCHAR},
     dataid = #{record.dataid,jdbcType=INTEGER},
-    createtime = #{record.createtime,jdbcType=VARCHAR}
+    createtime = #{record.createtime,jdbcType=TIMESTAMP}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -195,7 +202,7 @@
         dataid = #{dataid,jdbcType=INTEGER},
       </if>
       <if test="createtime != null" >
-        createtime = #{createtime,jdbcType=VARCHAR},
+        createtime = #{createtime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -205,7 +212,7 @@
     set userid = #{userid,jdbcType=INTEGER},
         datasource = #{datasource,jdbcType=VARCHAR},
         dataid = #{dataid,jdbcType=INTEGER},
-        createtime = #{createtime,jdbcType=VARCHAR}
+        createtime = #{createtime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

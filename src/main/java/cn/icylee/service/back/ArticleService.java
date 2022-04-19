@@ -1,9 +1,6 @@
 package cn.icylee.service.back;
 
-import cn.icylee.bean.Article;
-import cn.icylee.bean.LabelTree;
-import cn.icylee.bean.Plate;
-import cn.icylee.bean.TableParameter;
+import cn.icylee.bean.*;
 
 import java.util.List;
 import java.util.Map;
@@ -42,8 +39,14 @@ public interface ArticleService {
 
     int updateRTag(Article article);
 
+    int updateHot(Article article);
+
+    int updateRHot(Article article);
+
     int deleteArticle(int id);
 
     int deleteArticleR(int id);
+
+    int saveMessageByArticle(Message message);
 
 }

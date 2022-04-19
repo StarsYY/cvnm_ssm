@@ -62,6 +62,14 @@ public class TableParameter {
 
     private String course;
 
+    private Integer contentTag;
+
+    private String account;
+
+    private String position;
+
+    private String filename;
+
     private String sort;
 
     public int getPage() {

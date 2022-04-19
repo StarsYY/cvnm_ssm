@@ -1,5 +1,6 @@
 package cn.icylee.dao;
 
+import cn.icylee.bean.Index;
 import cn.icylee.bean.Order;
 import cn.icylee.bean.OrderExample;
 import java.util.List;
@@ -34,5 +35,7 @@ public interface OrderMapper {
 
     int getOrderTotal(TableParameter tableParameter);
 
-    List<Order> getMyOrder(Order order);
+    List<Order> getMyOrder(Index index);
+
+    List<Order> getDashMoney();
 }

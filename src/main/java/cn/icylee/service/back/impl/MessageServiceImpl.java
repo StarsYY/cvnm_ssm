@@ -62,7 +62,9 @@ public class MessageServiceImpl implements MessageService {
     public List<Message> getPageMessage(TableParameter tableParameter) {
         List<Message> messageList = messageMapper.getMessageList(tableParameter);
         for (Message message : messageList) {
-            message.setSendername(userMapper.selectByPrimaryKey(message.getSenderuid()).getNickname());
+            if (message.getSenderuid() != null) {
+                message.setSendername(userMapper.selectByPrimaryKey(message.getSenderuid()).getNickname());
+            }
             message.setReceivename(userMapper.selectByPrimaryKey(message.getReceiveuid()).getNickname());
         }
         return messageList;

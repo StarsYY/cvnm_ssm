@@ -31,7 +31,7 @@ public class IntegralController {
         Map<String, Object> map = new HashMap<>();
         map.put("total", total);
         map.put("items", integralList);
-        return ResponseData.success(map, "评论列表");
+        return ResponseData.success(map, "积分列表");
     }
 
     @ResponseBody

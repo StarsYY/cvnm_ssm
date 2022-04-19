@@ -27,21 +27,27 @@ public class LoginController {
     @ResponseBody
     @RequestMapping(value = "login", method = RequestMethod.POST)
     public Map<String, Object> Login(String username, String password) {
-        Admin loginAdmin = loginService.getByUsername(username);
-        if (loginAdmin != null && DigestUtils.md5DigestAsHex(password.getBytes()).equals(loginAdmin.getPassword())) {
-            LoginAdmin = loginAdmin;
+        int num = loginService.login(username, password);
+
+        if (num == -2) {
+            return ResponseData.error("没有此管理员");
+        } else if (num == -1) {
+            return ResponseData.error("密码错误");
+        } else if (num == 0) {
+            return ResponseData.error("该账号已被封禁");
+        } else {
+            LoginAdmin = loginService.getByUsername(username);
             Map<String, Object> map = new HashMap<>();
             map.put("token", "admin-token");
-            return loginService.updateOnline(username) > 0 ? ResponseData.success(map, "登陆成功") : ResponseData.error("未知错误");
+            return ResponseData.success(map, "登陆成功");
         }
-        return null;
     }
 
     @ResponseBody
     @RequestMapping(value = "info", method = RequestMethod.GET)
     public Map<String, Object> getLoginAdmin() {
         Map<String, Object> info = new HashMap<>();
-        String[] arr = {LoginAdmin.getUsername()};
+        String[] arr = {"admin"};
         info.put("introduction", LoginAdmin.getIntroduction());
         info.put("avatar", LoginAdmin.getAvatar());
         info.put("name", LoginAdmin.getUsername());

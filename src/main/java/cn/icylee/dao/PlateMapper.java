@@ -1,5 +1,6 @@
 package cn.icylee.dao;
 
+import cn.icylee.bean.Index;
 import cn.icylee.bean.Plate;
 import cn.icylee.bean.PlateExample;
 import java.util.List;
@@ -31,4 +32,8 @@ public interface PlateMapper {
     int updateByPrimaryKey(Plate record);
 
     List<Plate> getPlateList(TableParameter tableParameter);
+
+    Plate getIndexPlate(int id);
+
+    List<Plate> getFollowPlate(Index index);
 }

@@ -11,7 +11,7 @@ public interface UserService {
 
     List<User> getPageUser(TableParameter tableParameter);
 
-    int saveUser(User user);
+    User saveUser(User user);
 
     User getUserByUid(int id);
 

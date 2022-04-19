@@ -1,5 +1,7 @@
 package cn.icylee.controller.front;
 
+import cn.icylee.bean.Course;
+import cn.icylee.bean.Index;
 import cn.icylee.bean.Order;
 import cn.icylee.bean.User;
 import cn.icylee.service.front.MySchoolService;
@@ -28,14 +30,39 @@ public class MySchoolController {
 
     @ResponseBody
     @RequestMapping(value = "my/favorites", method = RequestMethod.GET)
-    public Map<String, Object> getFavorites(int uid) {
-        return ResponseData.success(mySchoolService.getFavorites(uid), "我的收藏");
+    public Map<String, Object> getFavorites(Index index) {
+        return ResponseData.success(mySchoolService.getFavorites(index), "我的收藏");
     }
 
     @ResponseBody
     @RequestMapping(value = "my/order", method = RequestMethod.POST)
-    public Map<String, Object> getOrder(@RequestBody Order order) {
-        return ResponseData.success(mySchoolService.getOrder(order), "我的订单");
+    public Map<String, Object> getOrder(@RequestBody Index index) {
+        return ResponseData.success(mySchoolService.getOrder(index), "我的订单");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "my/order/delete", method = RequestMethod.POST)
+    public Map<String, Object> deleteOrder(@RequestBody Order order) {
+        return mySchoolService.deleteOrder(order.getId()) > 0 ? ResponseData.success("success", "删除订单") : ResponseData.error("网络故障");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "my/class", method = RequestMethod.GET)
+    public Map<String, Object> getLearningCourse(Index index) {
+        return ResponseData.success(mySchoolService.getLearningCourse(index), "学习中");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "my/class/delete", method = RequestMethod.POST)
+    public Map<String, Object> deleteLearning(@RequestBody Course course) {
+        return mySchoolService.deleteLearning(course.getId()) > 0 ? ResponseData.success("success", "删除学习中") : ResponseData.error("网络故障");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "my/order/pay", method = RequestMethod.POST)
+    public Map<String, Object> updatePayCourse(@RequestBody Order order) {
+        order = mySchoolService.updatePayCourse(order.getId());
+        return order != null ? ResponseData.success(order, "支付成功") : ResponseData.error("网阔故障");
     }
 
 }

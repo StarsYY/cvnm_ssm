@@ -3,11 +3,14 @@ package cn.icylee.service.front.impl;
 import cn.icylee.bean.*;
 import cn.icylee.dao.CourseMapper;
 import cn.icylee.dao.ModularMapper;
+import cn.icylee.dao.RotationsMapper;
+import cn.icylee.dao.VideoMapper;
 import cn.icylee.service.back.ModularService;
 import cn.icylee.service.front.SchoolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -21,6 +24,17 @@ public class SchoolServiceImpl implements SchoolService {
 
     @Autowired
     ModularService modularService;
+
+    @Autowired
+    VideoMapper videoMapper;
+
+    @Autowired
+    RotationsMapper rotationsMapper;
+
+    @Override
+    public List<Rotations> getRotations() {
+        return rotationsMapper.selectByExample(null);
+    }
 
     @Override
     public List<LabelTree> getLeftNav() {
@@ -67,7 +81,18 @@ public class SchoolServiceImpl implements SchoolService {
             CourseExample courseExample = new CourseExample();
             courseExample.createCriteria().andModularidEqualTo(modularList.get(0).getId());
             courseExample.setOrderByClause(" createtime ASC LIMIT 3");
-            return courseMapper.selectByExample(courseExample);
+            List<Course> courseList = courseMapper.selectByExample(courseExample);
+
+            Iterator<Course> iter = courseList.iterator();
+            while (iter.hasNext()) {
+                Course course = iter.next();
+                VideoExample videoExample = new VideoExample();
+                videoExample.createCriteria().andCourseidEqualTo(course.getId());
+                if (videoMapper.countByExample(videoExample) == 0) {
+                    iter.remove();
+                }
+            }
+            return courseList;
         }
         return null;
     }

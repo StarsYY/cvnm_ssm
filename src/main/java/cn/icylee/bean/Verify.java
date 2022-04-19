@@ -1,5 +1,9 @@
 package cn.icylee.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
+
 public class Verify {
     private Integer id;
 
@@ -11,13 +15,19 @@ public class Verify {
 
     private String position;
 
+    private String account;
+
+    private String email;
+
     private String technology;
 
     private String introduce;
 
-    private String start;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date start;
 
-    private String end;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date end;
 
     private String experience;
 
@@ -25,13 +35,13 @@ public class Verify {
 
     private String photo;
 
-    private Integer type;
-
     private Integer status;
 
-    private String createtime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createtime;
 
-    private String updatetime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date updatetime;
 
     private String username;
 
@@ -83,6 +93,22 @@ public class Verify {
         this.position = position == null ? null : position.trim();
     }
 
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account == null ? null : account.trim();
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email == null ? null : email.trim();
+    }
+
     public String getTechnology() {
         return technology;
     }
@@ -99,20 +125,20 @@ public class Verify {
         this.introduce = introduce == null ? null : introduce.trim();
     }
 
-    public String getStart() {
+    public Date getStart() {
         return start;
     }
 
-    public void setStart(String start) {
-        this.start = start == null ? null : start.trim();
+    public void setStart(Date start) {
+        this.start = start;
     }
 
-    public String getEnd() {
+    public Date getEnd() {
         return end;
     }
 
-    public void setEnd(String end) {
-        this.end = end == null ? null : end.trim();
+    public void setEnd(Date end) {
+        this.end = end;
     }
 
     public String getExperience() {
@@ -139,14 +165,6 @@ public class Verify {
         this.photo = photo == null ? null : photo.trim();
     }
 
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
     public Integer getStatus() {
         return status;
     }
@@ -155,19 +173,19 @@ public class Verify {
         this.status = status;
     }
 
-    public String getCreatetime() {
+    public Date getCreatetime() {
         return createtime;
     }
 
-    public void setCreatetime(String createtime) {
-        this.createtime = createtime == null ? null : createtime.trim();
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
     }
 
-    public String getUpdatetime() {
+    public Date getUpdatetime() {
         return updatetime;
     }
 
-    public void setUpdatetime(String updatetime) {
-        this.updatetime = updatetime == null ? null : updatetime.trim();
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
     }
 }

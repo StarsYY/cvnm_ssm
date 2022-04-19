@@ -3,6 +3,7 @@ package cn.icylee.controller.back;
 import cn.icylee.bean.Comment;
 import cn.icylee.bean.TableParameter;
 import cn.icylee.service.back.CommentService;
+import cn.icylee.service.front.SendMessageService;
 import cn.icylee.utils.ResponseData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,9 @@ public class CommentController {
     @Autowired
     CommentService commentService;
 
+    @Autowired
+    SendMessageService sendMessageService;
+
     @ResponseBody
     @RequestMapping(value = "", method = RequestMethod.GET)
     public Map<String, Object> showAllComment(TableParameter tableParameter) {
@@ -37,7 +41,15 @@ public class CommentController {
     @ResponseBody
     @RequestMapping(value = "change", method = RequestMethod.POST)
     public Map<String, Object> updateStatus(@RequestBody Comment comment) {
-        return commentService.updateStatus(comment) > -1 ? ResponseData.success("success", "修改成功") : ResponseData.error("网络故障");
+        int num = commentService.updateStatus(comment);
+        if (num == 2) {
+            return sendMessageService.saveMessageFromComment(comment) > 0
+                    ? ResponseData.success("success", "数据修改成功，消息发送成功")
+                    : ResponseData.error("数据信息成功，消息发送失败");
+        } else if (num == 1){
+            return ResponseData.success("success", "数据修改成功");
+        }
+        return ResponseData.error("网络故障");
     }
 
     @ResponseBody

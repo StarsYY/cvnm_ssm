@@ -7,37 +7,40 @@
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="school" property="school" jdbcType="VARCHAR" />
     <result column="position" property="position" jdbcType="VARCHAR" />
+    <result column="account" property="account" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
     <result column="technology" property="technology" jdbcType="VARCHAR" />
     <result column="introduce" property="introduce" jdbcType="VARCHAR" />
-    <result column="start" property="start" jdbcType="VARCHAR" />
-    <result column="end" property="end" jdbcType="VARCHAR" />
+    <result column="start" property="start" jdbcType="TIMESTAMP" />
+    <result column="end" property="end" jdbcType="TIMESTAMP" />
     <result column="experience" property="experience" jdbcType="VARCHAR" />
     <result column="detail" property="detail" jdbcType="VARCHAR" />
     <result column="photo" property="photo" jdbcType="VARCHAR" />
-    <result column="type" property="type" jdbcType="INTEGER" />
     <result column="status" property="status" jdbcType="INTEGER" />
-    <result column="createtime" property="createtime" jdbcType="VARCHAR" />
-    <result column="updatetime" property="updatetime" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
   </resultMap>
 
   <select id="getVerifyTotal" parameterType="cn.icylee.bean.TableParameter" resultType="java.lang.Integer">
     SELECT count(*) FROM verify
     <where>
       <if test="ids != null and ids != ''">AND FIND_IN_SET(userid, '${ids}')</if>
-      <if test="name != null and name != ''">AND `name` LIKE '%${name}%'</if>
-      <if test="type != null and type != ''">AND `type` = ${type}</if>
+      <if test="name != null and name != ''">AND `name` LIKE concat('%',#{name},'%')</if>
+      <if test="account != null and account != ''">AND account = '${account}'</if>
+      <if test="position != null and position != ''">AND position = '${position}'</if>
       <if test="status != null and status != ''">AND `status` = ${status}</if>
     </where>
   </select>
 
   <select id="getVerifyList" parameterType="cn.icylee.bean.TableParameter" resultType="cn.icylee.bean.Verify">
     SELECT * FROM
-    ( SELECT verify.id, verify.userid, verify.`name`, verify.school, verify.position, verify.technology, verify.introduce, verify.`start`, verify.`end`, verify.experience, verify.detail, verify.photo, verify.type, verify.`status`, verify.createtime, verify.updatetime, `user`.nickname AS username
+    ( SELECT verify.*, `user`.nickname AS username
     FROM verify LEFT JOIN `user` ON `user`.uid=verify.userid
     WHERE 1 = 1
     <if test="ids != null and ids != ''">AND FIND_IN_SET(verify.userid, '${ids}')</if>
-    <if test="name != null and name != ''">AND verify.`name` LIKE '%${name}%'</if>
-    <if test="type != null and type != ''">AND verify.`type` = ${type}</if>
+    <if test="name != null and name != ''">AND verify.`name` LIKE concat('%',#{name},'%')</if>
+    <if test="account != null and account != ''">AND verify.account = '${account}'</if>
+    <if test="position != null and position != ''">AND verify.position = '${position}'</if>
     <if test="status != null and status != ''">AND verify.`status` = ${status}</if>
     LIMIT #{page}, #{limit} ) u
     ORDER BY id ${sort}
@@ -102,8 +105,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, userid, `name`, school, `position`, technology, introduce, `start`, `end`, experience,
-    detail, photo, `type`, status, createtime, updatetime
+    id, userid, `name`, school, `position`, account, email, technology, introduce, `start`, `end`, experience,
+    detail, photo, status, createtime, updatetime
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.icylee.bean.VerifyExample" >
     select
@@ -137,17 +140,18 @@
   </delete>
   <insert id="insert" parameterType="cn.icylee.bean.Verify" >
     insert into verify (id, userid, `name`,
-      school, `position`, technology,
+      school, `position`, account, email, technology,
       introduce, `start`, `end`,
       experience, detail, photo, 
-      `type`, status, createtime,
+      status, createtime,
       updatetime)
     values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
-      #{school,jdbcType=VARCHAR}, #{position,jdbcType=VARCHAR}, #{technology,jdbcType=VARCHAR}, 
-      #{introduce,jdbcType=VARCHAR}, #{start,jdbcType=VARCHAR}, #{end,jdbcType=VARCHAR}, 
+      #{school,jdbcType=VARCHAR}, #{position,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR},
+      #{email,jdbcType=VARCHAR}, #{technology,jdbcType=VARCHAR},
+      #{introduce,jdbcType=VARCHAR}, #{start,jdbcType=TIMESTAMP}, #{end,jdbcType=TIMESTAMP}, 
       #{experience,jdbcType=VARCHAR}, #{detail,jdbcType=VARCHAR}, #{photo,jdbcType=VARCHAR}, 
-      #{type,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{createtime,jdbcType=VARCHAR}, 
-      #{updatetime,jdbcType=VARCHAR})
+      #{status,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP},
+      #{updatetime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="cn.icylee.bean.Verify" >
     insert into verify
@@ -166,6 +170,12 @@
       </if>
       <if test="position != null" >
         `position`,
+      </if>
+      <if test="account != null" >
+        account,
+      </if>
+      <if test="email != null" >
+        email,
       </if>
       <if test="technology != null" >
         technology,
@@ -187,9 +197,6 @@
       </if>
       <if test="photo != null" >
         photo,
-      </if>
-      <if test="type != null" >
-        `type`,
       </if>
       <if test="status != null" >
         status,
@@ -217,6 +224,12 @@
       <if test="position != null" >
         #{position,jdbcType=VARCHAR},
       </if>
+      <if test="account != null" >
+        #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
       <if test="technology != null" >
         #{technology,jdbcType=VARCHAR},
       </if>
@@ -224,10 +237,10 @@
         #{introduce,jdbcType=VARCHAR},
       </if>
       <if test="start != null" >
-        #{start,jdbcType=VARCHAR},
+        #{start,jdbcType=TIMESTAMP},
       </if>
       <if test="end != null" >
-        #{end,jdbcType=VARCHAR},
+        #{end,jdbcType=TIMESTAMP},
       </if>
       <if test="experience != null" >
         #{experience,jdbcType=VARCHAR},
@@ -238,17 +251,14 @@
       <if test="photo != null" >
         #{photo,jdbcType=VARCHAR},
       </if>
-      <if test="type != null" >
-        #{type,jdbcType=INTEGER},
-      </if>
       <if test="status != null" >
         #{status,jdbcType=INTEGER},
       </if>
       <if test="createtime != null" >
-        #{createtime,jdbcType=VARCHAR},
+        #{createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatetime != null" >
-        #{updatetime,jdbcType=VARCHAR},
+        #{updatetime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -276,6 +286,12 @@
       <if test="record.position != null" >
         `position` = #{record.position,jdbcType=VARCHAR},
       </if>
+      <if test="record.account != null" >
+        account = #{record.account,jdbcType=VARCHAR},
+      </if>
+      <if test="record.email != null" >
+        email = #{record.email,jdbcType=VARCHAR},
+      </if>
       <if test="record.technology != null" >
         technology = #{record.technology,jdbcType=VARCHAR},
       </if>
@@ -283,10 +299,10 @@
         introduce = #{record.introduce,jdbcType=VARCHAR},
       </if>
       <if test="record.start != null" >
-        `start` = #{record.start,jdbcType=VARCHAR},
+        `start` = #{record.start,jdbcType=TIMESTAMP},
       </if>
       <if test="record.end != null" >
-        `end` = #{record.end,jdbcType=VARCHAR},
+        `end` = #{record.end,jdbcType=TIMESTAMP},
       </if>
       <if test="record.experience != null" >
         experience = #{record.experience,jdbcType=VARCHAR},
@@ -297,17 +313,14 @@
       <if test="record.photo != null" >
         photo = #{record.photo,jdbcType=VARCHAR},
       </if>
-      <if test="record.type != null" >
-        `type` = #{record.type,jdbcType=INTEGER},
-      </if>
       <if test="record.status != null" >
         status = #{record.status,jdbcType=INTEGER},
       </if>
       <if test="record.createtime != null" >
-        createtime = #{record.createtime,jdbcType=VARCHAR},
+        createtime = #{record.createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.updatetime != null" >
-        updatetime = #{record.updatetime,jdbcType=VARCHAR},
+        updatetime = #{record.updatetime,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -321,17 +334,18 @@
       `name` = #{record.name,jdbcType=VARCHAR},
       school = #{record.school,jdbcType=VARCHAR},
       `position` = #{record.position,jdbcType=VARCHAR},
+      account = #{record.account,jdbcType=VARCHAR},
+      email = #{record.email,jdbcType=VARCHAR},
       technology = #{record.technology,jdbcType=VARCHAR},
       introduce = #{record.introduce,jdbcType=VARCHAR},
-      `start` = #{record.start,jdbcType=VARCHAR},
-      `end` = #{record.end,jdbcType=VARCHAR},
+      `start` = #{record.start,jdbcType=TIMESTAMP},
+      `end` = #{record.end,jdbcType=TIMESTAMP},
       experience = #{record.experience,jdbcType=VARCHAR},
       detail = #{record.detail,jdbcType=VARCHAR},
       photo = #{record.photo,jdbcType=VARCHAR},
-      `type` = #{record.type,jdbcType=INTEGER},
       status = #{record.status,jdbcType=INTEGER},
-      createtime = #{record.createtime,jdbcType=VARCHAR},
-      updatetime = #{record.updatetime,jdbcType=VARCHAR}
+      createtime = #{record.createtime,jdbcType=TIMESTAMP},
+      updatetime = #{record.updatetime,jdbcType=TIMESTAMP}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -351,6 +365,12 @@
       <if test="position != null" >
         `position` = #{position,jdbcType=VARCHAR},
       </if>
+      <if test="account != null" >
+        account = #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
       <if test="technology != null" >
         technology = #{technology,jdbcType=VARCHAR},
       </if>
@@ -358,10 +378,10 @@
         introduce = #{introduce,jdbcType=VARCHAR},
       </if>
       <if test="start != null" >
-        `start` = #{start,jdbcType=VARCHAR},
+        `start` = #{start,jdbcType=TIMESTAMP},
       </if>
       <if test="end != null" >
-        `end` = #{end,jdbcType=VARCHAR},
+        `end` = #{end,jdbcType=TIMESTAMP},
       </if>
       <if test="experience != null" >
         experience = #{experience,jdbcType=VARCHAR},
@@ -372,17 +392,14 @@
       <if test="photo != null" >
         photo = #{photo,jdbcType=VARCHAR},
       </if>
-      <if test="type != null" >
-        `type` = #{type,jdbcType=INTEGER},
-      </if>
       <if test="status != null" >
         status = #{status,jdbcType=INTEGER},
       </if>
       <if test="createtime != null" >
-        createtime = #{createtime,jdbcType=VARCHAR},
+        createtime = #{createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatetime != null" >
-        updatetime = #{updatetime,jdbcType=VARCHAR},
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -393,17 +410,18 @@
       `name` = #{name,jdbcType=VARCHAR},
       school = #{school,jdbcType=VARCHAR},
       `position` = #{position,jdbcType=VARCHAR},
+      account = #{account,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
       technology = #{technology,jdbcType=VARCHAR},
       introduce = #{introduce,jdbcType=VARCHAR},
-      `start` = #{start,jdbcType=VARCHAR},
-      `end` = #{end,jdbcType=VARCHAR},
+      `start` = #{start,jdbcType=TIMESTAMP},
+      `end` = #{end,jdbcType=TIMESTAMP},
       experience = #{experience,jdbcType=VARCHAR},
       detail = #{detail,jdbcType=VARCHAR},
       photo = #{photo,jdbcType=VARCHAR},
-      `type` = #{type,jdbcType=INTEGER},
       status = #{status,jdbcType=INTEGER},
-      createtime = #{createtime,jdbcType=VARCHAR},
-      updatetime = #{updatetime,jdbcType=VARCHAR}
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

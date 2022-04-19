@@ -7,9 +7,10 @@
     <result column="receiveuid" property="receiveuid" jdbcType="INTEGER" />
     <result column="content" property="content" jdbcType="VARCHAR" />
     <result column="read" property="read" jdbcType="INTEGER" />
-    <result column="addition" property="addition" jdbcType="VARCHAR" />
+    <result column="datasource" property="datasource" jdbcType="VARCHAR" />
+    <result column="addition" property="addition" jdbcType="INTEGER" />
     <result column="type" property="type" jdbcType="INTEGER" />
-    <result column="createtime" property="createtime" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
   </resultMap>
 
   <select id="getMessageTotal" parameterType="cn.icylee.bean.TableParameter" resultType="java.lang.Integer">
@@ -32,6 +33,10 @@
     LIMIT #{page}, #{limit} ) u
     ORDER BY id ${sort}
   </select>
+
+  <delete id="deleteMessageByComment" parameterType="java.lang.String">
+    delete from message where FIND_IN_SET(content, '${ids}') and FIND_IN_SET(addition, '${ids}') and datasource = 'comment'
+  </delete>
 
   <sql id="Example_Where_Clause" >
     <where >
@@ -92,7 +97,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, senderuid, receiveuid, content, read, addition, type, createtime
+    id, senderuid, receiveuid, content, `read`, datasource, addition, `type`, createtime
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.icylee.bean.MessageExample" >
     select
@@ -109,7 +114,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from message
     where id = #{id,jdbcType=INTEGER}
@@ -125,12 +130,14 @@
     </if>
   </delete>
   <insert id="insert" parameterType="cn.icylee.bean.Message" >
-    insert into message (id, senderuid, receiveuid, 
-      content, read, addition, 
-      type, createtime)
-    values (#{id,jdbcType=INTEGER}, #{senderuid,jdbcType=INTEGER}, #{receiveuid,jdbcType=INTEGER}, 
-      #{content,jdbcType=VARCHAR}, #{read,jdbcType=INTEGER}, #{addition,jdbcType=VARCHAR}, 
-      #{type,jdbcType=INTEGER}, #{createtime,jdbcType=VARCHAR})
+    insert into message (id, senderuid, receiveuid,
+                         content, `read`, datasource,
+                         addition, `type`, createtime
+    )
+    values (#{id,jdbcType=INTEGER}, #{senderuid,jdbcType=INTEGER}, #{receiveuid,jdbcType=INTEGER},
+            #{content,jdbcType=VARCHAR}, #{read,jdbcType=INTEGER}, #{datasource,jdbcType=VARCHAR},
+            #{addition,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}
+           )
   </insert>
   <insert id="insertSelective" parameterType="cn.icylee.bean.Message" >
     insert into message
@@ -148,13 +155,16 @@
         content,
       </if>
       <if test="read != null" >
-        read,
+        `read`,
+      </if>
+      <if test="datasource != null" >
+        datasource,
       </if>
       <if test="addition != null" >
         addition,
       </if>
       <if test="type != null" >
-        type,
+        `type`,
       </if>
       <if test="createtime != null" >
         createtime,
@@ -176,14 +186,17 @@
       <if test="read != null" >
         #{read,jdbcType=INTEGER},
       </if>
+      <if test="datasource != null" >
+        #{datasource,jdbcType=VARCHAR},
+      </if>
       <if test="addition != null" >
-        #{addition,jdbcType=VARCHAR},
+        #{addition,jdbcType=INTEGER},
       </if>
       <if test="type != null" >
         #{type,jdbcType=INTEGER},
       </if>
       <if test="createtime != null" >
-        #{createtime,jdbcType=VARCHAR},
+        #{createtime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -209,16 +222,19 @@
         content = #{record.content,jdbcType=VARCHAR},
       </if>
       <if test="record.read != null" >
-        read = #{record.read,jdbcType=INTEGER},
+        `read` = #{record.read,jdbcType=INTEGER},
+      </if>
+      <if test="record.datasource != null" >
+        datasource = #{record.datasource,jdbcType=VARCHAR},
       </if>
       <if test="record.addition != null" >
-        addition = #{record.addition,jdbcType=VARCHAR},
+        addition = #{record.addition,jdbcType=INTEGER},
       </if>
       <if test="record.type != null" >
-        type = #{record.type,jdbcType=INTEGER},
+        `type` = #{record.type,jdbcType=INTEGER},
       </if>
       <if test="record.createtime != null" >
-        createtime = #{record.createtime,jdbcType=VARCHAR},
+        createtime = #{record.createtime,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -228,13 +244,14 @@
   <update id="updateByExample" parameterType="map" >
     update message
     set id = #{record.id,jdbcType=INTEGER},
-      senderuid = #{record.senderuid,jdbcType=INTEGER},
-      receiveuid = #{record.receiveuid,jdbcType=INTEGER},
-      content = #{record.content,jdbcType=VARCHAR},
-      read = #{record.read,jdbcType=INTEGER},
-      addition = #{record.addition,jdbcType=VARCHAR},
-      type = #{record.type,jdbcType=INTEGER},
-      createtime = #{record.createtime,jdbcType=VARCHAR}
+    senderuid = #{record.senderuid,jdbcType=INTEGER},
+    receiveuid = #{record.receiveuid,jdbcType=INTEGER},
+    content = #{record.content,jdbcType=VARCHAR},
+    `read` = #{record.read,jdbcType=INTEGER},
+    datasource = #{record.datasource,jdbcType=VARCHAR},
+    addition = #{record.addition,jdbcType=INTEGER},
+    `type` = #{record.type,jdbcType=INTEGER},
+    createtime = #{record.createtime,jdbcType=TIMESTAMP}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -252,16 +269,19 @@
         content = #{content,jdbcType=VARCHAR},
       </if>
       <if test="read != null" >
-        read = #{read,jdbcType=INTEGER},
+        `read` = #{read,jdbcType=INTEGER},
+      </if>
+      <if test="datasource != null" >
+        datasource = #{datasource,jdbcType=VARCHAR},
       </if>
       <if test="addition != null" >
-        addition = #{addition,jdbcType=VARCHAR},
+        addition = #{addition,jdbcType=INTEGER},
       </if>
       <if test="type != null" >
-        type = #{type,jdbcType=INTEGER},
+        `type` = #{type,jdbcType=INTEGER},
       </if>
       <if test="createtime != null" >
-        createtime = #{createtime,jdbcType=VARCHAR},
+        createtime = #{createtime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -269,12 +289,13 @@
   <update id="updateByPrimaryKey" parameterType="cn.icylee.bean.Message" >
     update message
     set senderuid = #{senderuid,jdbcType=INTEGER},
-      receiveuid = #{receiveuid,jdbcType=INTEGER},
-      content = #{content,jdbcType=VARCHAR},
-      read = #{read,jdbcType=INTEGER},
-      addition = #{addition,jdbcType=VARCHAR},
-      type = #{type,jdbcType=INTEGER},
-      createtime = #{createtime,jdbcType=VARCHAR}
+        receiveuid = #{receiveuid,jdbcType=INTEGER},
+        content = #{content,jdbcType=VARCHAR},
+        `read` = #{read,jdbcType=INTEGER},
+        datasource = #{datasource,jdbcType=VARCHAR},
+        addition = #{addition,jdbcType=INTEGER},
+        `type` = #{type,jdbcType=INTEGER},
+        createtime = #{createtime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

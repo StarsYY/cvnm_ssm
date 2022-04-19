@@ -38,15 +38,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int saveUser(User user) {
+    public User saveUser(User user) {
         UserExample userExample = new UserExample();
         UserExample.Criteria criteria = userExample.createCriteria();
         criteria.andNicknameEqualTo(user.getNickname());
         if (userMapper.selectByExample(userExample).size() > 0) {
-            return 0;
+            user.setUid(-1);
+            return user;
         }
-        user.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-        user.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         user.setStatus("启用");
         user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
         if (user.getPortrait().equals("") || user.getPortrait() == null) {
@@ -55,9 +54,15 @@ public class UserServiceImpl implements UserService {
         user.setGrow(0);
         user.setIntegral(0);
         user.setIsdel(0);
-        user.setOnline(0);
-        System.out.println(user);
-        return userMapper.insert(user);
+        user.setCreatetime(new Date());
+        user.setUpdatetime(new Date());
+
+        if (userMapper.insert(user) > 0) {
+            return user;
+        } else {
+            user.setUid(0);
+            return user;
+        }
     }
 
     @Override
@@ -73,7 +78,6 @@ public class UserServiceImpl implements UserService {
         if (userMapper.selectByExample(userExample).size() > 0) {
             return 0;
         }
-        user.setUpdatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         if (!user.getPassword().equals(getUserByUid(user.getUid()).getPassword())) {
             // 对原来的密码进行修改
             user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
@@ -81,6 +85,8 @@ public class UserServiceImpl implements UserService {
         if (!user.getStarttime().equals("")) {
             user.setStatus("禁用");
         }
+        user.setUpdatetime(new Date());
+
         return userMapper.updateByPrimaryKeySelective(user);
     }
 
@@ -92,6 +98,8 @@ public class UserServiceImpl implements UserService {
             } else {
                 user.setStatus("启用");
             }
+            user.setUpdatetime(new Date());
+
             return userMapper.updateByPrimaryKeySelective(user);
         }
         return 0;
@@ -105,6 +113,8 @@ public class UserServiceImpl implements UserService {
         } else {
             user.setIsdel(1);
         }
+        user.setUpdatetime(new Date());
+
         return userMapper.updateByPrimaryKeySelective(user);
     }
 

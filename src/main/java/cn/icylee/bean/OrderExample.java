@@ -1,6 +1,7 @@
 package cn.icylee.bean;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class OrderExample {
@@ -484,62 +485,52 @@ public class OrderExample {
             return (Criteria) this;
         }
 
-        public Criteria andPaytimeEqualTo(String value) {
+        public Criteria andPaytimeEqualTo(Date value) {
             addCriterion("paytime =", value, "paytime");
             return (Criteria) this;
         }
 
-        public Criteria andPaytimeNotEqualTo(String value) {
+        public Criteria andPaytimeNotEqualTo(Date value) {
             addCriterion("paytime <>", value, "paytime");
             return (Criteria) this;
         }
 
-        public Criteria andPaytimeGreaterThan(String value) {
+        public Criteria andPaytimeGreaterThan(Date value) {
             addCriterion("paytime >", value, "paytime");
             return (Criteria) this;
         }
 
-        public Criteria andPaytimeGreaterThanOrEqualTo(String value) {
+        public Criteria andPaytimeGreaterThanOrEqualTo(Date value) {
             addCriterion("paytime >=", value, "paytime");
             return (Criteria) this;
         }
 
-        public Criteria andPaytimeLessThan(String value) {
+        public Criteria andPaytimeLessThan(Date value) {
             addCriterion("paytime <", value, "paytime");
             return (Criteria) this;
         }
 
-        public Criteria andPaytimeLessThanOrEqualTo(String value) {
+        public Criteria andPaytimeLessThanOrEqualTo(Date value) {
             addCriterion("paytime <=", value, "paytime");
             return (Criteria) this;
         }
 
-        public Criteria andPaytimeLike(String value) {
-            addCriterion("paytime like", value, "paytime");
-            return (Criteria) this;
-        }
-
-        public Criteria andPaytimeNotLike(String value) {
-            addCriterion("paytime not like", value, "paytime");
-            return (Criteria) this;
-        }
-
-        public Criteria andPaytimeIn(List<String> values) {
+        public Criteria andPaytimeIn(List<Date> values) {
             addCriterion("paytime in", values, "paytime");
             return (Criteria) this;
         }
 
-        public Criteria andPaytimeNotIn(List<String> values) {
+        public Criteria andPaytimeNotIn(List<Date> values) {
             addCriterion("paytime not in", values, "paytime");
             return (Criteria) this;
         }
 
-        public Criteria andPaytimeBetween(String value1, String value2) {
+        public Criteria andPaytimeBetween(Date value1, Date value2) {
             addCriterion("paytime between", value1, value2, "paytime");
             return (Criteria) this;
         }
 
-        public Criteria andPaytimeNotBetween(String value1, String value2) {
+        public Criteria andPaytimeNotBetween(Date value1, Date value2) {
             addCriterion("paytime not between", value1, value2, "paytime");
             return (Criteria) this;
         }
@@ -554,62 +545,52 @@ public class OrderExample {
             return (Criteria) this;
         }
 
-        public Criteria andInvalidtimeEqualTo(String value) {
+        public Criteria andInvalidtimeEqualTo(Date value) {
             addCriterion("invalidtime =", value, "invalidtime");
             return (Criteria) this;
         }
 
-        public Criteria andInvalidtimeNotEqualTo(String value) {
+        public Criteria andInvalidtimeNotEqualTo(Date value) {
             addCriterion("invalidtime <>", value, "invalidtime");
             return (Criteria) this;
         }
 
-        public Criteria andInvalidtimeGreaterThan(String value) {
+        public Criteria andInvalidtimeGreaterThan(Date value) {
             addCriterion("invalidtime >", value, "invalidtime");
             return (Criteria) this;
         }
 
-        public Criteria andInvalidtimeGreaterThanOrEqualTo(String value) {
+        public Criteria andInvalidtimeGreaterThanOrEqualTo(Date value) {
             addCriterion("invalidtime >=", value, "invalidtime");
             return (Criteria) this;
         }
 
-        public Criteria andInvalidtimeLessThan(String value) {
+        public Criteria andInvalidtimeLessThan(Date value) {
             addCriterion("invalidtime <", value, "invalidtime");
             return (Criteria) this;
         }
 
-        public Criteria andInvalidtimeLessThanOrEqualTo(String value) {
+        public Criteria andInvalidtimeLessThanOrEqualTo(Date value) {
             addCriterion("invalidtime <=", value, "invalidtime");
             return (Criteria) this;
         }
 
-        public Criteria andInvalidtimeLike(String value) {
-            addCriterion("invalidtime like", value, "invalidtime");
-            return (Criteria) this;
-        }
-
-        public Criteria andInvalidtimeNotLike(String value) {
-            addCriterion("invalidtime not like", value, "invalidtime");
-            return (Criteria) this;
-        }
-
-        public Criteria andInvalidtimeIn(List<String> values) {
+        public Criteria andInvalidtimeIn(List<Date> values) {
             addCriterion("invalidtime in", values, "invalidtime");
             return (Criteria) this;
         }
 
-        public Criteria andInvalidtimeNotIn(List<String> values) {
+        public Criteria andInvalidtimeNotIn(List<Date> values) {
             addCriterion("invalidtime not in", values, "invalidtime");
             return (Criteria) this;
         }
 
-        public Criteria andInvalidtimeBetween(String value1, String value2) {
+        public Criteria andInvalidtimeBetween(Date value1, Date value2) {
             addCriterion("invalidtime between", value1, value2, "invalidtime");
             return (Criteria) this;
         }
 
-        public Criteria andInvalidtimeNotBetween(String value1, String value2) {
+        public Criteria andInvalidtimeNotBetween(Date value1, Date value2) {
             addCriterion("invalidtime not between", value1, value2, "invalidtime");
             return (Criteria) this;
         }
@@ -624,62 +605,52 @@ public class OrderExample {
             return (Criteria) this;
         }
 
-        public Criteria andCreatetimeEqualTo(String value) {
+        public Criteria andCreatetimeEqualTo(Date value) {
             addCriterion("createtime =", value, "createtime");
             return (Criteria) this;
         }
 
-        public Criteria andCreatetimeNotEqualTo(String value) {
+        public Criteria andCreatetimeNotEqualTo(Date value) {
             addCriterion("createtime <>", value, "createtime");
             return (Criteria) this;
         }
 
-        public Criteria andCreatetimeGreaterThan(String value) {
+        public Criteria andCreatetimeGreaterThan(Date value) {
             addCriterion("createtime >", value, "createtime");
             return (Criteria) this;
         }
 
-        public Criteria andCreatetimeGreaterThanOrEqualTo(String value) {
+        public Criteria andCreatetimeGreaterThanOrEqualTo(Date value) {
             addCriterion("createtime >=", value, "createtime");
             return (Criteria) this;
         }
 
-        public Criteria andCreatetimeLessThan(String value) {
+        public Criteria andCreatetimeLessThan(Date value) {
             addCriterion("createtime <", value, "createtime");
             return (Criteria) this;
         }
 
-        public Criteria andCreatetimeLessThanOrEqualTo(String value) {
+        public Criteria andCreatetimeLessThanOrEqualTo(Date value) {
             addCriterion("createtime <=", value, "createtime");
             return (Criteria) this;
         }
 
-        public Criteria andCreatetimeLike(String value) {
-            addCriterion("createtime like", value, "createtime");
-            return (Criteria) this;
-        }
-
-        public Criteria andCreatetimeNotLike(String value) {
-            addCriterion("createtime not like", value, "createtime");
-            return (Criteria) this;
-        }
-
-        public Criteria andCreatetimeIn(List<String> values) {
+        public Criteria andCreatetimeIn(List<Date> values) {
             addCriterion("createtime in", values, "createtime");
             return (Criteria) this;
         }
 
-        public Criteria andCreatetimeNotIn(List<String> values) {
+        public Criteria andCreatetimeNotIn(List<Date> values) {
             addCriterion("createtime not in", values, "createtime");
             return (Criteria) this;
         }
 
-        public Criteria andCreatetimeBetween(String value1, String value2) {
+        public Criteria andCreatetimeBetween(Date value1, Date value2) {
             addCriterion("createtime between", value1, value2, "createtime");
             return (Criteria) this;
         }
 
-        public Criteria andCreatetimeNotBetween(String value1, String value2) {
+        public Criteria andCreatetimeNotBetween(Date value1, Date value2) {
             addCriterion("createtime not between", value1, value2, "createtime");
             return (Criteria) this;
         }

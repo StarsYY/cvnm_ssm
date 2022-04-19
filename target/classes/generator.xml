@@ -39,7 +39,7 @@
 		</javaClientGenerator>
 
 		<!-- 指定数据库表 -->
-		<table tableName="order"/>
+		<table tableName="sign"/>
 <!--		<table tableName="discuss">-->
 <!--			<columnOverride column="discuss" jdbcType="VARCHAR"/>-->
 <!--		</table>-->

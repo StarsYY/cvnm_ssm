@@ -1,5 +1,9 @@
 package cn.icylee.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 public class Course {
@@ -25,9 +29,13 @@ public class Course {
 
     private String status;
 
-    private String createtime;
+    private Integer isdel;
 
-    private String updatetime;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createtime;
+
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date updatetime;
 
     private Double score = 5.0;
 
@@ -37,7 +45,47 @@ public class Course {
 
     private Integer num;
 
+    private Integer countVideo;
+
     private Boolean collect = false;
+
+    private String video;
+
+    private List<Modular> modularName;
+
+    private String url;
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public List<Modular> getModularName() {
+        return modularName;
+    }
+
+    public void setModularName(List<Modular> modularName) {
+        this.modularName = modularName;
+    }
+
+    public Integer getCountVideo() {
+        return countVideo;
+    }
+
+    public void setCountVideo(Integer countVideo) {
+        this.countVideo = countVideo;
+    }
+
+    public String getVideo() {
+        return video;
+    }
+
+    public void setVideo(String video) {
+        this.video = video;
+    }
 
     public Boolean getCollect() {
         return collect;
@@ -177,19 +225,27 @@ public class Course {
         this.status = status == null ? null : status.trim();
     }
 
-    public String getCreatetime() {
+    public Integer getIsdel() {
+        return isdel;
+    }
+
+    public void setIsdel(Integer isdel) {
+        this.isdel = isdel;
+    }
+
+    public Date getCreatetime() {
         return createtime;
     }
 
-    public void setCreatetime(String createtime) {
-        this.createtime = createtime == null ? null : createtime.trim();
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
     }
 
-    public String getUpdatetime() {
+    public Date getUpdatetime() {
         return updatetime;
     }
 
-    public void setUpdatetime(String updatetime) {
-        this.updatetime = updatetime == null ? null : updatetime.trim();
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
     }
 }

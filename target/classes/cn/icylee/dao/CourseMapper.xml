@@ -13,8 +13,9 @@
     <result column="cover" property="cover" jdbcType="VARCHAR" />
     <result column="watch" property="watch" jdbcType="INTEGER" />
     <result column="status" property="status" jdbcType="VARCHAR" />
-    <result column="createtime" property="createtime" jdbcType="VARCHAR" />
-    <result column="updatetime" property="updatetime" jdbcType="VARCHAR" />
+    <result column="isdel" property="isdel" jdbcType="INTEGER" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
   </resultMap>
 
   <select id="getCourseTotal" parameterType="cn.icylee.bean.TableParameter" resultType="java.lang.Integer">
@@ -22,68 +23,76 @@
     <where>
       <if test="ids != null and ids != ''">AND labelid REGEXP '${ids}'</if>
       <if test="modularid != null and modularid != ''">AND FIND_IN_SET(modularid,'${modularid}')</if>
-      <if test="name != null and name != ''">AND name LIKE '%${name}%'</if>
+      <if test="name != null and name != ''">AND name LIKE '%ymall Maven Webapp%'</if>
       <if test="article != null and article != ''">AND FIND_IN_SET(userid,'${article}')</if>
       <if test="status != null and status != ''">AND status = '${status}'</if>
     </where>
   </select>
 
   <select id="getCourseList" parameterType="cn.icylee.bean.TableParameter" resultType="cn.icylee.bean.Course">
-    SELECT co.id, co.`name`, co.userid, co.modularid, co.labelid, co.`status`, co.price, co.createtime, co.updatetime,
-           u.nickname AS author, md.modular,
-           truncate(case when dis_course.courseid is null then 5 when dis_course.courseid is not null then dis_course.avg_score end, 1) as score
+    SELECT co.id, co.`name`, co.userid, co.modularid, co.labelid, co.`status`, co.price, co.isdel, co.createtime, co.updatetime,
+    u.nickname AS author, md.modular,
+    truncate(case when dis_course.courseid is null then 5 when dis_course.courseid is not null then dis_course.avg_score end, 1) as score
     FROM
     ( SELECT * FROM course WHERE 1 = 1
     <if test="ids != null and ids != ''">AND labelid REGEXP '${ids}'</if>
     <if test="modularid != null and modularid != ''">AND FIND_IN_SET(modularid,'${modularid}')</if>
-    <if test="name != null and name != ''">AND name LIKE '%${name}%'</if>
+    <if test="name != null and name != ''">AND name LIKE '%ymall Maven Webapp%'</if>
     <if test="article != null and article != ''">AND FIND_IN_SET(userid,'${article}')</if>
     <if test="status != null and status != ''">AND status = '${status}'</if>
     LIMIT #{page}, #{limit} ) co
-           left join ( select courseid, avg(score) as avg_score from discuss where disid = 0 group by courseid ) as dis_course on dis_course.courseid = co.id
-           LEFT JOIN `user` AS u ON co.userid = u.uid
-           left join `modular` as md on co.modularid = md.id
+    left join ( select courseid, avg(score) as avg_score from discuss where disid = 0 group by courseid ) as dis_course on dis_course.courseid = co.id
+    LEFT JOIN `user` AS u ON co.userid = u.uid
+    left join `modular` as md on co.modularid = md.id
     ORDER BY id ${sort}
   </select>
 
   <select id="getHotCourseList" parameterType="java.lang.Integer" resultType="cn.icylee.bean.Course">
     SELECT course.id, course.userid, course.`name`, course.price, course.modularid, course.cover, course.watch, u.nickname AS author,
-           truncate(case when dis_course.courseid is null then 5 when dis_course.courseid is not null then dis_course.avg_score end, 1) as score
+    truncate(case when dis_course.courseid is null then 5 when dis_course.courseid is not null then dis_course.avg_score end, 1) as score,
+    video_video.count_video as countVideo
     FROM course
-           left join ( select courseid, avg(score) as avg_score from discuss where disid = 0 group by courseid ) as dis_course on dis_course.courseid = course.id
-           LEFT JOIN `user` AS u ON course.userid = u.uid
-    WHERE course.`status` = '已发布'
+    left join ( select courseid, avg(score) as avg_score from discuss where disid = 0 group by courseid ) as dis_course on dis_course.courseid = course.id
+    LEFT JOIN `user` AS u ON course.userid = u.uid
+    LEFT JOIN ( SELECT courseid, count(*) as count_video from video GROUP BY courseid ) as video_video on video_video.courseid = course.id
+    WHERE course.`status` = '已发布' and video_video.count_video > 0 and course.isdel = 0
     <if test="id != 0">AND course.modularid = #{id}</if>
     ORDER BY course.watch DESC LIMIT 8
   </select>
 
   <select id="getNewCourseList" parameterType="java.lang.Integer" resultType="cn.icylee.bean.Course">
     SELECT course.id, course.userid, course.`name`, course.price, course.modularid, course.cover, course.watch, u.nickname AS author,
-           truncate(case when dis_course.courseid is null then 5 when dis_course.courseid is not null then dis_course.avg_score end, 1) as score
+    truncate(case when dis_course.courseid is null then 5 when dis_course.courseid is not null then dis_course.avg_score end, 1) as score,
+    video_video.count_video as countVideo
     FROM course
-           left join ( select courseid, avg(score) as avg_score from discuss where disid = 0 group by courseid ) as dis_course on dis_course.courseid = course.id
-           LEFT JOIN `user` AS u ON course.userid = u.uid
-    WHERE course.`status` = '已发布'
+    left join ( select courseid, avg(score) as avg_score from discuss where disid = 0 group by courseid ) as dis_course on dis_course.courseid = course.id
+    LEFT JOIN `user` AS u ON course.userid = u.uid
+    LEFT JOIN ( SELECT courseid, count(*) as count_video from video GROUP BY courseid ) as video_video on video_video.courseid = course.id
+    WHERE course.`status` = '已发布' and video_video.count_video > 0 and course.isdel = 0
     <if test="id != 0">AND course.modularid = #{id}</if>
     ORDER BY course.createtime DESC LIMIT 8
   </select>
 
   <select id="getNavCourseList" parameterType="java.lang.String" resultType="cn.icylee.bean.Course">
     SELECT course.id, course.userid, course.`name`, course.price, course.modularid, course.cover, course.watch,
-           truncate(case when dis_course.courseid is null then 5 when dis_course.courseid is not null then dis_course.avg_score end, 1) as score
+           truncate(case when dis_course.courseid is null then 5 when dis_course.courseid is not null then dis_course.avg_score end, 1) as score,
+           video_video.count_video as countVideo
     FROM course
            left join ( select courseid, avg(score) as avg_score from discuss where disid = 0 group by courseid ) as dis_course on dis_course.courseid = course.id
-    WHERE course.`status` = '已发布' AND FIND_IN_SET(modularid,'${ids}')
+           LEFT JOIN ( SELECT courseid, count(*) as count_video from video GROUP BY courseid ) as video_video on video_video.courseid = course.id
+    WHERE course.`status` = '已发布' AND FIND_IN_SET(modularid,'${ids}') and video_video.count_video > 0 and course.isdel = 0
     ORDER BY course.createtime DESC LIMIT 4
   </select>
 
   <select id="getAllCourseList" parameterType="cn.icylee.bean.Modular" resultType="cn.icylee.bean.Course">
     SELECT course.id, course.userid, course.`name`, course.price, course.modularid, course.cover, course.watch, u.nickname AS author,
-           truncate(case when dis_course.courseid is null then 5 when dis_course.courseid is not null then dis_course.avg_score end, 1) as score
+    truncate(case when dis_course.courseid is null then 5 when dis_course.courseid is not null then dis_course.avg_score end, 1) as score,
+    video_video.count_video as countVideo
     FROM course
-           left join ( select courseid, avg(score) as avg_score from discuss where disid = 0 group by courseid ) as dis_course on dis_course.courseid = course.id
-           LEFT JOIN `user` AS u ON course.userid = u.uid
-    WHERE course.`status` = '已发布'
+    left join ( select courseid, avg(score) as avg_score from discuss where disid = 0 group by courseid ) as dis_course on dis_course.courseid = course.id
+    LEFT JOIN `user` AS u ON course.userid = u.uid
+    LEFT JOIN ( SELECT courseid, count(*) as count_video from video GROUP BY courseid ) as video_video on video_video.courseid = course.id
+    WHERE course.`status` = '已发布' and video_video.count_video > 0 and course.isdel = 0
     <if test="ancestor != 0">AND FIND_IN_SET(modularid,'${ids}')</if>
     <if test="count == 0">AND price = 0</if>
     <if test="count == 99">AND price BETWEEN 100 AND 9900</if>
@@ -96,7 +105,9 @@
   </select>
 
   <select id="getAllCourseTotal" parameterType="cn.icylee.bean.Modular" resultType="java.lang.Integer">
-    SELECT count(*) FROM course WHERE course.`status` = '已发布'
+    SELECT count(*) FROM course
+    LEFT JOIN ( SELECT courseid, count(*) as count_video from video GROUP BY courseid ) as video_video on video_video.courseid = course.id
+    WHERE course.`status` = '已发布' and video_video.count_video > 0 and course.isdel = 0
     <if test="ancestor != 0">AND FIND_IN_SET(modularid,'${ids}')</if>
     <if test="count == 0">AND price = 0</if>
     <if test="count == 99">AND price BETWEEN 100 AND 9900</if>
@@ -112,34 +123,59 @@
     from
       course as c0
         left join (
-          select
-            courseid, avg(score) as avg_score
-          from
-            discuss
-          where
-            disid = 0
-          group by
-            courseid
-        ) as c1 on c1.courseid = c0.id
+        select
+          courseid, avg(score) as avg_score
+        from
+          discuss
+        where
+          disid = 0
+        group by
+          courseid
+      ) as c1 on c1.courseid = c0.id
         left join
-          `user` u on c0.userid = u.uid
+      `user` u on c0.userid = u.uid
     where
-      c0.userid = #{uid}
+      c0.userid = #{uid} and c0.isdel = 0
   </select>
 
   <select id="getUserNum" parameterType="java.lang.Integer" resultType="cn.icylee.bean.User">
-    SELECT COUNT(*) AS count, SUM(watch) AS watch FROM course WHERE userid = #{uid}
+    SELECT COUNT(*) AS count, SUM(watch) AS watch FROM course WHERE userid = #{uid} and isdel = 0
   </select>
 
-  <select id="getFavorites" parameterType="java.lang.Integer" resultType="cn.icylee.bean.Course">
+  <select id="getFavorites" parameterType="cn.icylee.bean.Index" resultType="cn.icylee.bean.Course">
     select course.id, course.userid, course.`name`, course.cover, course.price, course.watch, `user`.nickname as author,
-           truncate(case when dis_course.courseid is null then 5 when dis_course.courseid is not null then dis_course.avg_score end, 1) as score
+           truncate(case when dis_course.courseid is null then 5 when dis_course.courseid is not null then dis_course.avg_score end, 1) as score,
+           video_video.count_video as countVideo
     from follow
            left join course on follow.dataid = course.id
            left join ( select courseid, avg(score) as avg_score from discuss where disid = 0 group by courseid ) as dis_course on dis_course.courseid = course.id
            left join `user` on course.userid = `user`.uid
-    where follow.userid = #{uid} and follow.datasource = 'course'
+           LEFT JOIN ( SELECT courseid, count(*) as count_video from video GROUP BY courseid ) as video_video on video_video.courseid = course.id
+    where follow.userid = #{uid} and follow.datasource = 'course' and video_video.count_video > 0 and course.`status` = '已发布' and course.isdel = 0
     order by follow.createtime desc
+      limit #{page}, #{limit}
+  </select>
+
+  <select id="getLearnCourse" parameterType="cn.icylee.bean.Index" resultType="cn.icylee.bean.Course">
+    select course.id, course.userid, course.`name`, course.cover, course.price, course.watch
+    from learning
+           left join course on learning.courseid = course.id
+           left join `user` on learning.userid = `user`.uid
+           LEFT JOIN ( SELECT courseid, count(*) as count_video from video GROUP BY courseid ) as video_video on video_video.courseid = course.id
+    where learning.userid = #{uid} and course.`status` = '已发布' and video_video.count_video > 0 and course.isdel = 0
+    order by learning.createtime desc
+      limit #{page}, #{limit}
+  </select>
+
+  <select id="getRecommend" parameterType="java.lang.Integer" resultType="cn.icylee.bean.Course">
+    select course.id, course.userid, course.`name`, course.cover, course.price, course.watch,
+           truncate(case when dis_course.courseid is null then 5 when dis_course.courseid is not null then dis_course.avg_score end, 1) as score
+    from course
+           left join ( select courseid, avg(score) as avg_score from discuss where disid = 0 group by courseid ) as dis_course on dis_course.courseid = course.id
+           LEFT JOIN ( SELECT courseid, count(*) as count_video from video GROUP BY courseid ) as video_video on video_video.courseid = course.id
+    where course.modularid = #{id} and course.`status` = '已发布' and video_video.count_video > 0 and course.isdel = 0
+    order by course.createtime desc
+      limit 0, 2
   </select>
 
   <sql id="Example_Where_Clause" >
@@ -202,7 +238,7 @@
   </sql>
   <sql id="Base_Column_List" >
     id, userid, name, summary, introduction, price, modularid, labelid, cover, watch,
-    status, createtime, updatetime
+    status, isdel, createtime, updatetime
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.icylee.bean.CourseExample" >
     select
@@ -238,13 +274,13 @@
     insert into course (id, userid, name,
                         summary, introduction, price,
                         modularid, labelid, cover,
-                        watch, status, createtime,
-                        updatetime)
+                        watch, status, isdel,
+                        createtime, updatetime)
     values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
             #{summary,jdbcType=VARCHAR}, #{introduction,jdbcType=VARCHAR}, #{price,jdbcType=INTEGER},
             #{modularid,jdbcType=INTEGER}, #{labelid,jdbcType=VARCHAR}, #{cover,jdbcType=VARCHAR},
-            #{watch,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{createtime,jdbcType=VARCHAR},
-            #{updatetime,jdbcType=VARCHAR})
+            #{watch,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{isdel,jdbcType=INTEGER},
+            #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="cn.icylee.bean.Course" >
     insert into course
@@ -281,6 +317,9 @@
       </if>
       <if test="status != null" >
         status,
+      </if>
+      <if test="isdel != null" >
+        isdel,
       </if>
       <if test="createtime != null" >
         createtime,
@@ -323,11 +362,14 @@
       <if test="status != null" >
         #{status,jdbcType=VARCHAR},
       </if>
+      <if test="isdel != null" >
+        #{isdel,jdbcType=INTEGER},
+      </if>
       <if test="createtime != null" >
-        #{createtime,jdbcType=VARCHAR},
+        #{createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatetime != null" >
-        #{updatetime,jdbcType=VARCHAR},
+        #{updatetime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -373,11 +415,14 @@
       <if test="record.status != null" >
         status = #{record.status,jdbcType=VARCHAR},
       </if>
+      <if test="record.isdel != null" >
+        isdel = #{record.isdel,jdbcType=INTEGER},
+      </if>
       <if test="record.createtime != null" >
-        createtime = #{record.createtime,jdbcType=VARCHAR},
+        createtime = #{record.createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.updatetime != null" >
-        updatetime = #{record.updatetime,jdbcType=VARCHAR},
+        updatetime = #{record.updatetime,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -397,8 +442,9 @@
     cover = #{record.cover,jdbcType=VARCHAR},
     watch = #{record.watch,jdbcType=INTEGER},
     status = #{record.status,jdbcType=VARCHAR},
-    createtime = #{record.createtime,jdbcType=VARCHAR},
-    updatetime = #{record.updatetime,jdbcType=VARCHAR}
+    isdel = #{record.isdel,jdbcType=INTEGER},
+    createtime = #{record.createtime,jdbcType=TIMESTAMP},
+    updatetime = #{record.updatetime,jdbcType=TIMESTAMP}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -436,11 +482,14 @@
       <if test="status != null" >
         status = #{status,jdbcType=VARCHAR},
       </if>
+      <if test="isdel != null" >
+        isdel = #{isdel,jdbcType=INTEGER},
+      </if>
       <if test="createtime != null" >
-        createtime = #{createtime,jdbcType=VARCHAR},
+        createtime = #{createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="updatetime != null" >
-        updatetime = #{updatetime,jdbcType=VARCHAR},
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -457,8 +506,9 @@
         cover = #{cover,jdbcType=VARCHAR},
         watch = #{watch,jdbcType=INTEGER},
         status = #{status,jdbcType=VARCHAR},
-        createtime = #{createtime,jdbcType=VARCHAR},
-        updatetime = #{updatetime,jdbcType=VARCHAR}
+        isdel = #{isdel,jdbcType=INTEGER},
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+        updatetime = #{updatetime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
