@@ -52,4 +52,8 @@ public interface CourseMapper {
     List<Course> getLearnCourse(Index index);
 
     List<Course> getRecommend(int id);
+
+    int getSearchCourseTotal(Search search);
+
+    List<Course> getSearchCourse(Search search);
 }

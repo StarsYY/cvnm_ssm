@@ -85,6 +85,7 @@ public class CourseServiceImpl implements CourseService {
         }
 
         course.setWatch(0);
+        course.setIsdel(0);
         course.setCreatetime(new Date());
         course.setUpdatetime(new Date());
 

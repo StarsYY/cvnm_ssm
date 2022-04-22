@@ -52,7 +52,11 @@ public class PlateController {
     @ResponseBody
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public Map<String, Object> updatePlate(@RequestBody Plate plate) {
-        return plateService.updatePlate(plate) > 0 ? ResponseData.success("success", "修改成功") : ResponseData.error("该板块已存在");
+        plate = plateService.updatePlate(plate);
+        Map<String, Object> map = new HashMap<>();
+        map.put("plate", plate);
+        map.put("optionPlate", plateService.getOptionPlate(0));
+        return plate != null ? ResponseData.success(map, "修改成功") : ResponseData.error("该板块已存在");
     }
 
     @ResponseBody

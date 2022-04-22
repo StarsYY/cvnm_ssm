@@ -4,9 +4,11 @@ import cn.icylee.bean.Comment;
 import cn.icylee.bean.Report;
 import cn.icylee.bean.Upload;
 import cn.icylee.service.front.DetailService;
+import cn.icylee.service.front.PersonalService;
 import cn.icylee.service.front.UserMedalService;
 import cn.icylee.utils.ResponseData;
 import cn.icylee.utils.UploadFile;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -64,13 +66,13 @@ public class DetailController {
         if (num == -1) {
             return ResponseData.error("您已经对此文章评论过该内容，不能重复提交。");
         }
-        return num > 0 ? ResponseData.success("success", "评论成功") : ResponseData.error("欸哎，我堵在这了つ ◕_◕ ༽つ");
+        return num > 0 ? ResponseData.success("success", "评论成功") : ResponseData.error("网络故障");
     }
 
     @ResponseBody
     @RequestMapping(value = "upOrDown", method = RequestMethod.POST)
     public Map<String, Object> upOrDown(@RequestBody Comment comment) {
-        return detailService.savePreferUpOrDownArticle(comment) > 0 ? ResponseData.success("success", "点赞或点踩成功") : ResponseData.error("欸哎，我堵在这了つ ◕_◕ ༽つ");
+        return detailService.savePreferUpOrDownArticle(comment) > 0 ? ResponseData.success("success", "点赞或点踩成功") : ResponseData.error("网络故障");
     }
 
     @ResponseBody
@@ -79,7 +81,7 @@ public class DetailController {
         Map<String, Object> map = new HashMap<>();
         int success = detailService.savePreferUpArticleComment(comment);
         map.put("commentList", detailService.saveGetAllComment(comment));
-        return success > 0 ? ResponseData.success(map, "点赞评论成功") : ResponseData.error("欸哎，我堵在这了つ ◕_◕ ༽つ");
+        return success > 0 ? ResponseData.success(map, "点赞评论成功") : ResponseData.error("网络故障");
     }
 
     @ResponseBody

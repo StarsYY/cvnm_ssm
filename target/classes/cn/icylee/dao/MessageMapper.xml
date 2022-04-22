@@ -35,7 +35,7 @@
   </select>
 
   <delete id="deleteMessageByComment" parameterType="java.lang.String">
-    delete from message where FIND_IN_SET(content, '${ids}') and FIND_IN_SET(addition, '${ids}') and datasource = 'comment'
+    delete from message where FIND_IN_SET(content, '${ids}') or FIND_IN_SET(addition, '${ids}') and datasource = 'comment'
   </delete>
 
   <sql id="Example_Where_Clause" >

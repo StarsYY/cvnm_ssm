@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -30,7 +32,12 @@ public class SearchServiceImpl implements SearchService {
     ModularMapper modularMapper;
 
     @Override
-    public int getSearchArticleTotal(Search search) {
+    public int getSearchArticleTotal(Search search) throws ParseException {
+        if (search.getTime() > 0) {
+            search.setStartTime(Tool.time(search.getTime()));
+            search.setFinalTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        }
+
         return articleMapper.getSearchTotal(search);
     }
 
@@ -38,6 +45,7 @@ public class SearchServiceImpl implements SearchService {
     public List<Article> getSearchArticle(Search search) throws ParseException {
         if (search.getTime() > 0) {
             search.setStartTime(Tool.time(search.getTime()));
+            search.setFinalTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         }
 
         List<Article> articleList = articleMapper.getSearchArticle(search);
@@ -66,17 +74,12 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public int getSearchCourseTotal(Search search) {
-        CourseExample courseExample = new CourseExample();
-        courseExample.createCriteria().andNameLike("%" + search.getSearch() + "%").andStatusEqualTo("已发布");
-        return courseMapper.countByExample(courseExample);
+        return courseMapper.getSearchCourseTotal(search);
     }
 
     @Override
     public List<Course> getSearchCourse(Search search) {
-        CourseExample courseExample = new CourseExample();
-        courseExample.createCriteria().andNameLike("%" + search.getSearch() + "%").andStatusEqualTo("已发布");
-        courseExample.setOrderByClause(" createtime desc limit " + search.getPage() + ", " + search.getLimit());
-        List<Course> courseList = courseMapper.selectByExample(courseExample);
+        List<Course> courseList = courseMapper.getSearchCourse(search);
 
         for (Course course : courseList) {
             course.setUrl("http://localhost:8088/school/purchase/" + course.getId());

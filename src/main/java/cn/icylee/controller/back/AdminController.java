@@ -55,13 +55,13 @@ public class AdminController {
     @ResponseBody
     @RequestMapping(value = "change", method = RequestMethod.POST)
     public Map<String, Object> updateStatus(@RequestBody Admin admin) {
-        return adminService.updateStatus(admin) > 0 ? ResponseData.success("success", "更改成功") : null;
+        return adminService.updateStatus(admin) > 0 ? ResponseData.success("success", "更改成功") : ResponseData.error("网络故障");
     }
 
     @ResponseBody
     @RequestMapping(value = "delete", method = RequestMethod.POST)
     public Map<String, Object> deleteAdmin(@RequestBody Admin admin) {
-        return adminService.deleteAdmin(admin.getId()) > 0 ? ResponseData.success("success", "删除成功") : null;
+        return adminService.deleteAdmin(admin.getId()) > 0 ? ResponseData.success("success", "删除成功") : ResponseData.error("网络故障");
     }
 
     @ResponseBody

@@ -49,7 +49,11 @@ public class ModularController {
     @ResponseBody
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public Map<String, Object> updateModular(@RequestBody Modular modular) {
-        return modularService.updateModular(modular) > 0 ? ResponseData.success("success", "修改成功") : ResponseData.error("该板块已存在");
+        modular = modularService.updateModular(modular);
+        Map<String, Object> map = new HashMap<>();
+        map.put("modular", modular);
+        map.put("optionModular", modularService.getOptionModular(0));
+        return modular != null ? ResponseData.success(map, "修改成功") : ResponseData.error("该模块已存在");
     }
 
     @ResponseBody

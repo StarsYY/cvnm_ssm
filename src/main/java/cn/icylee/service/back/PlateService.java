@@ -16,7 +16,7 @@ public interface PlateService {
 
     Plate savePlate(Plate Plate);
 
-    int updatePlate(Plate Plate);
+    Plate updatePlate(Plate Plate);
 
     int deletePlate(int id);
 

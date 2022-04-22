@@ -34,7 +34,7 @@ public class NavigationServiceImpl implements NavigationService {
         if (tableParameter.getName() != null && !tableParameter.getName().equals("")) {
             criteria.andNameLike("%" + tableParameter.getName() + "%");
         }
-        navigationExample.setOrderByClause(" createtime asc limit " + tableParameter.getPage() + ", " + tableParameter.getLimit());
+        navigationExample.setOrderByClause(" id " + tableParameter.getSort() + " limit " + tableParameter.getPage() + ", " + tableParameter.getLimit());
         return navigationMapper.selectByExample(navigationExample);
     }
 

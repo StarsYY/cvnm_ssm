@@ -34,7 +34,7 @@ public class RotationsServiceImpl implements RotationsService {
         if (tableParameter.getName() != null && !tableParameter.getName().equals("")) {
             criteria.andNameLike("%" + tableParameter.getName() + "%");
         }
-        rotationsExample.setOrderByClause(" createtime asc limit " + tableParameter.getPage() + ", " + tableParameter.getLimit());
+        rotationsExample.setOrderByClause(" id " + tableParameter.getSort() + " limit " + tableParameter.getPage() + ", " + tableParameter.getLimit());
         return rotationsMapper.selectByExample(rotationsExample);
     }
 

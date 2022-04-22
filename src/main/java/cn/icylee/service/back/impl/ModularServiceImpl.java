@@ -29,6 +29,10 @@ public class ModularServiceImpl implements ModularService {
 
     @Override
     public List<Modular> getPageModular(TableParameter tableParameter) {
+        List<Modular> modularList = modularMapper.getModularList(tableParameter);
+        for (Modular modular : modularList) {
+            modular.setSuperior(modular.getAncestor() > 0 ? modularMapper.selectByPrimaryKey(modular.getAncestor()).getModular() : "");
+        }
         return modularMapper.getModularList(tableParameter);
     }
 
@@ -68,23 +72,23 @@ public class ModularServiceImpl implements ModularService {
 
         modular.setCreatetime(new Date());
         modular.setUpdatetime(new Date());
+        modular.setSuperior(modular.getAncestor() > 0 ? modularMapper.selectByPrimaryKey(modular.getAncestor()).getModular() : "");
 
-        modularMapper.insert(modular);
-
-        return modular;
+        return modularMapper.insert(modular) > 0 ? modular : null;
     }
 
     @Override
-    public int updateModular(Modular modular) {
+    public Modular updateModular(Modular modular) {
         ModularExample modularExample = new ModularExample();
         ModularExample.Criteria criteria = modularExample.createCriteria();
         criteria.andModularNotEqualTo(modularMapper.selectByPrimaryKey(modular.getId()).getModular()).andModularEqualTo(modular.getModular());
         if (modularMapper.selectByExample(modularExample).size() > 0) {
-            return 0;
+            return null;
         }
         modular.setUpdatetime(new Date());
+        modular.setSuperior(modular.getAncestor() > 0 ? modularMapper.selectByPrimaryKey(modular.getAncestor()).getModular() : "");
 
-        return modularMapper.updateByPrimaryKeySelective(modular);
+        return modularMapper.updateByPrimaryKeySelective(modular) > 0 ? modular : null;
     }
 
     @Override

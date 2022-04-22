@@ -34,11 +34,7 @@ public class PlateServiceImpl implements PlateService {
     public List<Plate> getPagePlate(TableParameter tableParameter) {
         List<Plate> plateList = plateMapper.getPlateList(tableParameter);
         for (Plate plate : plateList) {
-            if (plate.getAncestor() == 0) {
-                plate.setSuperior("");
-            } else {
-                plate.setSuperior(plateMapper.selectByPrimaryKey(plate.getAncestor()).getPlate());
-            }
+            plate.setSuperior(plate.getAncestor() > 0 ? plateMapper.selectByPrimaryKey(plate.getAncestor()).getPlate() : "");
 
             ArticleExample articleExample = new ArticleExample();
             articleExample.createCriteria().andPlateidEqualTo(plate.getId());
@@ -83,30 +79,24 @@ public class PlateServiceImpl implements PlateService {
         plate.setCreatetime(new Date());
         plate.setUpdatetime(new Date());
 
-        plateMapper.insert(plate);
-
-        if (plate.getAncestor() == 0) {
-            plate.setSuperior("");
-        } else {
-            plate.setSuperior(plateMapper.selectByPrimaryKey(plate.getAncestor()).getPlate());
-        }
-
         plate.setArticleCount(0);
+        plate.setSuperior(plate.getAncestor() > 0 ? plateMapper.selectByPrimaryKey(plate.getAncestor()).getPlate() : "");
 
-        return plate;
+        return plateMapper.insert(plate) > 0 ? plate : null;
     }
 
     @Override
-    public int updatePlate(Plate plate) {
+    public Plate updatePlate(Plate plate) {
         PlateExample plateExample = new PlateExample();
         PlateExample.Criteria criteria = plateExample.createCriteria();
         criteria.andPlateNotEqualTo(plateMapper.selectByPrimaryKey(plate.getId()).getPlate()).andPlateEqualTo(plate.getPlate());
         if (plateMapper.selectByExample(plateExample).size() > 0) {
-            return 0;
+            return null;
         }
         plate.setUpdatetime(new Date());
+        plate.setSuperior(plate.getAncestor() > 0 ? plateMapper.selectByPrimaryKey(plate.getAncestor()).getPlate() : "");
 
-        return plateMapper.updateByPrimaryKeySelective(plate);
+        return plateMapper.updateByPrimaryKeySelective(plate) > 0 ? plate : null;
     }
 
     @Override

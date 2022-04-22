@@ -23,6 +23,16 @@ public class Modular {
 
     private String ids;
 
+    private String superior;
+
+    public String getSuperior() {
+        return superior;
+    }
+
+    public void setSuperior(String superior) {
+        this.superior = superior;
+    }
+
     public String getIds() {
         return ids;
     }

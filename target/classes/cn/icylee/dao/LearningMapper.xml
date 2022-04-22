@@ -12,7 +12,7 @@
     SELECT count(*) FROM learning
     <where>
       <if test="ids != null and ids != ''">AND FIND_IN_SET(userid, '${ids}')</if>
-      <if test="cids != null and cids != ''">AND FIND_IN_SET(course, '${cids}')</if>
+      <if test="cids != null and cids != ''">AND FIND_IN_SET(courseid, '${cids}')</if>
     </where>
   </select>
 
@@ -23,8 +23,8 @@
         LEFT JOIN `user` ON `user`.uid=learning.userid
         LEFT JOIN `course` ON `course`.id=learning.courseid
     WHERE 1 = 1
-    <if test="ids != null and ids != ''">AND FIND_IN_SET(userid, '${ids}')</if>
-    <if test="cids != null and cids != ''">AND FIND_IN_SET(course, '${cids}')</if>
+    <if test="ids != null and ids != ''">AND FIND_IN_SET(learning.userid, '${ids}')</if>
+    <if test="cids != null and cids != ''">AND FIND_IN_SET(learning.courseid, '${cids}')</if>
     LIMIT #{page}, #{limit} ) u
     ORDER BY id ${sort}
   </select>

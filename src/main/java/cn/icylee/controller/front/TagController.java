@@ -40,7 +40,7 @@ public class TagController {
     public Map<String, Object> showTags(TableParameter tableParameter) throws ParseException {
         Map<String, Object> map = new HashMap<>();
         map.put("labelList", tagService.getPageLabel(tableParameter));
-        map.put("count", tagService.labelCount());
+        map.put("count", tagService.labelCount(tableParameter));
         return ResponseData.success(map, "所有标签");
     }
 

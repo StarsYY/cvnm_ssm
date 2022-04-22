@@ -7,6 +7,7 @@ import cn.icylee.bean.UserExample;
 import cn.icylee.dao.CourseMapper;
 import cn.icylee.dao.OrderMapper;
 import cn.icylee.dao.UserMapper;
+import cn.icylee.service.front.GrowService;
 import cn.icylee.service.front.PayService;
 import cn.icylee.utils.Tool;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ public class PayServiceImpl implements PayService {
 
     @Autowired
     OrderMapper orderMapper;
+
+    @Autowired
+    GrowService growService;
 
     @Override
     public Course getCourseById(int id) {
@@ -70,9 +74,7 @@ public class PayServiceImpl implements PayService {
         userExample.createCriteria().andNicknameEqualTo(order.getUsername());
         User user = userMapper.selectByExample(userExample).get(0);
 
-        int payIntegral = (int) Math.floor(courseMapper.selectByPrimaryKey(order.getCourseid()).getPrice() * 0.8);
-
-        user.setIntegral(user.getIntegral() - payIntegral);
+        user.setIntegral(user.getIntegral() - order.getPrice());
         if (userMapper.updateByPrimaryKeySelective(user) > 0) {
 
             order.setUserid(user.getUid());
@@ -90,7 +92,11 @@ public class PayServiceImpl implements PayService {
             Date date = format.parse(string);
             order.setInvalidtime(date);
 
-            return orderMapper.insert(order);
+            if (orderMapper.insert(order) > 0) {
+                return growService.updateDecreaseIntegralFromExchangeCourse(user.getUid(), order.getPrice()) > 0 ? 3 : 2;
+            }
+
+            return 0;
         }
         return 0;
     }

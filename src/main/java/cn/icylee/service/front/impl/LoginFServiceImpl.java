@@ -40,6 +40,8 @@ public class LoginFServiceImpl implements LoginFService {
             } else if (user.getStarttime() != null) {
                 if (new Date().compareTo(user.getStarttime()) >= 0 && new Date().compareTo(user.getFinaltime()) <= 0) {
                     return -3;
+                } else {
+                    return 1;
                 }
             } else {
                 if (user.getPassword().equals(DigestUtils.md5DigestAsHex(password.getBytes()))) {

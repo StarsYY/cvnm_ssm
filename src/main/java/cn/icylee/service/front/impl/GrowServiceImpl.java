@@ -240,4 +240,17 @@ public class GrowServiceImpl implements GrowService {
         return 0;
     }
 
+    @Override
+    public int updateDecreaseIntegralFromExchangeCourse(int uid, int integral) {
+        Integral i = new Integral();
+
+        i.setUserid(uid);
+        i.setGrow(-integral);
+        i.setIntegral(-integral);
+        i.setDescribe("兑换课程");
+        i.setCreatetime(new Date());
+
+        return integralMapper.insert(i);
+    }
+
 }

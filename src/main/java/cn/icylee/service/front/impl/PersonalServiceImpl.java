@@ -112,7 +112,7 @@ public class PersonalServiceImpl implements PersonalService {
         int id = getUserByUsername(username).getUid();
 
         ArticleExample articleExample = new ArticleExample();
-        articleExample.createCriteria().andUseridEqualTo(id);
+        articleExample.createCriteria().andUseridEqualTo(id).andIsdelEqualTo(0);
         communication.put("文章", articleMapper.countByExample(articleExample));
 
         CommentExample commentExample = new CommentExample();
@@ -129,7 +129,7 @@ public class PersonalServiceImpl implements PersonalService {
         int id = getUserByUsername(username).getUid();
 
         ArticleExample articleExample = new ArticleExample();
-        articleExample.createCriteria().andUseridEqualTo(id).andStatusEqualTo("已发布").andIsdelEqualTo(0);
+        articleExample.createCriteria().andUseridEqualTo(id).andStatusEqualTo("已发布").andPublishEqualTo("公开").andIsdelEqualTo(0);
         articleExample.setOrderByClause(" createtime desc LIMIT 10");
 
         List<Article> articleList = articleMapper.selectByExample(articleExample);
@@ -320,7 +320,11 @@ public class PersonalServiceImpl implements PersonalService {
         int id = getUserByUsername(index.getUsername()).getUid();
 
         ArticleExample articleExample = new ArticleExample();
-        articleExample.createCriteria().andUseridEqualTo(id).andStatusEqualTo("已发布").andIsdelEqualTo(0);
+        ArticleExample.Criteria criteria = articleExample.createCriteria();
+        criteria.andUseridEqualTo(id).andStatusEqualTo("已发布").andIsdelEqualTo(0);
+        if (!index.getUsername().equals(index.getLoginName())) {
+            criteria.andPublishEqualTo("公开");
+        }
         articleExample.setOrderByClause(" createtime ASC LIMIT " + index.getPage() + "," + index.getLimit());
         List<Article> articleList = articleMapper.selectByExample(articleExample);
 
@@ -374,6 +378,7 @@ public class PersonalServiceImpl implements PersonalService {
         Article article = articleMapper.selectByPrimaryKey(id);
         article.setIsdel(1);
         article.setUpdatetime(new Date());
+        article.setTitle(String.valueOf(new Date().getTime()));
 
         if (articleMapper.updateByPrimaryKeySelective(article) > 0) {
             return growService.updateDecreaseIntegralAndGrowFromArticleOrCourse(article.getUserid());
@@ -530,7 +535,11 @@ public class PersonalServiceImpl implements PersonalService {
 
     @Override
     public int deleteMyDraft(int id) {
-        return articleMapper.deleteByPrimaryKey(id);
+        Article article = articleMapper.selectByPrimaryKey(id);
+        article.setIsdel(1);
+        article.setUpdatetime(new Date());
+        article.setTitle(String.valueOf(new Date().getTime()));
+        return articleMapper.updateByPrimaryKeySelective(article);
     }
 
     @Override
@@ -541,7 +550,11 @@ public class PersonalServiceImpl implements PersonalService {
 
     @Override
     public int deleteMyAudit(int id) {
-        return articleMapper.deleteByPrimaryKey(id);
+        Article article = articleMapper.selectByPrimaryKey(id);
+        article.setIsdel(1);
+        article.setUpdatetime(new Date());
+        article.setTitle(String.valueOf(new Date().getTime()));
+        return articleMapper.updateByPrimaryKeySelective(article);
     }
 
     @Override
@@ -559,23 +572,22 @@ public class PersonalServiceImpl implements PersonalService {
         return commentList;
     }
 
-    private List<Integer> getDelId(int id) {
+    private List<Integer> getDelId(int id, List<Integer> list) {
         CommentExample commentExample = new CommentExample();
         commentExample.createCriteria().andComidEqualTo(id);
         List<Comment> commentList = commentMapper.selectByExample(commentExample);
 
-        List<Integer> list = new ArrayList<>();
         list.add(id);
         for (Comment comment : commentList) {
             list.add(comment.getId());
-            getDelId(comment.getId());
+            getDelId(comment.getId(), list);
         }
         return list;
     }
 
     @Override
     public int[] deleteMyComment(int id) {
-        int[] ids = getDelId(id).stream().mapToInt(Integer::valueOf).toArray();
+        int[] ids = getDelId(id, new ArrayList<>()).stream().mapToInt(Integer::valueOf).toArray();
         StringBuilder s = new StringBuilder();
         for (int i : ids) {
             s.append(i).append(",");

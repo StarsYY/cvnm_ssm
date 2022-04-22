@@ -106,11 +106,11 @@ public class Tool {
 
     private static final long ONE_MONTH = 2592000000L;
 
-    private static final long SIX_MONTH = 2592000000L;
+    private static final long SIX_MONTH = 15552000000L;
 
     private static final long ONE_YEAR = 31536000000L;
 
-    public static Date time(int time) throws ParseException {
+    public static String time(int time) throws ParseException {
         long StartTime = 0L;
 
         if (time == 1) {
@@ -128,7 +128,7 @@ public class Tool {
         }
 
         new Date().setTime(StartTime);
-        return new Date(StartTime);
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(StartTime));
     }
 
     private static String getFewDays(int day) {

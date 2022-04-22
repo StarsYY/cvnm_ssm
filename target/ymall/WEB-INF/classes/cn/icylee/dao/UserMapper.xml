@@ -49,21 +49,22 @@
     SELECT `user`.uid, `user`.nickname, `user`.summary, `user`.portrait, `user`.grow, `user`.`status`
     FROM `user`
            LEFT JOIN follow ON follow.userid=#{uid} AND follow.datasource="user"
-    WHERE `user`.uid=follow.dataid
+    WHERE `user`.uid=follow.dataid and `user`.isdel = 0
     ORDER BY follow.createtime DESC
       LIMIT 6
   </select>
 
   <select id="getExpert" resultType="cn.icylee.bean.User">
     SELECT `user`.* from `user`
-                           JOIN verify on verify.userid = `user`.uid and verify.`position` = '专家' and verify.`status` = 1
+    JOIN verify on verify.userid = `user`.uid and verify.`position` = '专家' and verify.`status` = 1
+    where `user`.isdel = 0
   </select>
 
   <select id="getFansUser" parameterType="INTEGER" resultType="cn.icylee.bean.User">
     SELECT `user`.uid, `user`.nickname, `user`.summary, `user`.portrait, `user`.grow, `user`.`status`
     FROM `user`
            LEFT JOIN follow ON follow.dataid=#{uid} AND follow.datasource="user"
-    WHERE `user`.uid=follow.userid
+    WHERE `user`.uid=follow.userid and `user`.isdel = 0
     ORDER BY follow.createtime DESC
       LIMIT 6
   </select>
@@ -72,7 +73,7 @@
     SELECT `user`.uid, `user`.nickname, `user`.summary, `user`.portrait, `user`.grow, `user`.`status`
     FROM `user`
            LEFT JOIN follow ON follow.userid=#{uid} AND follow.datasource="user"
-    WHERE `user`.uid=follow.dataid
+    WHERE `user`.uid=follow.dataid and `user`.isdel = 0
     ORDER BY follow.createtime DESC
       LIMIT #{page}, #{limit}
   </select>
@@ -81,7 +82,7 @@
     SELECT `user`.uid, `user`.nickname, `user`.summary, `user`.portrait, `user`.grow, `user`.`status`
     FROM `user`
            LEFT JOIN follow ON follow.dataid=#{uid} AND follow.datasource="user"
-    WHERE `user`.uid=follow.userid
+    WHERE `user`.uid=follow.userid and `user`.isdel = 0
     ORDER BY follow.createtime DESC
       LIMIT #{page}, #{limit}
   </select>

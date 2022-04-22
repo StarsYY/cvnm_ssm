@@ -20,4 +20,6 @@ public interface GrowService {
 
     int updateDecreaseIntegralAndGrowFromCommentOrDiscuss(int uid);
 
+    int updateDecreaseIntegralFromExchangeCourse(int uid, int integral);
+
 }

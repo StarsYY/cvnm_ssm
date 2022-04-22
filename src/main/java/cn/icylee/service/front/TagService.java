@@ -12,7 +12,7 @@ public interface TagService {
 
     List<Label> getPageLabel(TableParameter tableParameter) throws ParseException;
 
-    int labelCount();
+    int labelCount(TableParameter tableParameter);
 
     Label getLabelById(Label label);
 

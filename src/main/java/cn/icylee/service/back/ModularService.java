@@ -16,7 +16,7 @@ public interface ModularService {
 
     Modular saveModular(Modular modular);
 
-    int updateModular(Modular modular);
+    Modular updateModular(Modular modular);
 
     int deleteModular(int id);
     

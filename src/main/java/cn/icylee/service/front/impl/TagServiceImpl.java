@@ -80,8 +80,8 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public int labelCount() {
-        return labelMapper.countByExample(null);
+    public int labelCount(TableParameter tableParameter) {
+        return labelMapper.getLabelTotalForTags(tableParameter);
     }
 
     @Override

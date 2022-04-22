@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
             // 对原来的密码进行修改
             user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
         }
-        if (!user.getStarttime().equals("")) {
+        if (user.getStarttime() != null) {
             user.setStatus("禁用");
         }
         user.setUpdatetime(new Date());

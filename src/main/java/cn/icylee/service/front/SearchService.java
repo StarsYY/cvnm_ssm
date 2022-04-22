@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface SearchService {
 
-    int getSearchArticleTotal(Search search);
+    int getSearchArticleTotal(Search search) throws ParseException;
 
     List<Article> getSearchArticle(Search search) throws ParseException;
 

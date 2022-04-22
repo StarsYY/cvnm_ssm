@@ -274,7 +274,11 @@ public class ArticleServiceImpl implements ArticleService {
         criteria.andNicknameLike("%" + name + "%").andStatusEqualTo("启用").andIsdelEqualTo(0);
         Map<String, String> map = new HashMap<>();
         for (User user : userMapper.selectByExample(userExample)) {
-            if (!(new Date().compareTo(user.getStarttime()) >= 0 && new Date().compareTo(user.getFinaltime()) <= 0)) {
+            if (user.getStarttime() != null) {
+                if (!(new Date().compareTo(user.getStarttime()) >= 0 && new Date().compareTo(user.getFinaltime()) <= 0)) {
+                    map.put(user.getUid().toString(), user.getNickname());
+                }
+            } else {
                 map.put(user.getUid().toString(), user.getNickname());
             }
         }

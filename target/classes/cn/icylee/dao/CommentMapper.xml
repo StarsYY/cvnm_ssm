@@ -42,7 +42,7 @@
            LEFT JOIN article ON article.id=`comment`.articleid
            LEFT JOIN `user` u1 ON u1.uid=`comment`.userid
            LEFT JOIN `user` u2 ON u2.uid=article.userid
-    WHERE `comment`.userid = #{uid} AND `comment`.`status` = 1
+    WHERE `comment`.userid = #{uid} AND `comment`.`status` = 1 and article.isdel = 0
     ORDER BY `comment`.createtime DESC
     LIMIT #{page}, #{limit}
   </select>
@@ -51,7 +51,8 @@
     SELECT `comment`.*, u1.nickname AS username
     FROM `comment`
            LEFT JOIN `user` u1 ON u1.uid=`comment`.userid
-    WHERE `comment`.id = #{comid} AND `comment`.`status` = 1
+           LEFT JOIN article ON article.id=`comment`.articleid
+    WHERE `comment`.id = #{comid} AND `comment`.`status` = 1 and article.isdel = 0
   </select>
 
   <sql id="Example_Where_Clause" >

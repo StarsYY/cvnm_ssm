@@ -23,7 +23,7 @@
     <where>
       <if test="ids != null and ids != ''">AND labelid REGEXP '${ids}'</if>
       <if test="modularid != null and modularid != ''">AND FIND_IN_SET(modularid,'${modularid}')</if>
-      <if test="name != null and name != ''">AND name LIKE '%${name}%'</if>
+      <if test="name != null and name != ''">AND `name` LIKE concat('%', #{name}, '%')</if>
       <if test="article != null and article != ''">AND FIND_IN_SET(userid,'${article}')</if>
       <if test="status != null and status != ''">AND status = '${status}'</if>
     </where>
@@ -31,19 +31,19 @@
 
   <select id="getCourseList" parameterType="cn.icylee.bean.TableParameter" resultType="cn.icylee.bean.Course">
     SELECT co.id, co.`name`, co.userid, co.modularid, co.labelid, co.`status`, co.price, co.isdel, co.createtime, co.updatetime,
-    u.nickname AS author, md.modular,
-    truncate(case when dis_course.courseid is null then 5 when dis_course.courseid is not null then dis_course.avg_score end, 1) as score
+        u.nickname AS author, md.modular,
+        truncate(case when dis_course.courseid is null then 5 when dis_course.courseid is not null then dis_course.avg_score end, 1) as score
     FROM
     ( SELECT * FROM course WHERE 1 = 1
     <if test="ids != null and ids != ''">AND labelid REGEXP '${ids}'</if>
     <if test="modularid != null and modularid != ''">AND FIND_IN_SET(modularid,'${modularid}')</if>
-    <if test="name != null and name != ''">AND name LIKE '%${name}%'</if>
+    <if test="name != null and name != ''">AND `name` LIKE concat('%', #{name}, '%')</if>
     <if test="article != null and article != ''">AND FIND_IN_SET(userid,'${article}')</if>
     <if test="status != null and status != ''">AND status = '${status}'</if>
     LIMIT #{page}, #{limit} ) co
-    left join ( select courseid, avg(score) as avg_score from discuss where disid = 0 group by courseid ) as dis_course on dis_course.courseid = co.id
-    LEFT JOIN `user` AS u ON co.userid = u.uid
-    left join `modular` as md on co.modularid = md.id
+        left join ( select courseid, avg(score) as avg_score from discuss where disid = 0 group by courseid ) as dis_course on dis_course.courseid = co.id
+        LEFT JOIN `user` AS u ON co.userid = u.uid
+        left join `modular` as md on co.modularid = md.id
     ORDER BY id ${sort}
   </select>
 
@@ -178,6 +178,22 @@
       limit 0, 2
   </select>
 
+  <select id="getSearchCourseTotal" parameterType="cn.icylee.bean.Search" resultType="java.lang.Integer">
+    select count(*)
+    from course
+           LEFT JOIN ( SELECT courseid, count(*) as count_video from video GROUP BY courseid ) as video_video on video_video.courseid = course.id
+    where course.`status` = '已发布' and video_video.count_video > 0 and course.isdel = 0 AND course.`name` LIKE '%${search}%'
+  </select>
+
+  <select id="getSearchCourse" parameterType="cn.icylee.bean.Search" resultType="cn.icylee.bean.Course">
+    select course.*
+    from course
+           LEFT JOIN ( SELECT courseid, count(*) as count_video from video GROUP BY courseid ) as video_video on video_video.courseid = course.id
+    where course.`status` = '已发布' and video_video.count_video > 0 and course.isdel = 0 AND course.`name` LIKE '%${search}%'
+    order by course.createtime desc
+      limit #{page}, #{limit}
+  </select>
+
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >
@@ -270,7 +286,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="cn.icylee.bean.Course" >
+  <insert id="insert" parameterType="cn.icylee.bean.Course" useGeneratedKeys="true" keyProperty="id" keyColumn="id" >
     insert into course (id, userid, name,
                         summary, introduction, price,
                         modularid, labelid, cover,

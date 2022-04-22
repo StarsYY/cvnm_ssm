@@ -22,9 +22,9 @@ public class Search {
 
     private String username;
 
-    private Date startTime;
+    private String startTime;
 
-    private Date finalTime = new Date();
+    private String finalTime;
 
     public int getPage() {
         if (page != 0) {

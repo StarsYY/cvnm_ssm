@@ -49,7 +49,7 @@ public class PersonalController {
     @ResponseBody
     @RequestMapping(value = "editSummary", method = RequestMethod.POST)
     public Map<String, Object> updateUserSummary(@RequestBody User user) {
-        return personalService.updateUserSummary(user) > 0 ? ResponseData.success("success", "修改简介成功") : ResponseData.error("欸哎，我堵在这了つ ◕_◕ ༽つ");
+        return personalService.updateUserSummary(user) > 0 ? ResponseData.success("success", "修改简介成功") : ResponseData.error("网络故障");
     }
 
     @ResponseBody
@@ -139,7 +139,7 @@ public class PersonalController {
     @RequestMapping(value = "article/delete", method = RequestMethod.POST)
     public Map<String, Object> deleteMyArticle(@RequestBody String data) {
         int id = Integer.parseInt(JSONObject.fromObject(data).getString("id"));
-        return personalService.deleteMyArticle(id) > 0 ? ResponseData.success("success", "删除成功") : ResponseData.error("欸哎，我堵在这了つ ◕_◕ ༽つ");
+        return personalService.deleteMyArticle(id) > 0 ? ResponseData.success("success", "删除成功") : ResponseData.error("网络故障");
     }
 
     @ResponseBody
@@ -177,7 +177,7 @@ public class PersonalController {
     @ResponseBody
     @RequestMapping(value = "follow/user", method = RequestMethod.POST)
     public Map<String, Object> followUser(@RequestBody Comment comment) {
-        return detailService.saveFollowAuthor(comment) > 0 ? ResponseData.success("success", "关注或取消关注成功") : ResponseData.error("欸哎，我堵在这了つ ◕_◕ ༽つ");
+        return detailService.saveFollowAuthor(comment) > 0 ? ResponseData.success("success", "关注或取消关注成功") : ResponseData.error("网络故障");
     }
 
     @ResponseBody
@@ -208,7 +208,7 @@ public class PersonalController {
     @RequestMapping(value = "draft/delete", method = RequestMethod.POST)
     public Map<String, Object> deleteMyDraft(@RequestBody String data) {
         int id = Integer.parseInt(JSONObject.fromObject(data).getString("id"));
-        return personalService.deleteMyDraft(id) > 0 ? ResponseData.success("success", "删除成功") : ResponseData.error("欸哎，我堵在这了つ ◕_◕ ༽つ");
+        return personalService.deleteMyDraft(id) > 0 ? ResponseData.success("success", "删除成功") : ResponseData.error("网络故障");
     }
 
     @ResponseBody
@@ -221,7 +221,7 @@ public class PersonalController {
     @RequestMapping(value = "audit/delete", method = RequestMethod.POST)
     public Map<String, Object> deleteMyAudit(@RequestBody String data) {
         int id = Integer.parseInt(JSONObject.fromObject(data).getString("id"));
-        return personalService.deleteMyAudit(id) > 0 ? ResponseData.success("success", "删除成功") : ResponseData.error("欸哎，我堵在这了つ ◕_◕ ༽つ");
+        return personalService.deleteMyAudit(id) > 0 ? ResponseData.success("success", "删除成功") : ResponseData.error("网络故障");
     }
 
     @ResponseBody
@@ -235,7 +235,7 @@ public class PersonalController {
     public Map<String, Object> deleteMyComment(@RequestBody String data) {
         int id = Integer.parseInt(JSONObject.fromObject(data).getString("id"));
         int[] ids = personalService.deleteMyComment(id);
-        return ids.length > 0 ? ResponseData.success(ids, "删除成功") : ResponseData.error("欸哎，我堵在这了つ ◕_◕ ༽つ");
+        return ids.length > 0 ? ResponseData.success(ids, "删除成功") : ResponseData.error("网络故障");
     }
 
 }

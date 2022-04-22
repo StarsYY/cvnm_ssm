@@ -36,8 +36,7 @@ public class PayController {
     @ResponseBody
     @RequestMapping(value = "confirm/userIntegral", method = RequestMethod.POST)
     public Map<String, Object> getUserIntegral(@RequestBody Order order) {
-        int num = payService.getUserIntegral(order.getUsername());
-        return num > 0 ? ResponseData.success(num, "获取用户积分") : ResponseData.error("网络故障");
+        return ResponseData.success(payService.getUserIntegral(order.getUsername()), "获取用户积分");
     }
 
     @ResponseBody

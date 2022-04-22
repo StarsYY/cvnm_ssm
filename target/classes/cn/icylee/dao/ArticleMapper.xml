@@ -55,29 +55,12 @@
     ORDER BY id ${sort}
   </select>
 
-  <select id="getMostHotArticle" parameterType="cn.icylee.bean.Index" resultType="cn.icylee.bean.Article">
-    SELECT a.*, u.nickname, u.portrait, u.grow,
-           case when ca.count_article is null then 0 when ca.count_article is not null then ca.count_article end as `comment`,
-           case when pa.count_comment is null then 0 when pa.count_comment is not null then pa.count_comment end as up
-    FROM article a
-           LEFT JOIN `user` u on a.userid = u.uid
-           LEFT JOIN ( SELECT articleid, count(*) as count_article from `comment` where `status` = 1 GROUP BY articleid ) as ca on a.id = ca.articleid
-           LEFT JOIN ( SELECT dataid, count(*) as count_comment from prefer where push = 1 GROUP BY dataid ) as pa on pa.dataid = a.id
-    where a.hot = 'Hot' and a.publish = '公开' and a.status = '已发布' and a.isdel = 0 and u.isdel = 0
-    ORDER BY a.createtime DESC
-      LIMIT #{page}, #{limit}
-  </select>
-
   <select id="getIndexArticle" parameterType="cn.icylee.bean.Index" resultType="cn.icylee.bean.Article">
     SELECT a.*, u.nickname, u.portrait, u.grow,
     case when ca.count_article is null then 0 when ca.count_article is not null then ca.count_article end as `comment`,
     case when pa.count_comment is null then 0 when pa.count_comment is not null then pa.count_comment end as up
     FROM article a
-    <if test="contentTag == 2">
-      JOIN ( SELECT c.* from `comment` as c
-      JOIN ( SELECT MAX(createtime) max_c from `comment` GROUP BY articleid ) as max_time on max_time.max_c = c.createtime )
-      as max_t on max_t.articleid = a.id
-    </if>
+    <if test="contentTag == 2">RIGHT JOIN `comment` on a.id = `comment`.articleid</if>
     LEFT JOIN `user` u on a.userid = u.uid
     LEFT JOIN ( SELECT articleid, count(*) as count_article from `comment` where `status` = 1 GROUP BY articleid ) as ca on a.id = ca.articleid
     LEFT JOIN ( SELECT dataid, count(*) as count_comment from prefer where push = 1 GROUP BY dataid ) as pa on pa.dataid = a.id
@@ -90,9 +73,25 @@
     <if test="defOrTree == 2 and hot == '精华'">AND a.tag = '精华'</if>
     <if test="defOrTree == 2 and hot == '推荐'">AND a.tag = '推荐'</if>
     <if test="defOrTree == 2 and hot == '热门'">AND a.hot = 'Hot'</if>
-    ORDER BY a.hot='Top' DESC, a.createtime DESC
+    <if test="contentTag == 2">GROUP BY `comment`.articleid</if>
+    ORDER BY a.hot='Top' DESC
     <if test="contentTag == 3">, ca.count_article desc</if>
+    <if test="contentTag == 2">, MAX(`comment`.createtime) desc</if>
+    <if test="contentTag != 2">, a.createtime DESC</if>
     LIMIT #{page}, #{limit}
+  </select>
+
+  <select id="getMostHotArticle" parameterType="cn.icylee.bean.Index" resultType="cn.icylee.bean.Article">
+    SELECT a.*, u.nickname, u.portrait, u.grow,
+           case when ca.count_article is null then 0 when ca.count_article is not null then ca.count_article end as `comment`,
+           case when pa.count_comment is null then 0 when pa.count_comment is not null then pa.count_comment end as up
+    FROM article a
+           LEFT JOIN `user` u on a.userid = u.uid
+           LEFT JOIN ( SELECT articleid, count(*) as count_article from `comment` where `status` = 1 GROUP BY articleid ) as ca on a.id = ca.articleid
+           LEFT JOIN ( SELECT dataid, count(*) as count_comment from prefer where push = 1 GROUP BY dataid ) as pa on pa.dataid = a.id
+    where a.hot = 'Hot' and a.publish = '公开' and a.status = '已发布' and a.isdel = 0 and u.isdel = 0
+    ORDER BY a.createtime DESC
+      LIMIT #{page}, #{limit}
   </select>
 
   <select id="getFollowUser" parameterType="cn.icylee.bean.Index" resultType="cn.icylee.bean.Article">
@@ -187,7 +186,7 @@
     SELECT article.id, article.title, article.userid, article.plateid, article.createtime, plate.plate
     FROM article
            LEFT JOIN plate ON plate.id=article.plateid
-    WHERE article.userid = #{uid} AND article.status = '草稿'
+    WHERE article.userid = #{uid} AND article.status = '草稿' and article.isdel = 0
     ORDER BY article.createtime DESC
       LIMIT #{page}, #{limit}
   </select>
@@ -196,7 +195,7 @@
     SELECT article.id, article.title, article.userid, article.plateid, article.createtime, plate.plate
     FROM article
            LEFT JOIN plate ON plate.id=article.plateid
-    WHERE article.userid = #{uid} AND article.status = '待审核'
+    WHERE article.userid = #{uid} AND article.status = '待审核' and article.isdel = 0
     ORDER BY article.createtime DESC
       LIMIT #{page}, #{limit}
   </select>
