@@ -27,7 +27,7 @@ public class PublishServiceImpl implements PublishCourseService {
         int uid = userMapper.selectByExample(userExample).get(0).getUid();
 
         CourseExample courseExample = new CourseExample();
-        courseExample.createCriteria().andUseridEqualTo(uid).andStatusEqualTo("草稿");
+        courseExample.createCriteria().andUseridEqualTo(uid).andStatusEqualTo("草稿").andIsdelEqualTo(0);
         return articleMapper.selectByExample(courseExample);
     }
 }

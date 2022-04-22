@@ -56,4 +56,6 @@ public interface CourseMapper {
     int getSearchCourseTotal(Search search);
 
     List<Course> getSearchCourse(Search search);
+
+    List<Course> getMyCourse(Index index);
 }

@@ -84,4 +84,17 @@ public class MySchoolServiceImpl implements MySchoolService {
         return orderMapper.updateByPrimaryKeySelective(order) > 0 ? order : null;
     }
 
+    @Override
+    public List<Course> getMyCourse(Index index) {
+        return courseMapper.getMyCourse(index);
+    }
+
+    @Override
+    public int deleteMyCourse(int id) {
+        Course course = courseMapper.selectByPrimaryKey(id);
+        course.setIsdel(1);
+        course.setName(String.valueOf(new Date().getTime()));
+        return courseMapper.updateByPrimaryKeySelective(course);
+    }
+
 }

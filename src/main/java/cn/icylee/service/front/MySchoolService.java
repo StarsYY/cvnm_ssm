@@ -20,4 +20,8 @@ public interface MySchoolService {
 
     Order updatePayCourse(int id);
 
+    List<Course> getMyCourse(Index index);
+
+    int deleteMyCourse(int id);
+
 }

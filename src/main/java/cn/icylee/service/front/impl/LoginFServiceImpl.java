@@ -95,9 +95,12 @@ public class LoginFServiceImpl implements LoginFService {
 
         if (userList.size() > 0) {
             VerifyExample verifyExample = new VerifyExample();
-            verifyExample.createCriteria().andUseridEqualTo(userList.get(0).getUid()).andPositionEqualTo("讲师").andStatusEqualTo(1);
-            if (verifyMapper.countByExample(verifyExample) > 0) {
-                userList.get(0).setPosition("讲师");
+            verifyExample.createCriteria().andUseridEqualTo(userList.get(0).getUid()).andStatusEqualTo(1);
+            int num = verifyMapper.countByExample(verifyExample);
+            if (num == 2) {
+                userList.get(0).setPosition("2");
+            } else if (num == 1) {
+                userList.get(0).setPosition(verifyMapper.selectByExample(verifyExample).get(0).getPosition());
             }
 
             MessageExample messageExample = new MessageExample();

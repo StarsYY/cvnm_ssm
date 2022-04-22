@@ -94,6 +94,14 @@ public class CDTServiceImpl implements CDTService {
     @Override
     public List<Video> getVideoByCourseId(Discuss discuss) {
         Course course = courseMapper.selectByPrimaryKey(discuss.getCourseid());
+        if (!discuss.getAuthor().equals("")) {
+            int userId = getUserByName(discuss.getAuthor());
+            if (discuss.getAuthor().equals(userMapper.selectByPrimaryKey(userId).getNickname())) {
+                VideoExample videoExample = new VideoExample();
+                videoExample.createCriteria().andCourseidEqualTo(discuss.getCourseid());
+                return videoMapper.selectByExample(videoExample);
+            }
+        }
         if (course.getPrice() > 0) {
             if (!discuss.getAuthor().equals("")) {
                 int userId = getUserByName(discuss.getAuthor());

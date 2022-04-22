@@ -194,6 +194,16 @@
       limit #{page}, #{limit}
   </select>
 
+  <select id="getMyCourse" parameterType="cn.icylee.bean.Index" resultType="cn.icylee.bean.Course">
+    select course.*, `user`.nickname as author
+    from course
+    left join `user` on `user`.uid = course.userid
+    where course.isdel = 0 and course.userid = #{uid}
+    <if test="status != ''">and course.`status` = '${status}'</if>
+    order by course.createtime desc
+      limit #{page}, #{limit}
+  </select>
+
   <sql id="Example_Where_Clause" >
     <where >
       <foreach collection="oredCriteria" item="criteria" separator="or" >

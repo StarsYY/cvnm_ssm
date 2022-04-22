@@ -26,6 +26,8 @@ public class Index {
 
     private String ids;
 
+    private String status;
+
     private int page;
 
     private int limit;

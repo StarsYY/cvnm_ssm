@@ -89,7 +89,7 @@ public class IndexServiceImpl implements IndexService {
 
     @Override
     public List<Article> getArticle(Index index) {
-        List<Article> articleList;
+        List<Article> articleList = null;
         if (index.getDefOrTree() == 1 && index.getLeftId() == 2) {
             if (index.getContentTag() == 1) {
                 articleList = articleMapper.getMostHotArticle(index);
@@ -106,63 +106,71 @@ public class IndexServiceImpl implements IndexService {
                 FollowExample followExample = new FollowExample();
                 followExample.createCriteria().andUseridEqualTo(uid).andDatasourceEqualTo("user");
 
-                StringBuilder ids = new StringBuilder();
-                for (Follow follow : followMapper.selectByExample(followExample)) {
-                    ids.append(follow.getDataid()).append(',');
-                }
-                index.setIds(ids.substring(0, ids.length() - 1));
+                if (followMapper.countByExample(followExample) > 0) {
+                    StringBuilder ids = new StringBuilder();
+                    for (Follow follow : followMapper.selectByExample(followExample)) {
+                        ids.append(follow.getDataid()).append(',');
+                    }
+                    index.setIds(ids.substring(0, ids.length() - 1));
 
-                articleList = articleMapper.getFollowUser(index);
+                    articleList = articleMapper.getFollowUser(index);
+                }
             } else if (index.getContentTag() == 2) {
                 FollowExample followExample = new FollowExample();
                 followExample.createCriteria().andUseridEqualTo(uid).andDatasourceEqualTo("plate");
 
-                StringBuilder ids = new StringBuilder();
-                for (Follow follow : followMapper.selectByExample(followExample)) {
-                    ids.append(follow.getDataid()).append(',');
-                }
-                index.setIds(ids.substring(0, ids.length() - 1));
+                if (followMapper.countByExample(followExample) > 0) {
+                    StringBuilder ids = new StringBuilder();
+                    for (Follow follow : followMapper.selectByExample(followExample)) {
+                        ids.append(follow.getDataid()).append(',');
+                    }
+                    index.setIds(ids.substring(0, ids.length() - 1));
 
-                articleList = articleMapper.getFollowPlate(index);
+                    articleList = articleMapper.getFollowPlate(index);
+                }
             } else {
                 FollowExample followExample = new FollowExample();
                 followExample.createCriteria().andUseridEqualTo(uid).andDatasourceEqualTo("label");
 
-                StringBuilder ids = new StringBuilder();
-                for (Follow follow : followMapper.selectByExample(followExample)) {
-                    ids.append(',').append(follow.getDataid()).append(',').append('|');
-                }
-                index.setIds(ids.substring(0, ids.length() - 1));
+                if (followMapper.countByExample(followExample) > 0) {
+                    StringBuilder ids = new StringBuilder();
+                    for (Follow follow : followMapper.selectByExample(followExample)) {
+                        ids.append(',').append(follow.getDataid()).append(',').append('|');
+                    }
+                    index.setIds(ids.substring(0, ids.length() - 1));
 
-                articleList = articleMapper.getFollowLabel(index);
+                    articleList = articleMapper.getFollowLabel(index);
+                }
             }
         } else {
             articleList = articleMapper.getIndexArticle(index);
         }
 
-        for (Article article : articleList) {
-            article.setGrow(Tool.setLevel(article.getGrow()));
+        if (articleList != null) {
+            for (Article article : articleList) {
+                article.setGrow(Tool.setLevel(article.getGrow()));
 
-            if (!index.getUsername().equals("") && index.getUsername() != null) {
-                UserExample userExample = new UserExample();
-                userExample.createCriteria().andNicknameEqualTo(index.getUsername());
-                int userId = userMapper.selectByExample(userExample).get(0).getUid();
+                if (!index.getUsername().equals("") && index.getUsername() != null) {
+                    UserExample userExample = new UserExample();
+                    userExample.createCriteria().andNicknameEqualTo(index.getUsername());
+                    int userId = userMapper.selectByExample(userExample).get(0).getUid();
 
-                PreferExample preferExample = new PreferExample();
-                preferExample.createCriteria().andUseridEqualTo(userId).andDatasourceEqualTo("article")
-                        .andDataidEqualTo(article.getId());
+                    PreferExample preferExample = new PreferExample();
+                    preferExample.createCriteria().andUseridEqualTo(userId).andDatasourceEqualTo("article")
+                            .andDataidEqualTo(article.getId());
 
-                List<Prefer> preferList = preferMapper.selectByExample(preferExample);
-                if (preferList.size() == 0) {
-                    article.setLike(false);
-                    article.setUnlike(false);
-                } else {
-                    if (preferList.get(0).getPush() == 1) {
-                        article.setLike(true);
-                        article.setUnlike(false);
-                    } else if (preferList.get(0).getPush() == 0) {
+                    List<Prefer> preferList = preferMapper.selectByExample(preferExample);
+                    if (preferList.size() == 0) {
                         article.setLike(false);
-                        article.setUnlike(true);
+                        article.setUnlike(false);
+                    } else {
+                        if (preferList.get(0).getPush() == 1) {
+                            article.setLike(true);
+                            article.setUnlike(false);
+                        } else if (preferList.get(0).getPush() == 0) {
+                            article.setLike(false);
+                            article.setUnlike(true);
+                        }
                     }
                 }
             }

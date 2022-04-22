@@ -76,6 +76,15 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public int saveCourse(Course course) {
+        // 前台上传课程
+        if (course.getAuthor() != null && !course.getAuthor().equals("")) {
+            UserExample userExample = new UserExample();
+            UserExample.Criteria exampleCriteria = userExample.createCriteria();
+            exampleCriteria.andNicknameEqualTo(course.getAuthor());
+            course.setUserid(userMapper.selectByExample(userExample).get(0).getUid());
+            course.setAuthor(null);
+        }
+
         CourseExample courseExample = new CourseExample();
         CourseExample.Criteria criteria = courseExample.createCriteria();
         criteria.andNameEqualTo(course.getName());
@@ -89,9 +98,7 @@ public class CourseServiceImpl implements CourseService {
         course.setCreatetime(new Date());
         course.setUpdatetime(new Date());
 
-        courseMapper.insert(course);
-
-        return course.getId();
+        return courseMapper.insert(course) > 0 ? course.getId() : 0;
     }
 
     @Override

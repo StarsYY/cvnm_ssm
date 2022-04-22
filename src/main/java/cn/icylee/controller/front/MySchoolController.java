@@ -65,4 +65,16 @@ public class MySchoolController {
         return order != null ? ResponseData.success(order, "支付成功") : ResponseData.error("网阔故障");
     }
 
+    @ResponseBody
+    @RequestMapping(value = "my/course", method = RequestMethod.GET)
+    public Map<String, Object> getMyCourse(Index index) {
+        return ResponseData.success(mySchoolService.getMyCourse(index), "我的课程");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "my/course/delete", method = RequestMethod.POST)
+    public Map<String, Object> deleteMyCourse(@RequestBody Course course) {
+        return mySchoolService.deleteMyCourse(course.getId()) > 0 ? ResponseData.success("success", "删除我的课程") : ResponseData.error("网络故障");
+    }
+
 }

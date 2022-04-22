@@ -1,5 +1,6 @@
 package cn.icylee.controller.front;
 
+import cn.icylee.bean.Article;
 import cn.icylee.bean.Index;
 import cn.icylee.bean.Plate;
 import cn.icylee.bean.Sign;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -43,9 +45,14 @@ public class IndexController {
     @ResponseBody
     @RequestMapping(value = "article", method = RequestMethod.GET)
     public Map<String, Object> getArticle(Index index) {
+        List<Article> articleList = indexService.getArticle(index);
         Map<String, Object> map = new HashMap<>();
-        map.put("article", indexService.getArticle(index));
-        map.put("length", indexService.getArticle(index).size());
+        map.put("article", articleList);
+        if (articleList != null) {
+            map.put("length", articleList.size());
+        } else {
+            map.put("length", 0);
+        }
         return ResponseData.success(map, "文章");
     }
 
