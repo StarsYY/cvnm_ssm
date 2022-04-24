@@ -26,6 +26,8 @@ public interface PersonalService {
 
     List<User> getFans(String username);
 
+    List<Article> getRecommendArticle();
+
     List<Article> getCollect(Index index);
 
     List<Message> getMySystemMessage(Index index);

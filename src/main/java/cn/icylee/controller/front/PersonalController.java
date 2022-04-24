@@ -73,6 +73,12 @@ public class PersonalController {
     }
 
     @ResponseBody
+    @RequestMapping(value = "recommendArticle", method = RequestMethod.POST)
+    public Map<String, Object> getRecommendArticle() {
+        return ResponseData.success(personalService.getRecommendArticle(), "推荐文章");
+    }
+
+    @ResponseBody
     @RequestMapping(value = "expert", method = RequestMethod.POST)
     public Map<String, Object> getExpert(@RequestBody String data) {
         String name = JSONObject.fromObject(data).getString("name");

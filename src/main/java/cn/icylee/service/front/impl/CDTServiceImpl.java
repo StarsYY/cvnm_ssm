@@ -96,7 +96,12 @@ public class CDTServiceImpl implements CDTService {
         Course course = courseMapper.selectByPrimaryKey(discuss.getCourseid());
         if (!discuss.getAuthor().equals("")) {
             int userId = getUserByName(discuss.getAuthor());
-            if (discuss.getAuthor().equals(userMapper.selectByPrimaryKey(userId).getNickname())) {
+            if (getIsAdmin(discuss.getAuthor()) == 1) {
+                VideoExample videoExample = new VideoExample();
+                videoExample.createCriteria().andCourseidEqualTo(discuss.getCourseid());
+                return videoMapper.selectByExample(videoExample);
+            }
+            if (userId == course.getUserid()) {
                 VideoExample videoExample = new VideoExample();
                 videoExample.createCriteria().andCourseidEqualTo(discuss.getCourseid());
                 return videoMapper.selectByExample(videoExample);
@@ -261,6 +266,7 @@ public class CDTServiceImpl implements CDTService {
     @Override
     public int deleteDiscuss(int id) {
         int uid = discussMapper.selectByPrimaryKey(id).getUserid();
+        int ans = discussMapper.selectByPrimaryKey(id).getDisid();
         if (discussMapper.deleteByPrimaryKey(id) > 0) {
             DiscussExample discussExample = new DiscussExample();
             discussExample.createCriteria().andDisidEqualTo(id);
@@ -278,6 +284,14 @@ public class CDTServiceImpl implements CDTService {
                     return growService.updateDecreaseIntegralAndGrowFromCommentOrDiscuss(uid);
                 }
             } else {
+                MessageExample messageExample = new MessageExample();
+                if (ans == 0) {
+                    messageExample.createCriteria().andContentEqualTo(String.valueOf(id)).andDatasourceEqualTo("course");
+                } else {
+                    messageExample.createCriteria().andContentEqualTo(String.valueOf(id)).andDatasourceEqualTo("discuss");
+                }
+                messageMapper.deleteByExample(messageExample);
+
                 return growService.updateDecreaseIntegralAndGrowFromCommentOrDiscuss(uid);
             }
         }

@@ -186,6 +186,25 @@ public class PersonalServiceImpl implements PersonalService {
     }
 
     @Override
+    public List<Article> getRecommendArticle() {
+        ArticleExample articleExample = new ArticleExample();
+        articleExample.createCriteria().andTagEqualTo("推荐").andIsdelEqualTo(0)
+                .andStatusEqualTo("已发布").andPublishEqualTo("公开");
+        articleExample.setOrderByClause(" createtime desc limit 4");
+        List<Article> articleList = articleMapper.selectByExample(articleExample);
+        for (Article article : articleList) {
+            CommentExample commentExample = new CommentExample();
+            commentExample.createCriteria().andArticleidEqualTo(article.getId()).andStatusEqualTo(1);
+            article.setComment(commentMapper.countByExample(commentExample));
+
+            PreferExample preferExample = new PreferExample();
+            preferExample.createCriteria().andDatasourceEqualTo("article").andDataidEqualTo(article.getId()).andPushEqualTo(1);
+            article.setUp(preferMapper.countByExample(preferExample));
+        }
+        return articleList;
+    }
+
+    @Override
     public List<Article> getCollect(Index index) {
         int id = getUserByUsername(index.getUsername()).getUid();
         index.setUid(id);
